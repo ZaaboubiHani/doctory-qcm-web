@@ -3,7 +3,8 @@ import axios from "axios";
 class Globals {
     static apiUrl = 
     // 'http://localhost:3000'
-    'https://doctoryqcm.brokermarketing.dz'
+    'https://doctory-qcm-backend.onrender.com'
+    // 'https://doctoryqcm.brokermarketing.dz'
     ;
 
 }

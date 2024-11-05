@@ -67,7 +67,7 @@ const Login = ({setToken }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen justify-center items-start overflow-hidden relative">
+    <div className="flex flex-col h-screen justify-center items-center md:items-start overflow-hidden relative">
       <img
         className="absolute -right-32 -z-10 w-full h-full object-cover"
         src={DoctorSideImg}
@@ -75,7 +75,7 @@ const Login = ({setToken }) => {
       />
       <img className="absolute left-0 opacity-20 -z-10" src={WingsImg} alt="" />
 
-      <div className="h-[500px] flex flex-col justify-evenly ml-32">
+      <div className="h-[500px] flex flex-col justify-evenly md:ml-32">
         {isLoading ? (
           <div className="flex flex-col justify-evenly items-center min-w-[300px]">
             <ClipLoader
@@ -95,6 +95,7 @@ const Login = ({setToken }) => {
               icon={<MdOutlineEmail className="text-3xl ml-4" />}
               placeholder="E-mail"
               type="email"
+              text={email}
               onChange={(event) => {
                 setEmail(event.target.value);
               }}
@@ -112,7 +113,7 @@ const Login = ({setToken }) => {
               <Button text="Insciption" />
             </Link>
             <Button
-              icon={<MdOutlinePhoneAndroid className="text-3xl ml-4" />}
+              icon={<MdOutlinePhoneAndroid className="text-3xl" />}
               text="Télécharger APK"
               onClick={async () => {
                 const response = await apiInstance

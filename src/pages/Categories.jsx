@@ -18,6 +18,8 @@ const Categories = () => {
     initData();
   }, []);
   const initData = async () => {
+    
+    setIsLoading(true);
     if (categories.length === 0) {
       const response = await getCategories();
       if (response.status === 200) {
