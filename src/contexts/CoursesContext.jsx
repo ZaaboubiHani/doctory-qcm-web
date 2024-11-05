@@ -4,18 +4,29 @@ export const CoursesContext = createContext();
 const apiInstance = Api.instance;
 const CoursesProvider = ({ children }) => {
   const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState();
 
   const getCourses = async (category) => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance.getAxios().get(`/courses?module=${category}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await apiInstance
+      .getAxios()
+      .get(`/courses?module=${category}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     return response;
   };
   return (
-    <CoursesContext.Provider value={{ getCourses, setCourses ,courses }}>
+    <CoursesContext.Provider
+      value={{
+        getCourses,
+        setCourses,
+        courses,
+        selectedCourse,
+        setSelectedCourse,
+      }}
+    >
       {children}
     </CoursesContext.Provider>
   );
