@@ -34,9 +34,10 @@ const Categories = () => {
   };
 
   return (
-    <div className="flex flex-row h-screen justify-evenly items-center overflow-hidden relative">
+    <div className="flex-grow-1 flex flex-row flex-wrap h-full 
+    justify-evenly items-center overflow-auto relative py-4">
       <img
-        className="absolute w-full -z-10 opacity-50 h-full object-cover"
+        className="fixed w-full h-full -z-10 opacity-50 object-cover"
         src={BgImg}
         alt=""
       />
@@ -59,11 +60,11 @@ const Categories = () => {
                 navigate(`/modules/${e.category._id}`)
               }}
               className="w-80 h-96 bg-white rounded-xl cursor-pointer
-         shadow-lg p-4 flex flex-col justify-center items-start "
+         shadow-lg p-4 flex flex-col justify-center items-start m-2"
             >
               <div className="w-full flex justify-center">
                 <img
-                  className=" h-[230px] rounded-xl hover:h-[240px] transition-all duration-300"
+                  className="h-[230px] rounded-xl hover:h-[240px] transition-all duration-300"
                   src={CategoryImgs[index]}
                   alt=""
                 />

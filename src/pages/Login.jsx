@@ -14,13 +14,58 @@ import { useNavigate } from "react-router-dom";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import Api from "../api/api.source";
 const apiInstance = Api.instance;
-const Login = () => {
+const Login = ({setToken }) => {
   const navigate = useNavigate();
   const { login, setCurrentUser, getMe } = useContext(AuthContext);
   const { showSnackbar } = useContext(SnackbarContext);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    handleAutoLogin();
+  }, []);
+
+  const handleAutoLogin = async () => {
+    
+    const token = localStorage.getItem("token");
+    if (token) {
+      const userRes = await getMe(token);
+      setCurrentUser(userRes.data);
+      navigate("/categories");
+    }
+    setIsLoading(false)
+  };
+
+  const handleLoginClick = async () => {
+    setIsLoading(true);
+    try {
+      const response = await login({
+        email: email,
+        password: password,
+      });
+      if (response.status === 200) {
+        showSnackbar(response.data.message, 3000);
+        localStorage.setItem("token", response.data.token);
+        setToken(response.data.token); // updates the token state in App
+        const userRes = await getMe(response.data.token);
+        setCurrentUser(userRes.data);
+        navigate("/categories");
+      } else {
+        localStorage.clear();
+        showSnackbar("échec de l'inscription", 5000, SnackbarType.ERROR);
+      }
+    } catch (error) {
+      localStorage.clear();
+      if (error.response?.status !== 500) {
+        showSnackbar(error.response?.data.message, 5000, SnackbarType.ERROR);
+      } else {
+        showSnackbar("échec de l'inscription", 5000, SnackbarType.ERROR);
+      }
+    }
+    setIsLoading(false);
+  };
+
   return (
     <div className="flex flex-col h-screen justify-center items-start overflow-hidden relative">
       <img
@@ -61,46 +106,7 @@ const Login = () => {
             />
             <Button
               text="Se connecter"
-              onClick={async () => {
-                setIsLoading(true);
-                try {
-                  const response = await login({
-                    email: email,
-                    password: password,
-                  });
-                  if (response.status === 200) {
-                    showSnackbar(response.data.message, 3000);
-                    localStorage.setItem("token", response.data.token);
-                    const userRes = await getMe(response.data.token);
-                    console.log(userRes.data);
-                    setCurrentUser(userRes.data);
-                    navigate("/categories");
-                  } else {
-                    localStorage.clear();
-                    showSnackbar(
-                      "échec de l'inscription",
-                      5000,
-                      SnackbarType.ERROR
-                    );
-                  }
-                } catch (error) {
-                  localStorage.clear();
-                  if (error.response.status !== 500) {
-                    showSnackbar(
-                      error.response.data.message,
-                      5000,
-                      SnackbarType.ERROR
-                    );
-                  } else {
-                    showSnackbar(
-                      "échec de l'inscription",
-                      5000,
-                      SnackbarType.ERROR
-                    );
-                  }
-                }
-                setIsLoading(false);
-              }}
+              onClick={handleLoginClick}
             />
             <Link to="/signup">
               <Button text="Insciption" />
@@ -109,23 +115,21 @@ const Login = () => {
               icon={<MdOutlinePhoneAndroid className="text-3xl ml-4" />}
               text="Télécharger APK"
               onClick={async () => {
-               
-                  const response = await apiInstance
-                    .getAxios()
-                    .get(`/downloads`, {
-                      responseType: "blob",
-                    });
+                const response = await apiInstance
+                  .getAxios()
+                  .get(`/downloads`, {
+                    responseType: "blob",
+                  });
 
-                  const url = window.URL.createObjectURL(
-                    new Blob([response.data])
-                  );
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.setAttribute("download", "dctory_qcm_1.2.5.apk");
-                  document.body.appendChild(link);
-                  link.click();
-                  link.remove();
-                
+                const url = window.URL.createObjectURL(
+                  new Blob([response.data])
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "dctory_qcm_1.2.5.apk");
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
               }}
             />
           </>
