@@ -16,6 +16,7 @@ import Questions from "./pages/Questions";
 import Quiz from "./pages/Quiz";
 import ErrorPage from "./pages/Error-Page";
 import Sidebar from "./components/Sidebar";
+import Profile from "./pages/Profile";
 
 
 function AppContent({ setToken }) {
@@ -29,6 +30,7 @@ function AppContent({ setToken }) {
         <Route path="/courses/:id" element={<Courses />} />
         <Route path="/questions/:id" element={<Questions />} />
         <Route path="/quiz/:index" element={<Quiz />} />
+        <Route path="/profile" element={<Profile setToken={setToken}/>} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>

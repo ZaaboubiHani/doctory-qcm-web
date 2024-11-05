@@ -21,13 +21,13 @@ const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [isLoading, setIsLoading] = useState(false);
   return (
-    <div className="flex flex-col h-screen justify-center items-start overflow-hidden relative">
+    <div className="flex flex-col h-screen justify-center items-center md:items-start overflow-hidden relative">
       <img
         className="absolute -z-10 w-full h-full object-cover"
         src={ToolsImg}
         alt=""
       />
-      <div className="h-[400px] flex flex-col justify-evenly items-stretch ml-32">
+      <div className="h-[400px] flex flex-col justify-evenly items-stretch md:ml-32">
         {isLoading ? (
           <div className="flex flex-col justify-evenly items-center min-w-[300px]">
             <ClipLoader
@@ -44,6 +44,7 @@ const Signup = () => {
               icon={<FaRegUser className="text-3xl ml-4" />}
               placeholder="Nom d'utilisateur"
               type="text"
+              text={name}
               onChange={(event) => {
                 setName(event.target.value);
               }}
@@ -52,6 +53,7 @@ const Signup = () => {
               icon={<MdOutlinePhone className="text-3xl ml-4" />}
               placeholder="Numéro de téléphone"
               type="phone"
+              text={phoneNumber}
               onChange={(event) => {
                 setPhoneNumber(event.target.value);
               }}
@@ -60,6 +62,7 @@ const Signup = () => {
               icon={<MdOutlineEmail className="text-3xl ml-4" />}
               placeholder="E-mail"
               type="email"
+              text={email}
               onChange={(event) => {
                 setEmail(event.target.value);
               }}
