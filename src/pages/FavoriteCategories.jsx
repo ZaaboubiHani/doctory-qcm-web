@@ -3,16 +3,16 @@ import BgImg from "../assets/bg-1.jpg";
 import CategoryImg1 from "../assets/category1.jpg";
 import CategoryImg2 from "../assets/category2.jpg";
 import CategoryImg3 from "../assets/category3.jpg";
-import { CategoriesContext } from "../contexts/CategoriesContext";
+import { FavoritesContext } from "../contexts/FavoritesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import { useNavigate } from "react-router-dom";
 const CategoryImgs = [CategoryImg1, CategoryImg2, CategoryImg3];
-const Categories = () => {
+const FavoriteCategories = () => {
   const navigate = useNavigate();
   const { showSnackbar } = useContext(SnackbarContext);
-  const { getCategories, setCategories, categories } =
-    useContext(CategoriesContext);
+  const { getFavoriteCategories, setCategories, categories } =
+    useContext(FavoritesContext);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     initData();
@@ -21,7 +21,7 @@ const Categories = () => {
     
     setIsLoading(true);
     if (categories.length === 0) {
-      const response = await getCategories();
+      const response = await getFavoriteCategories();
       if (response.status === 200) {
         setCategories(response.data);
       } else {
@@ -59,7 +59,7 @@ const Categories = () => {
             <div
               key={e.category._id}
               onClick={()=>{
-                navigate(`/modules/${e.category._id}`)
+                navigate(`/favorites-modules/${e.category._id}`)
               }}
               className="w-80 h-96 bg-white rounded-xl cursor-pointer
          shadow-lg p-4 flex flex-col justify-center items-start m-2"
@@ -83,4 +83,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default FavoriteCategories;

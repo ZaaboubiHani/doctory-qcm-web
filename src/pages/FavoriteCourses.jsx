@@ -3,27 +3,24 @@ import { useParams } from "react-router-dom";
 import BgImg from "../assets/bg-1.jpg";
 import moduleImg from "../assets/cube-3d.png";
 import courseImg from "../assets/des-documents.png";
-import { CoursesContext } from "../contexts/CoursesContext";
-import { ModulesContext } from "../contexts/ModulesContext";
+import { FavoritesContext } from "../contexts/FavoritesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
-import { ExamContext } from "../contexts/ExamContext";
 import { useNavigate } from "react-router-dom";
-const Courses = () => {
+const FavoriteCourses = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { showSnackbar } = useContext(SnackbarContext);
-  const { getCourses, setCourses, courses, selectedCourse, setSelectedCourse } =
-    useContext(CoursesContext);
-  const { getGeneratedModuleExam, setExamQuestions } = useContext(ExamContext);
+  const { getFavoriteCourses, setCourses, courses, setSelectedCourse } =
+    useContext(FavoritesContext);
   const { modules, selectedModule, setSelectedModule } =
-    useContext(ModulesContext);
+    useContext(FavoritesContext);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     initData();
   }, []);
   const initData = async () => {
-    const response = await getCourses(id);
+    const response = await getFavoriteCourses(id);
     if (response.status === 200) {
       const sortedCourses = response.data.sort((a, b) =>
         a.name.localeCompare(b.name)
@@ -40,7 +37,7 @@ const Courses = () => {
     setIsLoading(false);
   };
   const getData = async (moduleId) => {
-    const response = await getCourses(moduleId);
+    const response = await getFavoriteCourses(moduleId);
     if (response.status === 200) {
       const sortedCourses = response.data.sort((a, b) =>
         a.name.localeCompare(b.name)
@@ -56,6 +53,7 @@ const Courses = () => {
 
     setIsLoading(false);
   };
+  
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
@@ -78,7 +76,7 @@ const Courses = () => {
                 key={e._id}
                 onClick={() => {
                   setIsLoading(true);
-                  navigate(`/courses/${e._id}`);
+                  navigate(`/favorites-courses/${e._id}`);
                   setSelectedModule(e._id);
                   getData(e._id);
                 }}
@@ -98,19 +96,9 @@ const Courses = () => {
         <div className="w-full md:w-1/2 lg:w-1/3 h-full flex flex-col  ">
           <div
             className="min-h-20 shadow-lg flex-shrink bg-teal-500 
-          text-xl font-black flex justify-center items-center px-8"
+          text-xl font-black flex justify-center items-center"
           >
             Cours
-            <div className="w-full"></div>
-            <div
-              className="text-sm bg-white w-min p-2 rounded-md shadow-lg cursor-pointer"
-              onClick={async () => {
-               
-                navigate(`/exam/${selectedModule}`);
-              }}
-            >
-              examen suggéré
-            </div>
           </div>
           <div className="flex-grow-1 overflow-y-auto flex-1">
             {isLoading ? (
@@ -127,7 +115,7 @@ const Courses = () => {
               courses.map((e, index) => (
                 <div
                   onClick={() => {
-                    navigate(`/questions/${e._id}`);
+                    navigate(`/favorites-questions/${e._id}`);
                     setSelectedCourse(e._id);
                   }}
                   key={e._id}
@@ -158,4 +146,4 @@ const Courses = () => {
   );
 };
 
-export default Courses;
+export default FavoriteCourses;

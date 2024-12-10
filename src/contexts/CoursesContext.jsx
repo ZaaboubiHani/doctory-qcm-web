@@ -6,11 +6,11 @@ const CoursesProvider = ({ children }) => {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState();
 
-  const getCourses = async (category) => {
+  const getCourses = async (module) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance
       .getAxios()
-      .get(`/courses?module=${category}`, {
+      .get(`/courses?module=${module}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
