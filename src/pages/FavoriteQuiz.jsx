@@ -24,7 +24,7 @@ import { NotesContext } from "../contexts/NotesContext";
 import ReportDialog from "../components/Report-Dialog";
 import { ReportsContext } from "../contexts/ReportsContext";
 
-const Quiz = () => {
+const FavoriteQuiz = () => {
   const navigate = useNavigate();
   const { index } = useParams();
   const { showSnackbar } = useContext(SnackbarContext);
@@ -38,9 +38,9 @@ const Quiz = () => {
     setAnswers,
     deleteAnswer,
     createAnswer,
-  } = useContext(QuestionsContext);
-  const { modules, selectedModule } = useContext(ModulesContext);
-  const { courses, selectedCourse } = useContext(CoursesContext);
+  } = useContext(FavoritesContext);
+  const { modules, selectedModule } = useContext(FavoritesContext);
+  const { courses, selectedCourse } = useContext(FavoritesContext);
   const { onCreateQuestionNote, onUpdateQuestionNote, onRemoveQuestionNote } =
     useContext(NotesContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,8 +56,9 @@ const Quiz = () => {
   }, []);
 
   const initData = async () => {
+    
     setPageIndex(parseInt(index));
-    setCheckedBoxes(questions[index].choices.map((e) => false));
+    setCheckedBoxes(questions[index].question.choices.map((e) => false));
     setIsLoading(false);
   };
 
@@ -100,11 +101,11 @@ const Quiz = () => {
                     }}
                   />
                 )}
-                {questions[pageIndex].isFavourite ? (
+                {!questions[pageIndex].question.isFavourite ? (
                   <FaHeart
                     onClick={() => {
-                      onRemoveFavoriteQuestion(questions[pageIndex]._id);
-                      questions[pageIndex].isFavourite = false;
+                      onRemoveFavoriteQuestion(questions[pageIndex].question._id);
+                      questions[pageIndex].question.isFavourite = false;
                       setQuestions([...questions]);
                       showSnackbar(
                         "Retiré des favoris",
@@ -117,8 +118,8 @@ const Quiz = () => {
                 ) : (
                   <FaRegHeart
                     onClick={() => {
-                      onCreateFavoriteQuestion(questions[pageIndex]._id);
-                      questions[pageIndex].isFavourite = true;
+                      onCreateFavoriteQuestion(questions[pageIndex].question._id);
+                      questions[pageIndex].question.isFavourite = true;
                       setQuestions([...questions]);
                       showSnackbar(
                         "Ajouté aux favoris",
@@ -140,7 +141,7 @@ const Quiz = () => {
                   onClick={() => {
                     setEvaluated(false);
                     setCheckedBoxes(
-                      questions[pageIndex].choices.map((e) => false)
+                      questions[pageIndex].question.choices.map((e) => false)
                     );
                     showSnackbar("Actualiser", 1000, SnackbarType.SUCCESS);
                   }}
@@ -154,10 +155,10 @@ const Quiz = () => {
                 transition-all duration-300 text-left`}
               >
                 {pageIndex + 1}
-                {") " + questions[pageIndex].text}
+                {") " + questions[pageIndex].question.text}
               </div>
               <div>
-                {questions[pageIndex].choices.map((c, i) => (
+                {questions[pageIndex].question.choices.map((c, i) => (
                   <div className="flex items-center justify-start" key={i}>
                     <input
                       type="checkbox"
@@ -178,7 +179,7 @@ const Quiz = () => {
                       shadow-lg p-4 flex justify-start items-start m-4 
                       text-lg font-black ${
                         evaluated
-                          ? questions[pageIndex].correctAnswers.includes(
+                          ? questions[pageIndex].question.correctAnswers.includes(
                               c.letter
                             )
                             ? "border-2 border-green-500"
@@ -208,7 +209,7 @@ const Quiz = () => {
                 onClick={() => {
                   setPageIndex(pageIndex - 1);
                   setCheckedBoxes(
-                    questions[pageIndex - 1].choices.map((e) => false)
+                    questions[pageIndex - 1].question.choices.map((e) => false)
                   );
                   setEvaluated(false);
                 }}
@@ -221,18 +222,18 @@ const Quiz = () => {
                   text-lg font-black hover:text-xl lg:hover:text-2xl
                   transition-all duration-300 text-left`}
                 onClick={async () => {
-                  const selectedChoices = questions[pageIndex].choices
+                  const selectedChoices = questions[pageIndex].question.choices
                   .filter((e, i) => checkedBoxes[i])
                   .map((e) => e.letter);
                 
-                const correctChoices = questions[pageIndex].correctAnswers;
+                const correctChoices = questions[pageIndex].question.correctAnswers;
                 
                 const arraysEqual =
                   selectedChoices.length === correctChoices.length &&
                   selectedChoices.every((value, index) => value === correctChoices[index]);
                 
                 if (arraysEqual) {
-                  const response = await createAnswer(questions[pageIndex]._id);
+                  const response = await createAnswer(questions[pageIndex].question._id);
                   setAnswers([
                     ...answers,
                     {
@@ -242,11 +243,11 @@ const Quiz = () => {
                   ]);
                 } else {
                   const updatedAnswers = answers.filter(
-                    (a) => a.question._id !== questions[pageIndex]._id
+                    (a) => a.question._id !== questions[pageIndex].question._id
                   );
                 
                   const answerToDelete = answers.find(
-                    (a) => a.question._id === questions[pageIndex]._id
+                    (a) => a.question._id === questions[pageIndex].question._id
                   );
                 
                   if (answerToDelete) {
@@ -271,7 +272,7 @@ const Quiz = () => {
                 onClick={() => {
                   setPageIndex(pageIndex + 1);
                   setCheckedBoxes(
-                    questions[pageIndex + 1].choices.map((e) => false)
+                    questions[pageIndex + 1].question.choices.map((e) => false)
                   );
                   setEvaluated(false);
                 }}
@@ -304,7 +305,7 @@ const Quiz = () => {
                 onClick={() => {
                   setIsLoading(true);
                   setPageIndex(parseInt(index));
-                  setCheckedBoxes(questions[index].choices.map((e) => false));
+                  setCheckedBoxes(questions[index].question.choices.map((e) => false));
                   setIsLoading(false);
                   setEvaluated(false);
                 }}
@@ -313,7 +314,7 @@ const Quiz = () => {
                   {e.note ? (
                     <FaLightbulb className="text-yellow-500 mb-1" />
                   ) : null}
-                  {answers.map((a) => a.question._id).includes(e._id) ? (
+                  {answers.map((a) => a.question._id).includes(e.question._id) ? (
                     <FaCheckCircle className="text-green-500 " />
                   ) : null}
                 </div>
@@ -368,4 +369,4 @@ const Quiz = () => {
   );
 };
 
-export default Quiz;
+export default FavoriteQuiz;

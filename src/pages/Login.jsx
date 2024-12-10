@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import Api from "../api/api.source";
 const apiInstance = Api.instance;
-const Login = ({setToken }) => {
+const Login = ({ setToken }) => {
   const navigate = useNavigate();
   const { login, setCurrentUser, getMe } = useContext(AuthContext);
   const { showSnackbar } = useContext(SnackbarContext);
@@ -27,14 +27,20 @@ const Login = ({setToken }) => {
   }, []);
 
   const handleAutoLogin = async () => {
-    
-    const token = localStorage.getItem("token");
-    if (token) {
-      const userRes = await getMe(token);
-      setCurrentUser(userRes.data);
-      navigate("/categories");
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const userRes = await getMe(token);
+        setCurrentUser(userRes.data);
+        navigate("/categories");
+      }
+      setIsLoading(false);
+    } catch (error) {
+      localStorage.clear();
+      setToken(null);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false)
   };
 
   const handleLoginClick = async () => {
@@ -44,6 +50,7 @@ const Login = ({setToken }) => {
         email: email,
         password: password,
       });
+
       if (response.status === 200) {
         showSnackbar(response.data.message, 3000);
         localStorage.setItem("token", response.data.token);
@@ -96,8 +103,8 @@ const Login = ({setToken }) => {
               placeholder="E-mail"
               type="email"
               text={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
+              onChange={(value) => {
+                setEmail(value);
               }}
             />
             <PasswordField
@@ -105,10 +112,7 @@ const Login = ({setToken }) => {
                 setPassword(event.target.value);
               }}
             />
-            <Button
-              text="Se connecter"
-              onClick={handleLoginClick}
-            />
+            <Button text="Se connecter" onClick={handleLoginClick} />
             <Link to="/signup">
               <Button text="Insciption" />
             </Link>

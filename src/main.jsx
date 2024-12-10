@@ -11,23 +11,33 @@ import QuestionsProvider from "./contexts/QuestionsContext.jsx";
 import FavoritesProvider from "./contexts/FavoritesContext.jsx";
 import NotesProvider from "./contexts/NotesContext.jsx";
 import ReportsProvider from "./contexts/ReportsContext.jsx";
+import ExamProvider from "./contexts/ExamContext.jsx";
+import StatsProvider from "./contexts/StatsContext.jsx";
+import ResidencyProvider from "./contexts/ResidencyContext.jsx";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <CategoriesProvider>
     <ModulesProvider>
       <CoursesProvider>
         <QuestionsProvider>
           <FavoritesProvider>
-            <NotesProvider>
-              <ReportsProvider>
-                <SnackbarProvider>
-                  <AuthProvider>
-                    <React.StrictMode>
-                      <App />
-                    </React.StrictMode>
-                  </AuthProvider>
-                </SnackbarProvider>
-              </ReportsProvider>
-            </NotesProvider>
+            <ExamProvider>
+              <NotesProvider>
+                <ReportsProvider>
+                  <StatsProvider>
+                    <SnackbarProvider>
+                      <ResidencyProvider>
+                        <AuthProvider>
+                          <React.StrictMode>
+                            <App />
+                          </React.StrictMode>
+                        </AuthProvider>
+                      </ResidencyProvider>
+                    </SnackbarProvider>
+                  </StatsProvider>
+                </ReportsProvider>
+              </NotesProvider>
+            </ExamProvider>
           </FavoritesProvider>
         </QuestionsProvider>
       </CoursesProvider>

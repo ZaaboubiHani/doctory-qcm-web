@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-const TextField = ({ placeholder, className, type, icon, onChange, text }) => {
+const TextField = ({ placeholder, className, type, icon, onChange, defaultValue, readOnly }) => {
   const [isFocused, setFocused] = useState(false);
-  const [value, setValue] = useState(false);
-  useEffect(() => {
-    setValue(text ?? "");
-  }, [text]);
+  const [value, setValue] = useState(defaultValue || ""); // Initialize with defaultValue
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
+    onChange && onChange(e.target.value); // Notify parent component
+  };
+
   return (
     <div className={className}>
       <div
@@ -18,12 +21,13 @@ const TextField = ({ placeholder, className, type, icon, onChange, text }) => {
         <input
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          value={value}
+          value={value} // Use local value state
           placeholder={placeholder}
-          onChange={onChange}
+          onChange={handleChange}
           className="p-2 w-full flex items-center justify-between rounded-2xl text-xl  
                 focus:ring-0 outline-none border-transparent focus:border-[rgb(9,186,176)]"
           type={type}
+          readOnly={readOnly} // Set readOnly based on prop
         />
       </div>
     </div>
