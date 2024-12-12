@@ -23,6 +23,7 @@ import NoteDialog from "../components/Note-Dialog";
 import { NotesContext } from "../contexts/NotesContext";
 import ReportDialog from "../components/Report-Dialog";
 import { ReportsContext } from "../contexts/ReportsContext";
+import WingsImg from "../assets/wings.png";
 
 const Residency = () => {
   const navigate = useNavigate();
@@ -78,10 +79,10 @@ const Residency = () => {
     justify-evenly items-center overflow-auto relative "
     >
       <img
-        className="fixed w-full h-full -z-10 opacity-50 object-cover"
-        src={BgImg}
-        alt=""
-      />
+          className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+          src={WingsImg}
+          alt=""
+        />
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center">
           <ClipLoader
@@ -95,7 +96,7 @@ const Residency = () => {
       ) : (
         <div className="w-full h-full flex">
           <div
-            className={`w-full md:w-1/2 lg:w-1/3 h-full flex-col ${
+            className={`w-full md:w-1/2 lg:w-1/4 h-full flex-col ${
               selectedResidency && selectedQuestion
                 ? "hidden lg:flex"
                 : selectedResidency && !selectedQuestion
@@ -105,7 +106,7 @@ const Residency = () => {
           >
             <div
               className="min-h-20 flex-shrink shadow-lg bg-teal-500 
-                  text-xl font-black flex justify-center items-center"
+                  text-xl font-black flex justify-center items-center rounded-b-2xl"
             >
               Résidanat
             </div>
@@ -115,11 +116,11 @@ const Residency = () => {
                   key={e._id}
                   onClick={async () => {
                     setLoadingQuestions(true);
+                    setSelectedQuestion(undefined);
                     setSelectedResidency(e._id);
                     const response = await getResidencyQuestionsWithDetails(
                       e._id
                     );
-                    console.log(response);
                     setResidencyQuestions(response.data);
                     setLoadingQuestions(false);
                   }}
@@ -138,13 +139,13 @@ const Residency = () => {
           </div>
           <div className="border-l hidden md:block" />
           <div
-            className={`w-full md:w-1/2 lg:w-1/3 h-full  flex-col ${
+            className={`w-full md:w-1/2 lg:w-[31%] h-full  flex-col ${
               selectedResidency && !selectedQuestion ? "flex" : "hidden md:flex"
             }`}
           >
             <div
               className="min-h-20 shadow-lg flex-shrink bg-teal-500 
-                  text-xl font-black flex justify-center items-center px-8"
+                  text-xl font-black flex justify-center items-center px-8 rounded-b-2xl"
             >
               <FaArrowAltCircleLeft
                 className={`text-3xl min-h-8 mr-2 ${
@@ -155,7 +156,7 @@ const Residency = () => {
                     setSelectedQuestion(undefined);
                   } else {
                     setSelectedResidency(undefined);
-                    setResidencyQuestions(undefined);
+                    setResidencyQuestions([]);
                   }
                 }}
               ></FaArrowAltCircleLeft>
@@ -203,11 +204,11 @@ const Residency = () => {
           </div>
           <div className="border-l hidden lg:block" />
           <div
-            className={`w-full lg:w-1/3 h-full flex-col ${
+            className={`w-full lg:w-[44%] h-full flex-col ${
               selectedQuestion ? "flex md:w-1/2" : "hidden lg:flex"
             }`}
           >
-            <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center">
+            <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center rounded-b-2xl">
               <FaArrowAltCircleLeft
                 className="text-3xl min-h-8 mr-2 md:hidden"
                 onClick={() => {

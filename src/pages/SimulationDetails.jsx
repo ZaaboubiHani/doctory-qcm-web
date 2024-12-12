@@ -35,19 +35,17 @@ const SimulationDetails = () => {
     setIsLoading(true);
     const response = await getSingleRisidantStats(id);
     setSelectedSimulation(response.data);
-    console.log(response);
 
     setIsLoading(false);
   };
 
   return (
-    <div className="flex-grow-1 flex flex-row flex-wrap w-full  h-full justify-evenly items-center overflow-hidden relative ">
-      <img
-        className="absolute -right-32 -z-10 w-full h-full object-cover"
-        src={DoctorSideImg}
-        alt=""
-      />
-      <img className="absolute left-0 opacity-20 -z-10" src={WingsImg} alt="" />
+    <div className="flex-grow-1 flex flex-row flex-wrap w-full h-full justify-evenly items-center relative overflow-hidden ">
+     <img
+               className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+               src={WingsImg}
+               alt=""
+             />
       {isLoading ? (
         <div className="flex flex-col justify-center items-center">
           <ClipLoader
@@ -58,8 +56,8 @@ const SimulationDetails = () => {
           />
         </div>
       ) : (
-        <div className="w-full h-full flex items-center justify-center overflow-hidden ">
-          <div className={`h-full w-full md:w-1/2 overflow-scroll flex-col ${showQuestionDetails ? "hidden md:flex items-center justify-center" : "md:flex items-center justify-center"}
+        <div className="w-full h-full flex items-center justify-center ">
+          <div className={`h-full w-full md:w-1/2 flex-col overflow-y-scroll overflow-x-hidden cursor-pointer  ${showQuestionDetails ? "hidden md:flex items-center " : "md:flex items-center "}
             `}>
             {selectedSimulation.questions.map((question, index) => {
               // Check if the arrays match
@@ -73,9 +71,11 @@ const SimulationDetails = () => {
               return (
                 <div
                   key={question._id}
-                  className={`w-[350px] bg-white px-4 m-4 rounded-xl shadow-xl border-2 ${
+                  className={`w-[350px] ${
+                    question.question._id === selectedQuestion._id ? "bg-teal-100" : "bg-white"
+                } px-4 m-4 rounded-xl shadow-xl border-2 ${
                     isCorrect ? "border-green-500" : "border-red-500"
-                  }`}
+                  } transition-all duration-300 `}
                   onClick={() => {
                     setShowQuestionDetails(true);
                     setSelectedQuestion(question.question);
@@ -131,8 +131,7 @@ const SimulationDetails = () => {
                         transition-all duration-300 text-left`}
                      
                     >
-                      {c.letter}
-                      {") " + c.text}
+                      {c.text}
                     </div>
                   </div>
                 ))}

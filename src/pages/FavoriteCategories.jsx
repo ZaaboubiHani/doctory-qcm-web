@@ -6,6 +6,7 @@ import CategoryImg3 from "../assets/category3.jpg";
 import { FavoritesContext } from "../contexts/FavoritesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
+import WingsImg from "../assets/wings.png";
 import { useNavigate } from "react-router-dom";
 const CategoryImgs = [CategoryImg1, CategoryImg2, CategoryImg3];
 const FavoriteCategories = () => {
@@ -39,10 +40,10 @@ const FavoriteCategories = () => {
     <div className="flex-grow-1 flex flex-row flex-wrap h-full 
     justify-evenly items-center overflow-auto relative py-4">
       <img
-        className="fixed w-full h-full -z-10 opacity-50 object-cover"
-        src={BgImg}
-        alt=""
-      />
+          className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+          src={WingsImg}
+          alt=""
+        />
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center">
           <ClipLoader

@@ -38,21 +38,32 @@ function AppContent({ setToken }) {
   useEffect(() => {
     const checkToken = () => {
       const token = localStorage.getItem("token");
-      if (!token && location.pathname !== "/") {
+      
+      
+      if (
+        !token &&
+        location.pathname !== "/" &&
+        location.pathname !== "/signup"
+      ) {
         navigate("/");
       }
     };
-
+  
     checkToken();
-
+  
     // Optionally, set up a listener for storage changes (if token might be removed from another tab)
     const storageListener = () => {
-      if (!localStorage.getItem("token")) {
+  
+      if (
+        !localStorage.getItem("token") &&
+        location.pathname !== "/" &&
+        location.pathname !== "/signup"
+      ) {
         navigate("/");
       }
     };
     window.addEventListener("storage", storageListener);
-
+  
     // Clean up the event listener
     return () => {
       window.removeEventListener("storage", storageListener);

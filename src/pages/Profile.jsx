@@ -16,6 +16,7 @@ import { ExamContext } from "../contexts/ExamContext";
 import { IoStatsChartSharp } from "react-icons/io5";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import WingsImg from "../assets/wings.png";
 import Api from "../api/api.source";
 const apiInstance = Api.instance;
 
@@ -65,11 +66,11 @@ const Profile = ({ setToken }) => {
 
   return (
     <div className="flex-grow-1 flex flex-row flex-wrap h-full justify-evenly items-center overflow-auto relative ">
-      <img
-        className="fixed w-full h-full -z-10 opacity-50 object-cover"
-        src={BgImg}
-        alt=""
-      />
+     <img
+         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+         src={WingsImg}
+         alt=""
+       />
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center">
           <ClipLoader

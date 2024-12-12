@@ -23,6 +23,8 @@ import NoteDialog from "../components/Note-Dialog";
 import { NotesContext } from "../contexts/NotesContext";
 import ReportDialog from "../components/Report-Dialog";
 import { ReportsContext } from "../contexts/ReportsContext";
+import WingsImg from "../assets/wings.png";
+
 
 const Quiz = () => {
   const navigate = useNavigate();
@@ -52,6 +54,29 @@ const Quiz = () => {
   const [checkedBoxes, setCheckedBoxes] = useState([]);
 
   useEffect(() => {
+      const handleKeyDown = (event) => {
+        if (event.key === "Enter") {
+        } else if (event.key === "ArrowLeft") {
+          if (pageIndex > 0) {
+            setPageIndex(pageIndex - 1);
+          }
+        } else if (event.key === "ArrowRight") {
+          if (pageIndex < questions.length - 1) {
+            setPageIndex(pageIndex + 1);
+          }
+        }
+      };
+  
+      // Add event listener to the document
+      document.addEventListener("keydown", handleKeyDown);
+  
+      // Cleanup event listener on unmount
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    }, [pageIndex, questions.length]);
+
+  useEffect(() => {
     initData();
   }, []);
 
@@ -64,10 +89,10 @@ const Quiz = () => {
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
       <img
-        className="fixed w-full -z-10 opacity-50 h-full object-cover"
-        src={BgImg}
-        alt=""
-      />
+          className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+          src={WingsImg}
+          alt=""
+        />
       <div className="w-full flex ">
         {isLoading ? (
           <div className="flex flex-col justify-evenly items-center w-full h-full">
@@ -144,7 +169,7 @@ const Quiz = () => {
                     );
                     showSnackbar("Actualiser", 1000, SnackbarType.SUCCESS);
                   }}
-                  className="text-teal-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
+                  className="text-teal-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300 "
                 />
               </div>
               <div
@@ -174,7 +199,7 @@ const Quiz = () => {
                       checked={checkedBoxes[i]}
                     />
                     <div
-                      className={`max-w-96 bg-white rounded-xl cursor-pointer
+                      className={`max-w-96 w-full bg-white rounded-xl cursor-pointer
                       shadow-lg p-4 flex justify-start items-start m-4 
                       text-lg font-black ${
                         evaluated
@@ -183,7 +208,7 @@ const Quiz = () => {
                             )
                             ? "border-2 border-green-500"
                             : "border-2 border-red-500"
-                          : "border-2 border-black"
+                          : "border-0"
                       }
                         transition-all duration-300 text-left`}
                       onClick={() => {
@@ -192,8 +217,7 @@ const Quiz = () => {
                         setCheckedBoxes(checks);
                       }}
                     >
-                      {c.letter}
-                      {") " + c.text}
+                      {c.text}
                     </div>
                   </div>
                 ))}
@@ -283,7 +307,7 @@ const Quiz = () => {
         )}
         <div className="border-l hidden md:block" />
         <div className="md:w-1/2 lg:w-1/2 hidden md:flex h-full flex-col">
-          <div className="min-h-20 bg-teal-500 shadow-lg font-black flex flex-col justify-center items-start pl-8">
+          <div className="min-h-20 bg-teal-500 shadow-lg font-black flex flex-col justify-center items-start pl-8 rounded-b-2xl">
             <div>
               Module: {modules.filter((m) => m._id === selectedModule)[0]?.name}
             </div>

@@ -7,6 +7,8 @@ import { FavoritesContext } from "../contexts/FavoritesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import { useNavigate } from "react-router-dom";
+import WingsImg from "../assets/wings.png";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 const FavoriteCourses = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -57,16 +59,16 @@ const FavoriteCourses = () => {
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
-      <img
-        className="absolute w-full -z-10 opacity-50 h-full object-cover"
-        src={BgImg}
-        alt=""
-      />
+     <img
+         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+         src={WingsImg}
+         alt=""
+       />
       <div className="w-full h-full flex">
         <div className="w-1/3 md:w-1/2 lg:w-1/3 h-full flex-col hidden md:flex">
           <div
             className="min-h-20 flex-shrink shadow-lg bg-teal-500 
-          text-xl font-black flex justify-center items-center"
+          text-xl font-black flex justify-center items-center rounded-b-2xl"
           >
             Modules
           </div>
@@ -96,8 +98,14 @@ const FavoriteCourses = () => {
         <div className="w-full md:w-1/2 lg:w-1/3 h-full flex flex-col  ">
           <div
             className="min-h-20 shadow-lg flex-shrink bg-teal-500 
-          text-xl font-black flex justify-center items-center"
+          text-xl font-black flex justify-center items-center rounded-b-2xl"
           >
+              <FaArrowAltCircleLeft
+                            className={`text-3xl min-h-8 mr-2 flex lg:hidden`}
+                            onClick={() => {
+                              navigate(-1);
+                            }}
+                          ></FaArrowAltCircleLeft>
             Cours
           </div>
           <div className="flex-grow-1 overflow-y-auto flex-1">
@@ -132,7 +140,7 @@ const FavoriteCourses = () => {
         </div>
         <div className="border-l hidden lg:block" />
         <div className="w-1/3 h-full hidden lg:flex flex-col">
-          <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center">
+          <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center rounded-b-2xl">
             Questions
           </div>
           <div className="flex-grow-1 overflow-y-auto flex-1">

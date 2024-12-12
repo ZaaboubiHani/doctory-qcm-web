@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import WingsImg from "../assets/wings.png";
 
 const Stats = () => {
   const navigate = useNavigate();
@@ -52,10 +53,10 @@ const Stats = () => {
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
       <img
-        className="absolute w-full -z-10 opacity-50 h-full object-cover"
-        src={BgImg}
-        alt=""
-      />
+                className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+                src={WingsImg}
+                alt=""
+              />
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center w-full h-full">
           <ClipLoader
@@ -79,7 +80,7 @@ const Stats = () => {
           >
             <div
               className="min-h-20 flex-shrink shadow-lg bg-teal-500 
-              text-xl font-black flex justify-center items-center"
+              text-xl font-black flex justify-center items-center rounded-b-2xl"
             >
               Catégories
             </div>
@@ -90,6 +91,8 @@ const Stats = () => {
                   onClick={async () => {
                     setSelectedCategory(e._id);
                     setLoadingModulesStats(true);
+                    setCoursesStats(undefined);
+                    setSelectedModule(undefined);
                     const response = await getModulesStatsOfCategory(e._id);
                     setModulesStats(response.data);
                     setLoadingModulesStats(false);
@@ -105,7 +108,7 @@ const Stats = () => {
                   <div style={{ width: 50, height: 50 }}>
                     <CircularProgressbar
                       value={e.percentage}
-                      text={`${parseFloat(e.percentage.toFixed(2))}%`}
+                      text={`${parseFloat(e.percentage.toFixed())}%`}
                       styles={buildStyles({
                         textColor: "#09BAB0",
                         pathColor: "#09BAB0",
@@ -125,7 +128,7 @@ const Stats = () => {
           >
             <div
               className="min-h-20 shadow-lg flex-shrink bg-teal-500 
-              text-xl font-black flex justify-center items-center px-8"
+              text-xl font-black flex justify-center items-center px-8 rounded-b-2xl"
             >
               <FaArrowAltCircleLeft
                 className={`text-3xl min-h-8 mr-2 ${
@@ -177,7 +180,7 @@ const Stats = () => {
                     <div style={{ width: 50, height: 50 }}>
                       <CircularProgressbar
                         value={e.percentage}
-                        text={`${parseFloat(e.percentage.toFixed(2))}%`}
+                        text={`${parseFloat(e.percentage.toFixed())}%`}
                         styles={buildStyles({
                           textColor: "#09BAB0",
                           pathColor: "#09BAB0",
@@ -202,7 +205,7 @@ const Stats = () => {
               selectedModule ? "flex md:w-1/2" : "hidden lg:flex"
             }`}
           >
-            <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center">
+            <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center rounded-b-2xl">
               <FaArrowAltCircleLeft
                 className="text-3xl min-h-8 mr-2 md:hidden"
                 onClick={() => {
@@ -241,7 +244,7 @@ const Stats = () => {
                     <div style={{ width: 50, height: 50 }}>
                       <CircularProgressbar
                         value={e.percentage}
-                        text={`${parseFloat(e.percentage.toFixed(2))}%`}
+                        text={`${parseFloat(e.percentage.toFixed())}%`}
                         styles={buildStyles({
                           textColor: "#09BAB0",
                           pathColor: "#09BAB0",
