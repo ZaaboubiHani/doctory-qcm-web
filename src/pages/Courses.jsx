@@ -9,6 +9,8 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import { ExamContext } from "../contexts/ExamContext";
 import { useNavigate } from "react-router-dom";
+import WingsImg from "../assets/wings.png";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 const Courses = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -60,15 +62,15 @@ const Courses = () => {
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
       <img
-        className="absolute w-full -z-10 opacity-50 h-full object-cover"
-        src={BgImg}
+        className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+        src={WingsImg}
         alt=""
       />
       <div className="w-full h-full flex">
         <div className="w-1/3 md:w-1/2 lg:w-1/3 h-full flex-col hidden md:flex">
           <div
             className="min-h-20 flex-shrink shadow-lg bg-teal-500 
-          text-xl font-black flex justify-center items-center"
+          text-xl font-black flex justify-center items-center rounded-b-2xl"
           >
             Modules
           </div>
@@ -95,24 +97,20 @@ const Courses = () => {
           </div>
         </div>
         <div className="border-l hidden md:block" />
-        <div className="w-full md:w-1/2 lg:w-1/3 h-full flex flex-col  ">
+        <div className="w-full md:w-1/2 lg:w-1/3 h-full flex flex-col relative ">
           <div
             className="min-h-20 shadow-lg flex-shrink bg-teal-500 
-          text-xl font-black flex justify-center items-center px-8"
+          text-xl font-black flex justify-center items-center px-8 rounded-b-2xl"
           >
-            Cours
-            <div className="w-full"></div>
-            <div
-              className="text-sm bg-white w-min p-2 rounded-md shadow-lg cursor-pointer"
-              onClick={async () => {
-               
-                navigate(`/exam/${selectedModule}`);
+            <FaArrowAltCircleLeft
+              className={`text-3xl min-h-8 mr-2 flex lg:hidden`}
+              onClick={() => {
+                navigate(-1);
               }}
-            >
-              examen suggéré
-            </div>
+            ></FaArrowAltCircleLeft>
+            Cours
           </div>
-          <div className="flex-grow-1 overflow-y-auto flex-1">
+          <div className="flex-grow-1 overflow-y-auto flex-1 pb-16">
             {isLoading ? (
               <div className="flex flex-col justify-evenly items-center w-full h-full">
                 <ClipLoader
@@ -141,10 +139,18 @@ const Courses = () => {
               ))
             )}
           </div>
+          <div
+            className="text-sm bg-teal-500 w-min p-2 rounded-md shadow-lg cursor-pointer absolute whitespace-nowrap bottom-4 left-1/2 -translate-x-1/2 "
+            onClick={async () => {
+              navigate(`/exam/${selectedModule}`);
+            }}
+          >
+            Examen suggéré
+          </div>
         </div>
         <div className="border-l hidden lg:block" />
         <div className="w-1/3 h-full hidden lg:flex flex-col">
-          <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center">
+          <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center rounded-b-2xl">
             Questions
           </div>
           <div className="flex-grow-1 overflow-y-auto flex-1">

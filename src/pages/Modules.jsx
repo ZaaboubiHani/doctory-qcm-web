@@ -6,6 +6,8 @@ import { ModulesContext } from "../contexts/ModulesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import { useNavigate } from "react-router-dom";
+import WingsImg from "../assets/wings.png";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 const Modules = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -16,7 +18,7 @@ const Modules = () => {
   useEffect(() => {
     initData();
   }, []);
-  
+
   const initData = async () => {
     const response = await getModules(id);
     if (response.status === 200) {
@@ -35,8 +37,8 @@ const Modules = () => {
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
       <img
-        className="absolute w-full -z-10 opacity-50 h-full object-cover"
-        src={BgImg}
+        className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+        src={WingsImg}
         alt=""
       />
       {isLoading ? (
@@ -52,7 +54,13 @@ const Modules = () => {
       ) : (
         <div className="w-full h-full flex">
           <div className="w-full md:w-1/2 lg:w-1/3 h-full flex flex-col ">
-            <div className="min-h-20 shadow-lg bg-teal-500 text-xl font-black flex justify-center items-center">
+            <div className="min-h-20 shadow-lg bg-teal-500 text-xl font-black flex justify-center items-center rounded-b-2xl">
+              <FaArrowAltCircleLeft
+                className={`text-3xl min-h-8 mr-2 flex lg:hidden`}
+                onClick={() => {
+                  navigate(-1);
+                }}
+              ></FaArrowAltCircleLeft>
               Modules
             </div>
             <div className="flex-grow-1 overflow-y-auto">
@@ -75,7 +83,7 @@ const Modules = () => {
           </div>
           <div className="border-l hidden md:block" />
           <div className="w-1/3 md:w-1/2 lg:w-1/3 h-full flex-col hidden md:flex">
-            <div className="min-h-20 bg-teal-500 shadow-lg text-xl font-black flex justify-center items-center">
+            <div className="min-h-20 bg-teal-500 shadow-lg text-xl font-black flex justify-center items-center rounded-b-2xl">
               Cours
             </div>
             <div className="flex-grow-1 overflow-y-auto flex-1">
@@ -86,7 +94,7 @@ const Modules = () => {
           </div>
           <div className="border-l hidden lg:block" />
           <div className="w-1/3 h-full hidden lg:flex flex-col">
-            <div className="min-h-20 bg-teal-500 shadow-lg text-xl font-black flex justify-center items-center">
+            <div className="min-h-20 bg-teal-500 shadow-lg text-xl font-black flex justify-center items-center rounded-b-2xl">
               Questions
             </div>
             <div className="flex-grow-1 overflow-y-auto flex-1">
