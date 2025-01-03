@@ -16,7 +16,6 @@ const ExamQuiz = () => {
   const { id } = useParams();
   const { showSnackbar } = useContext(SnackbarContext);
 
-
   const { examQuestions, setExamQuestions, getGeneratedModuleExam } =
     useContext(ExamContext);
 
@@ -37,27 +36,73 @@ const ExamQuiz = () => {
   }, []);
 
   useEffect(() => {
-      const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-        } else if (event.key === "ArrowLeft") {
-          if (pageIndex > 0) {
-            setPageIndex(pageIndex - 1);
-          }
-        } else if (event.key === "ArrowRight") {
-          if (pageIndex < examQuestions.length - 1) {
-            setPageIndex(pageIndex + 1);
-          }
+    const handleKeyDown = (event) => {
+      const keyMap = {
+        0: ["a", "A", "1"],
+        1: ["b", "B", "2"],
+        2: ["c", "C", "3"],
+        3: ["d", "D", "4"],
+        4: ["e", "E", "5"],
+        5: ["f", "F", "6"],
+      };
+      if (event.key === "Enter") {
+        if (examQuestions[pageIndex].evaluated) {
+          examQuestions[pageIndex].evaluated = false;
+          setExamQuestions([...examQuestions]);
+        } else {
+          examQuestions[pageIndex].evaluated = true;
+          setExamQuestions([...examQuestions]);
         }
-      };
-  
-      // Add event listener to the document
-      document.addEventListener("keydown", handleKeyDown);
-  
-      // Cleanup event listener on unmount
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-      };
-    }, [pageIndex, examQuestions.length]);
+      } else if (event.key === "ArrowLeft") {
+        if (pageIndex > 0) {
+          setPageIndex(pageIndex - 1);
+        }
+      } else if (event.key === "ArrowRight") {
+        if (pageIndex < examQuestions.length - 1) {
+          setPageIndex(pageIndex + 1);
+        }
+      } else {
+        // Handle checkbox toggling
+        Object.entries(keyMap).forEach(([index, keys]) => {
+          if (keys.includes(event.key)) {
+            
+            if (!examQuestions[pageIndex].selectedChoices) {
+              examQuestions[pageIndex].selectedChoices = [];
+            }
+
+            if (
+              examQuestions[pageIndex].selectedChoices.includes(
+                examQuestions[pageIndex].choices[index].letter
+              )
+            ) {
+              // Remove c.letter if it exists
+              examQuestions[pageIndex].selectedChoices =
+                examQuestions[pageIndex].selectedChoices.filter(
+                  (choice) => choice !== examQuestions[pageIndex].choices[index].letter
+                );
+            } else {
+              // Add c.letter if it doesn't exist
+              examQuestions[pageIndex].selectedChoices = [
+                ...examQuestions[pageIndex].selectedChoices,
+                examQuestions[pageIndex].choices[index].letter,
+              ];
+            }
+
+            // Update the state with the modified array
+            setExamQuestions([...examQuestions]);
+          }
+        });
+      }
+    };
+
+    // Add event listener to the document
+    document.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup event listener on unmount
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [pageIndex, examQuestions.length,examQuestions]);
 
   useEffect(() => {
     initData();
@@ -80,10 +125,10 @@ const ExamQuiz = () => {
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
       <img
-                className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
-                src={WingsImg}
-                alt=""
-              />
+        className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+        src={WingsImg}
+        alt=""
+      />
       <div className="w-full flex ">
         {isLoading ? (
           <div className="flex flex-col justify-evenly items-center w-full h-full">
@@ -96,15 +141,15 @@ const ExamQuiz = () => {
             />
           </div>
         ) : (
-          <div className="w-full flex justify-center overflow-auto ">
-            <div className="w-full h-fit flex flex-col items-center pb-32 ">
+          <div className="w-full flex justify-center flex-col">
+            <div className="w-full h-full flex flex-col items-center overflow-auto  ">
               <div className="w-full flex justify-center mt-4">
                 <p className="text-lg font-bold">
                   Temps écoulé: {formatTime(timeElapsed)}
                 </p>
               </div>
               <div
-                className={`min-h-20 max-w-[600px] bg-white rounded-xl cursor-pointer
+                className={`h-fit max-w-[600px] bg-white rounded-xl cursor-pointer
                 shadow-lg p-4 flex justify-start items-center m-4 
                 text-lg font-black 
                 transition-all duration-300 text-left`}
@@ -154,8 +199,8 @@ const ExamQuiz = () => {
                     />
                     <div
                       className={`max-w-96 w-full bg-white rounded-xl cursor-pointer
-                      shadow-lg p-4 flex justify-start items-start m-4 
-                      text-lg font-black ${
+                      shadow-lg p-4 flex justify-start items-start m-2
+                      text-md ${
                         examQuestions[pageIndex].evaluated
                           ? examQuestions[pageIndex].correctAnswers.includes(
                               c.letter
@@ -198,7 +243,7 @@ const ExamQuiz = () => {
                 ))}
               </div>
             </div>
-            <div className="flex mt-8 fixed bottom-1">
+            <div className="flex bottom-1 bg-white w-full justify-evenly">
               <div
                 className={`h-20 bg-teal-500 rounded-xl cursor-pointer
                   shadow-lg p-4 justify-start items-center m-4 
@@ -206,7 +251,6 @@ const ExamQuiz = () => {
                   transition-all duration-300 text-left`}
                 onClick={() => {
                   setPageIndex(pageIndex - 1);
-                 
                 }}
               >
                 <BiSolidLeftArrow />
@@ -252,7 +296,29 @@ const ExamQuiz = () => {
             </div>
           </div>
         )}
-        
+        <div className="border-l hidden md:block" />
+        <div className="md:w-1/2 lg:w-1/2 hidden md:flex h-full flex-col">
+          <div className="flex-grow-1 overflow-y-auto flex flex-wrap justify-start items-start">
+            {examQuestions.map((e, index) => (
+              <div
+                key={e._id}
+                className={`w-16 h-16 ${
+                  index === pageIndex ? "bg-teal-200" : "bg-white"
+                } rounded-xl cursor-pointer
+                            shadow-lg p-4 flex flex-col justify-center items-center m-2
+                            border-2 border-teal-500  
+                            text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl 
+                            transition-all duration-300 text-center relative`}
+                onClick={() => {
+                  setPageIndex(parseInt(index));
+                }}
+              >
+                {index + 1}
+              </div>
+            ))}
+          </div>
+        </div>
+
         <YesNoDialog
           text="Êtes-vous sûr de vouloir soumettre le résultat?"
           isOpen={submitDialogIsOpen}
@@ -278,7 +344,7 @@ const ExamQuiz = () => {
             setResult(score);
             setResultDialogIsOpen(true);
           }}
-          onNo={()=>{}}
+          onNo={() => {}}
           onClose={() => {
             setSubmitDialogIsOpen(false);
           }}

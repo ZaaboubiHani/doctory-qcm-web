@@ -110,7 +110,7 @@ const Courses = () => {
             ></FaArrowAltCircleLeft>
             Cours
           </div>
-          <div className="flex-grow-1 overflow-y-auto flex-1 pb-16">
+          <div className="flex-grow-1 overflow-y-auto flex-1">
             {isLoading ? (
               <div className="flex flex-col justify-evenly items-center w-full h-full">
                 <ClipLoader
@@ -139,13 +139,16 @@ const Courses = () => {
               ))
             )}
           </div>
-          <div
-            className="text-sm bg-teal-500 w-min p-2 rounded-md shadow-lg cursor-pointer absolute whitespace-nowrap bottom-4 left-1/2 -translate-x-1/2 "
-            onClick={async () => {
-              navigate(`/exam/${selectedModule}`);
-            }}
-          >
-            Examen suggéré
+          <div className="w-full bg-white flex justify-center p-4">
+            <div
+              className="text-lg bg-teal-500 hover:bg-teal-400 w-min p-2 rounded-md 
+              transition-all duration-300 shadow-lg cursor-pointer whitespace-nowrap "
+              onClick={async () => {
+                navigate(`/exam/${selectedModule}`);
+              }}
+            >
+              Examen suggéré
+            </div>
           </div>
         </div>
         <div className="border-l hidden lg:block" />

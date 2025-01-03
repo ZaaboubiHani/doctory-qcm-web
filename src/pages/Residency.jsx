@@ -1,28 +1,15 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import BgImg from "../assets/bg-1.jpg";
-import { CategoriesContext } from "../contexts/CategoriesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import { ResidencyContext } from "../contexts/ResidencyContext";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
-import { QuestionsContext } from "../contexts/QuestionsContext";
-import { ModulesContext } from "../contexts/ModulesContext";
-import { CoursesContext } from "../contexts/CoursesContext";
-import { FavoritesContext } from "../contexts/FavoritesContext";
 import { BiSolidLeftArrow } from "react-icons/bi";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { FaLightbulb } from "react-icons/fa";
-import { FaCheckCircle } from "react-icons/fa";
-import { FaRegHeart } from "react-icons/fa";
-import { FaHeart } from "react-icons/fa";
 import { FaRegLightbulb } from "react-icons/fa";
-import { MdReportProblem } from "react-icons/md";
-import { TfiReload } from "react-icons/tfi";
 import NoteDialog from "../components/Note-Dialog";
 import { NotesContext } from "../contexts/NotesContext";
-import ReportDialog from "../components/Report-Dialog";
-import { ReportsContext } from "../contexts/ReportsContext";
 import WingsImg from "../assets/wings.png";
 
 const Residency = () => {
@@ -40,7 +27,7 @@ const Residency = () => {
     onCreateResidencyQuestionNote,
   } = useContext(ResidencyContext);
   const { onCreateQuestionNote, onUpdateQuestionNote, onRemoveQuestionNote } =
-  useContext(NotesContext);
+    useContext(NotesContext);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState();
@@ -48,6 +35,31 @@ const Residency = () => {
 
   const [selectedNote, setSelectedNote] = useState();
   const [openNoteDialog, setOpenNoteDialog] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft") {
+        if (pageIndex > 0) {
+          setSelectedQuestion(residencyQuestions[pageIndex - 1].question._id);
+          setPageIndex(pageIndex - 1);
+        }
+      } else if (event.key === "ArrowRight") {
+        if (pageIndex < residencyQuestions.length - 1) {
+          setSelectedQuestion(residencyQuestions[pageIndex + 1].question._id);
+          setPageIndex(pageIndex + 1);
+        }
+      }
+    };
+
+    // Add event listener to the document
+    document.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup event listener on unmount
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [pageIndex, residencyQuestions.length]);
+
   useEffect(() => {
     initData();
   }, []);
@@ -76,13 +88,13 @@ const Residency = () => {
   return (
     <div
       className="flex-grow-1 flex flex-row flex-wrap h-full 
-    justify-evenly items-center overflow-auto relative "
+    justify-evenly items-center overflow-hidden relative "
     >
       <img
-          className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
-          src={WingsImg}
-          alt=""
-        />
+        className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+        src={WingsImg}
+        alt=""
+      />
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center">
           <ClipLoader
@@ -177,12 +189,13 @@ const Residency = () => {
                 residencyQuestions?.map((e, index) => (
                   <div
                     key={e.question._id}
-                    className={`w-20 h-20 ${
+                    className={`w-16 h-16 ${
                       e.question._id === selectedQuestion
-                        ? "bg-teal-100"
+                        ? "bg-teal-200"
                         : "bg-white"
                     } rounded-xl cursor-pointer
-               shadow-lg p-4 flex flex-col justify-center items-center m-4 
+               shadow-lg p-4 flex flex-col justify-center items-center m-2
+               border-2 border-teal-500  
                text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl 
                transition-all duration-300 text-center relative`}
                     onClick={() => {
@@ -190,6 +203,11 @@ const Residency = () => {
                       setPageIndex(index);
                     }}
                   >
+                    <div className="absolute top-1 right-1">
+                      {e.note ? (
+                        <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
+                      ) : null}
+                    </div>
                     {index + 1}
                   </div>
                 ))
@@ -204,7 +222,7 @@ const Residency = () => {
           </div>
           <div className="border-l hidden lg:block" />
           <div
-            className={`w-full lg:w-[44%] h-full flex-col ${
+            className={`w-full lg:w-[44%] h-full flex flex-col ${
               selectedQuestion ? "flex md:w-1/2" : "hidden lg:flex"
             }`}
           >
@@ -214,14 +232,18 @@ const Residency = () => {
                 onClick={() => {
                   setSelectedQuestion(undefined);
                 }}
-              ></FaArrowAltCircleLeft>
+              />
               Details
             </div>
-            <div className="flex-grow-1 overflow-y-auto flex-1">
+            <div className="flex-grow h-full flex flex-col overflow-y-auto">
               {selectedQuestion ? (
-                <div className="w-full  flex justify-center overflow-auto ">
-                  <div className="w-full h-fit flex flex-col items-center pb-32 ">
-                    <div className="flex w-[300px] h-16 mt-4 justify-evenly items-center">
+                <div className="w-full flex flex-col h-full">
+                  <div className="w-full h-full flex flex-col items-center overflow-y-auto">
+                    <div className="flex items-center">
+                      <div className="h-fit max-w-[600px] bg-white rounded-xl cursor-pointer shadow-lg p-4 flex justify-start items-center m-4 text-lg font-black transition-all duration-300 text-left">
+                        {pageIndex + 1}
+                        {") " + residencyQuestions[pageIndex].question.text}
+                      </div>
                       {residencyQuestions[pageIndex]?.note ? (
                         <FaLightbulb
                           className="text-yellow-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
@@ -240,47 +262,33 @@ const Residency = () => {
                         />
                       )}
                     </div>
-                    <div
-                      className={`min-h-20 max-w-[600px] bg-white rounded-xl cursor-pointer
-                shadow-lg p-4 flex justify-start items-center m-4 
-                text-lg font-black 
-                transition-all duration-300 text-left`}
-                    >
-                      {pageIndex + 1}
-                      {") " + residencyQuestions[pageIndex].question.text}
-                    </div>
-                    <div>
+                    <div className="w-full">
                       {residencyQuestions[pageIndex].question.choices.map(
                         (c, i) => (
                           <div
-                            className="flex items-center justify-start"
+                            className="flex items-center justify-center"
                             key={i}
                           >
                             <div
-                              className={`max-w-96 bg-white rounded-xl cursor-pointer
-                      shadow-lg p-4 flex justify-start items-start m-4 
-                      text-lg font-black border-2 border-black"
-                        transition-all duration-300 text-left`}
+                              className="max-w-96 w-full bg-white rounded-xl cursor-pointer shadow-lg p-4 m-2 text-md transition-all duration-300 text-left"
                               onClick={() => {}}
                             >
-                              {c.letter}
-                              {") " + c.text}
+                              {c.text}
                             </div>
                           </div>
                         )
                       )}
                     </div>
                   </div>
-                  <div className="flex mt-8 fixed bottom-1">
+                  <div className="flex bottom-1 bg-white w-full justify-evenly">
                     <div
-                      className={`h-20 bg-teal-500 rounded-xl cursor-pointer
-                  shadow-lg p-4 justify-start items-center m-4 
-                  text-lg font-black ${pageIndex > 0 ? "flex" : "hidden"}
-                  transition-all duration-300 text-left`}
+                      className={`h-20 bg-teal-500 rounded-xl cursor-pointer shadow-lg p-4 justify-start items-center m-4 text-lg font-black ${
+                        pageIndex > 0 ? "flex" : "hidden"
+                      } transition-all duration-300 text-left`}
                       onClick={() => {
                         setSelectedQuestion(
-                            residencyQuestions[pageIndex - 1].question._id
-                          );
+                          residencyQuestions[pageIndex - 1].question._id
+                        );
                         setPageIndex(pageIndex - 1);
                       }}
                     >
@@ -288,14 +296,11 @@ const Residency = () => {
                     </div>
 
                     <div
-                      className={`h-20 bg-teal-500 rounded-xl cursor-pointer
-                  shadow-lg p-4 justify-start items-center m-4 
-                  text-lg font-black ${
-                    pageIndex < residencyQuestions.length - 1
-                      ? "flex"
-                      : "hidden"
-                  }
-                transition-all duration-300 text-left`}
+                      className={`h-20 bg-teal-500 rounded-xl cursor-pointer shadow-lg p-4 justify-start items-center m-4 text-lg font-black ${
+                        pageIndex < residencyQuestions.length - 1
+                          ? "flex"
+                          : "hidden"
+                      } transition-all duration-300 text-left`}
                       onClick={() => {
                         setSelectedQuestion(
                           residencyQuestions[pageIndex + 1].question._id
@@ -308,10 +313,8 @@ const Residency = () => {
                   </div>
                 </div>
               ) : (
-                <div className="flex-grow-1 overflow-y-auto flex-1 h-full">
-                  <div className="h-full flex justify-center items-center">
-                    aucune question sélectionnée
-                  </div>
+                <div className="flex-grow overflow-y-auto flex justify-center items-center">
+                  aucune question sélectionnée
                 </div>
               )}
             </div>

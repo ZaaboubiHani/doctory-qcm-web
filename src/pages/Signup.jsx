@@ -45,8 +45,8 @@ const Signup = () => {
               placeholder="Nom d'utilisateur"
               type="text"
               text={name}
-              onChange={(event) => {
-                setName(event.target.value);
+              onChange={(value) => {
+                setName(value);
               }}
             />
             <TextField
@@ -54,8 +54,8 @@ const Signup = () => {
               placeholder="Numéro de téléphone"
               type="phone"
               text={phoneNumber}
-              onChange={(event) => {
-                setPhoneNumber(event.target.value);
+              onChange={(value) => {
+                setPhoneNumber(value);
               }}
             />
             <TextField
@@ -63,8 +63,8 @@ const Signup = () => {
               placeholder="E-mail"
               type="email"
               text={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
+              onChange={(value) => {
+                setEmail(value);
               }}
             />
             <PasswordField

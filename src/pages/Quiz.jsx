@@ -25,7 +25,6 @@ import ReportDialog from "../components/Report-Dialog";
 import { ReportsContext } from "../contexts/ReportsContext";
 import WingsImg from "../assets/wings.png";
 
-
 const Quiz = () => {
   const navigate = useNavigate();
   const { index } = useParams();
@@ -54,27 +53,64 @@ const Quiz = () => {
   const [checkedBoxes, setCheckedBoxes] = useState([]);
 
   useEffect(() => {
-      const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-        } else if (event.key === "ArrowLeft") {
-          if (pageIndex > 0) {
-            setPageIndex(pageIndex - 1);
-          }
-        } else if (event.key === "ArrowRight") {
-          if (pageIndex < questions.length - 1) {
-            setPageIndex(pageIndex + 1);
-          }
+    const handleKeyDown = (event) => {
+      const keyMap = {
+        0: ["a", "A", "1"],
+        1: ["b", "B", "2"],
+        2: ["c", "C", "3"],
+        3: ["d", "D", "4"],
+        4: ["e", "E", "5"],
+        5: ["f", "F", "6"],
+      };
+
+      if (event.key === "Enter") {
+        if (evaluated) {
+          setEvaluated(false);
+          setCheckedBoxes(
+            questions[pageIndex]?.choices?.map(() => false) ??
+              questions[pageIndex].question.choices.map(() => false)
+          );
+        } else {
+          handleEvaluation();
         }
-      };
-  
-      // Add event listener to the document
-      document.addEventListener("keydown", handleKeyDown);
-  
-      // Cleanup event listener on unmount
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-      };
-    }, [pageIndex, questions.length]);
+      } else if (event.key === "ArrowLeft") {
+        if (pageIndex > 0) {
+          setPageIndex(pageIndex - 1);
+          setCheckedBoxes(
+            questions[pageIndex - 1]?.choices?.map((e) => false) ??
+              questions[pageIndex - 1].question.choices.map((e) => false)
+          );
+          setEvaluated(false);
+        }
+      } else if (event.key === "ArrowRight") {
+        if (pageIndex < questions.length - 1) {
+          setPageIndex(pageIndex + 1);
+          setCheckedBoxes(
+            questions[pageIndex + 1]?.choices?.map((e) => false) ??
+              questions[pageIndex + 1].question.choices.map((e) => false)
+          );
+          setEvaluated(false);
+        }
+      } else {
+        // Handle checkbox toggling
+        Object.entries(keyMap).forEach(([index, keys]) => {
+          if (keys.includes(event.key) && index < checkedBoxes.length) {
+            const checks = [...checkedBoxes];
+            checks[index] = !checks[index];
+            setCheckedBoxes(checks);
+          }
+        });
+      }
+    };
+
+    // Add event listener to the document
+    document.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup event listener on unmount
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [pageIndex, questions.length, evaluated, checkedBoxes]);
 
   useEffect(() => {
     initData();
@@ -82,17 +118,106 @@ const Quiz = () => {
 
   const initData = async () => {
     setPageIndex(parseInt(index));
-    setCheckedBoxes(questions[index].choices.map((e) => false));
+    setCheckedBoxes(
+      questions[index]?.choices?.map((e) => false) ||
+        questions[index].question.choices.map((e) => false)
+    );
     setIsLoading(false);
   };
 
+  const handleEvaluation = async () => {
+    const selectedChoices = (
+      questions[pageIndex].choices ?? questions[pageIndex].question.choices
+    )
+      .filter((e, i) => checkedBoxes[i])
+      .map((e) => e.letter);
+
+    const correctChoices =
+      questions[pageIndex].correctAnswers ??
+      questions[pageIndex].question.correctAnswers;
+
+    const arraysEqual =
+      selectedChoices.length === correctChoices.length &&
+      selectedChoices.every((value, index) => value === correctChoices[index]);
+
+    if (arraysEqual) {
+      const response = await createAnswer(
+        questions[pageIndex]._id ?? questions[pageIndex].question._id
+      );
+      setAnswers([
+        ...answers,
+        {
+          _id: response.data._id,
+          question: { _id: response.data.question },
+        },
+      ]);
+    } else {
+      const updatedAnswers = answers.filter(
+        (a) =>
+          a.question._id !== questions[pageIndex]._id &&
+          a.question._id !== questions[pageIndex].question._id
+      );
+
+      const answerToDelete = answers.find(
+        (a) =>
+          a.question._id === questions[pageIndex]._id ||
+          a.question._id === questions[pageIndex].question._id
+      );
+
+      if (answerToDelete) {
+        await deleteAnswer(answerToDelete._id);
+        setAnswers(updatedAnswers);
+      }
+    }
+
+    setEvaluated(true);
+  };
+
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current - touchEndX.current > 50) {
+      if (pageIndex < questions.length - 1) {
+        setPageIndex(pageIndex + 1);
+        setCheckedBoxes(
+          questions[pageIndex + 1]?.choices?.map((e) => false) ??
+            questions[pageIndex + 1].question.choices.map((e) => false)
+        );
+        setEvaluated(false);
+      }
+    } else if (touchEndX.current - touchStartX.current > 50) {
+      if (pageIndex > 0) {
+        setPageIndex(pageIndex - 1);
+        setCheckedBoxes(
+          questions[pageIndex - 1]?.choices?.map((e) => false) ??
+            questions[pageIndex - 1].question.choices.map((e) => false)
+        );
+        setEvaluated(false);
+      }
+    }
+  };
+
   return (
-    <div className="flex flex-row h-full overflow-hidden relative">
+    <div
+      className="flex flex-row h-full overflow-hidden relative"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <img
-          className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
-          src={WingsImg}
-          alt=""
-        />
+        className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+        src={WingsImg}
+        alt=""
+      />
       <div className="w-full flex ">
         {isLoading ? (
           <div className="flex flex-col justify-evenly items-center w-full h-full">
@@ -105,8 +230,8 @@ const Quiz = () => {
             />
           </div>
         ) : (
-          <div className="w-full md:w-1/2 flex justify-center overflow-auto ">
-            <div className="w-full h-fit flex flex-col items-center pb-32 ">
+          <div className="w-full md:w-1/2 flex justify-center flex-col">
+            <div className="w-full h-full flex flex-col items-center overflow-auto">
               <div className="flex w-[300px] h-16 mt-4 justify-evenly items-center">
                 {questions[pageIndex].note ? (
                   <FaLightbulb
@@ -165,7 +290,8 @@ const Quiz = () => {
                   onClick={() => {
                     setEvaluated(false);
                     setCheckedBoxes(
-                      questions[pageIndex].choices.map((e) => false)
+                      questions[pageIndex]?.choices?.map((e) => false) ??
+                        questions[pageIndex].question.choices.map((e) => false)
                     );
                     showSnackbar("Actualiser", 1000, SnackbarType.SUCCESS);
                   }}
@@ -173,16 +299,21 @@ const Quiz = () => {
                 />
               </div>
               <div
-                className={`min-h-20 max-w-[600px] bg-white rounded-xl cursor-pointer
+                className={`h-fit max-w-[600px] bg-white rounded-xl cursor-pointer
                 shadow-lg p-4 flex justify-start items-center m-4 
                 text-lg font-black 
                 transition-all duration-300 text-left`}
               >
                 {pageIndex + 1}
-                {") " + questions[pageIndex].text}
+                {") " +
+                  (questions[pageIndex]?.text ??
+                    questions[pageIndex].question.text)}
               </div>
               <div>
-                {questions[pageIndex].choices.map((c, i) => (
+                {(
+                  questions[pageIndex].choices ??
+                  questions[pageIndex].question.choices
+                ).map((c, i) => (
                   <div className="flex items-center justify-start" key={i}>
                     <input
                       type="checkbox"
@@ -200,12 +331,13 @@ const Quiz = () => {
                     />
                     <div
                       className={`max-w-96 w-full bg-white rounded-xl cursor-pointer
-                      shadow-lg p-4 flex justify-start items-start m-4 
-                      text-lg font-black ${
+                      shadow-lg p-4 flex justify-start items-start m-2 
+                      text-md ${
                         evaluated
-                          ? questions[pageIndex].correctAnswers.includes(
-                              c.letter
-                            )
+                          ? (
+                              questions[pageIndex].correctAnswers ??
+                              questions[pageIndex].question.correctAnswers
+                            ).includes(c.letter)
                             ? "border-2 border-green-500"
                             : "border-2 border-red-500"
                           : "border-0"
@@ -223,7 +355,7 @@ const Quiz = () => {
                 ))}
               </div>
             </div>
-            <div className="flex mt-8 fixed bottom-1">
+            <div className="flex bottom-1 bg-white w-full justify-evenly">
               <div
                 className={`h-20 bg-teal-500 rounded-xl cursor-pointer
                   shadow-lg p-4 justify-start items-center m-4 
@@ -232,7 +364,10 @@ const Quiz = () => {
                 onClick={() => {
                   setPageIndex(pageIndex - 1);
                   setCheckedBoxes(
-                    questions[pageIndex - 1].choices.map((e) => false)
+                    questions[pageIndex - 1]?.choices?.map((e) => false) ??
+                      questions[pageIndex - 1].question.choices.map(
+                        (e) => false
+                      )
                   );
                   setEvaluated(false);
                 }}
@@ -245,42 +380,7 @@ const Quiz = () => {
                   text-lg font-black hover:text-xl lg:hover:text-2xl
                   transition-all duration-300 text-left`}
                 onClick={async () => {
-                  const selectedChoices = questions[pageIndex].choices
-                  .filter((e, i) => checkedBoxes[i])
-                  .map((e) => e.letter);
-                
-                const correctChoices = questions[pageIndex].correctAnswers;
-                
-                const arraysEqual =
-                  selectedChoices.length === correctChoices.length &&
-                  selectedChoices.every((value, index) => value === correctChoices[index]);
-                
-                if (arraysEqual) {
-                  const response = await createAnswer(questions[pageIndex]._id);
-                  setAnswers([
-                    ...answers,
-                    {
-                      _id: response.data._id,
-                      question: { _id: response.data.question },
-                    },
-                  ]);
-                } else {
-                  const updatedAnswers = answers.filter(
-                    (a) => a.question._id !== questions[pageIndex]._id
-                  );
-                
-                  const answerToDelete = answers.find(
-                    (a) => a.question._id === questions[pageIndex]._id
-                  );
-                
-                  if (answerToDelete) {
-                    await deleteAnswer(answerToDelete._id);
-                    setAnswers(updatedAnswers);
-                  }
-                }
-                
-                setEvaluated(true);
-                
+                  handleEvaluation();
                 }}
               >
                 évaluer
@@ -295,7 +395,10 @@ const Quiz = () => {
                 onClick={() => {
                   setPageIndex(pageIndex + 1);
                   setCheckedBoxes(
-                    questions[pageIndex + 1].choices.map((e) => false)
+                    questions[pageIndex + 1]?.choices?.map((e) => false) ??
+                      questions[pageIndex + 1].question.choices.map(
+                        (e) => false
+                      )
                   );
                   setEvaluated(false);
                 }}
@@ -319,26 +422,35 @@ const Quiz = () => {
             {questions.map((e, index) => (
               <div
                 key={e._id}
-                className={`w-20 h-20 ${
-                  index === pageIndex ? "bg-teal-100" : "bg-white"
+                className={`w-16 h-16 ${
+                  index === pageIndex ? "bg-teal-200" : "bg-white"
                 } rounded-xl cursor-pointer
-                    shadow-lg p-4 flex flex-col justify-center items-center m-4 
+                    shadow-lg p-4 flex flex-col justify-center items-center m-2 
+                    border-2 border-teal-500 
                     text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl 
                     transition-all duration-300 text-center relative`}
                 onClick={() => {
                   setIsLoading(true);
                   setPageIndex(parseInt(index));
-                  setCheckedBoxes(questions[index].choices.map((e) => false));
+                  setCheckedBoxes(
+                    questions[pageIndex + 1]?.choices?.map((e) => false) ??
+                      questions[pageIndex + 1].question.choices.map(
+                        (e) => false
+                      )
+                  );
                   setIsLoading(false);
                   setEvaluated(false);
                 }}
               >
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-1 right-1">
                   {e.note ? (
-                    <FaLightbulb className="text-yellow-500 mb-1" />
+                    <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
                   ) : null}
-                  {answers.map((a) => a.question._id).includes(e._id) ? (
-                    <FaCheckCircle className="text-green-500 " />
+                  {answers.map((a) => a.question._id).includes(e._id) ||
+                  answers
+                    .map((a) => a.question._id)
+                    .includes(e.question._id) ? (
+                    <FaCheckCircle className="text-green-500 text-sm" />
                   ) : null}
                 </div>
                 {index + 1}
