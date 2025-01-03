@@ -173,22 +173,23 @@ const FavoriteQuestions = () => {
               questions.map((e, index) => (
                 <div
                   key={e._id}
-                  className="w-20 h-20 bg-white rounded-xl cursor-pointer
-         shadow-lg p-4 flex flex-col justify-center items-center m-4 
+                  className="w-16 h-16 bg-white rounded-xl cursor-pointer
+         shadow-lg p-4 flex flex-col justify-center items-center m-2
+         border-2 border-teal-500 
          text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl 
          transition-all duration-300 text-center relative"
                   onClick={() => {
                     navigate(`/favorites-quiz/${index}`);
                   }}
                 >
-                  <div className="absolute top-2 right-2">
+                  <div className="absolute top-1 right-1">
                     {e.note ? (
-                      <FaLightbulb className="text-yellow-500 mb-1" />
+                      <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
                     ) : null}
                     {answers
                       .map((a) => a.question._id)
                       .includes(e.question._id) ? (
-                      <FaCheckCircle className="text-green-500 " />
+                      <FaCheckCircle className="text-green-500 text-sm" />
                     ) : null}
                   </div>
                   {index + 1}

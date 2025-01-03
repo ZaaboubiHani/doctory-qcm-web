@@ -1,11 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import BgImg from "../assets/bg-1.jpg";
-import moduleImg from "../assets/cube-3d.png";
-import courseImg from "../assets/des-documents.png";
-import { QuestionsContext } from "../contexts/QuestionsContext";
-import { ModulesContext } from "../contexts/ModulesContext";
-import { CoursesContext } from "../contexts/CoursesContext";
 import { FavoritesContext } from "../contexts/FavoritesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { BiSolidLeftArrow } from "react-icons/bi";
@@ -54,15 +48,52 @@ const FavoriteQuiz = () => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
+      const keyMap = {
+        0: ["a", "A", "1"],
+        1: ["b", "B", "2"],
+        2: ["c", "C", "3"],
+        3: ["d", "D", "4"],
+        4: ["e", "E", "5"],
+        5: ["f", "F", "6"],
+      };
       if (event.key === "Enter") {
+        if (evaluated) {
+          setEvaluated(false);
+          setCheckedBoxes(
+            questions[pageIndex]?.choices?.map(() => false) ??
+              questions[pageIndex].question.choices.map(() => false)
+          );
+        } else {
+          handleEvaluation();
+        }
       } else if (event.key === "ArrowLeft") {
         if (pageIndex > 0) {
           setPageIndex(pageIndex - 1);
+          setCheckedBoxes(
+            questions[pageIndex + 1]?.choices?.map((e) => false) ??
+              questions[pageIndex + 1].question.choices.map((e) => false)
+          );
+          setEvaluated(false);
         }
       } else if (event.key === "ArrowRight") {
         if (pageIndex < questions.length - 1) {
           setPageIndex(pageIndex + 1);
+          setCheckedBoxes(
+            questions[pageIndex + 1]?.choices?.map((e) => false) ??
+              questions[pageIndex + 1].question.choices.map((e) => false)
+          );
+          setEvaluated(false);
         }
+      }
+      else {
+        // Handle checkbox toggling
+        Object.entries(keyMap).forEach(([index, keys]) => {
+          if (keys.includes(event.key) && index < checkedBoxes.length) {
+            const checks = [...checkedBoxes];
+            checks[index] = !checks[index];
+            setCheckedBoxes(checks);
+          }
+        });
       }
     };
 
@@ -73,7 +104,45 @@ const FavoriteQuiz = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [pageIndex, questions.length]);
+  }, [pageIndex, questions.length,evaluated, checkedBoxes]);
+
+  const handleEvaluation = async () => {
+    const selectedChoices = questions[pageIndex].question.choices
+      .filter((e, i) => checkedBoxes[i])
+      .map((e) => e.letter);
+
+    const correctChoices = questions[pageIndex].question.correctAnswers;
+
+    const arraysEqual =
+      selectedChoices.length === correctChoices.length &&
+      selectedChoices.every((value, index) => value === correctChoices[index]);
+
+    if (arraysEqual) {
+      const response = await createAnswer(questions[pageIndex].question._id);
+      setAnswers([
+        ...answers,
+        {
+          _id: response.data._id,
+          question: { _id: response.data.question },
+        },
+      ]);
+    } else {
+      const updatedAnswers = answers.filter(
+        (a) => a.question._id !== questions[pageIndex].question._id
+      );
+
+      const answerToDelete = answers.find(
+        (a) => a.question._id === questions[pageIndex].question._id
+      );
+
+      if (answerToDelete) {
+        await deleteAnswer(answerToDelete._id);
+        setAnswers(updatedAnswers);
+      }
+    }
+
+    setEvaluated(true);
+  };
 
   useEffect(() => {
     initData();
@@ -104,8 +173,8 @@ const FavoriteQuiz = () => {
             />
           </div>
         ) : (
-          <div className="w-full md:w-1/2 flex justify-center overflow-auto ">
-            <div className="w-full h-fit flex flex-col items-center pb-32 ">
+          <div className="w-full md:w-1/2 flex justify-center flex-col ">
+            <div className="w-full h-full flex flex-col items-center overflow-auto">
               <div className="flex w-[300px] h-16 mt-4 justify-evenly items-center">
                 {questions[pageIndex].note ? (
                   <FaLightbulb
@@ -176,7 +245,7 @@ const FavoriteQuiz = () => {
                 />
               </div>
               <div
-                className={`min-h-20 max-w-[600px] bg-white rounded-xl cursor-pointer
+                className={`h-fit max-w-[600px] bg-white rounded-xl cursor-pointer
                 shadow-lg p-4 flex justify-start items-center m-4 
                 text-lg font-black 
                 transition-all duration-300 text-left`}
@@ -203,8 +272,8 @@ const FavoriteQuiz = () => {
                     />
                     <div
                       className={`max-w-96 w-full bg-white rounded-xl cursor-pointer
-                      shadow-lg p-4 flex justify-start items-start m-4 
-                      text-lg font-black ${
+                      shadow-lg p-4 flex justify-start items-start m-2 
+                      text-md ${
                         evaluated
                           ? questions[
                               pageIndex
@@ -226,7 +295,7 @@ const FavoriteQuiz = () => {
                 ))}
               </div>
             </div>
-            <div className="flex mt-8 fixed bottom-1">
+            <div className="flex bottom-1 bg-white w-full justify-evenly">
               <div
                 className={`h-20 bg-teal-500 rounded-xl cursor-pointer
                   shadow-lg p-4 justify-start items-center m-4 
@@ -248,48 +317,7 @@ const FavoriteQuiz = () => {
                   text-lg font-black hover:text-xl lg:hover:text-2xl
                   transition-all duration-300 text-left`}
                 onClick={async () => {
-                  const selectedChoices = questions[pageIndex].question.choices
-                    .filter((e, i) => checkedBoxes[i])
-                    .map((e) => e.letter);
-
-                  const correctChoices =
-                    questions[pageIndex].question.correctAnswers;
-
-                  const arraysEqual =
-                    selectedChoices.length === correctChoices.length &&
-                    selectedChoices.every(
-                      (value, index) => value === correctChoices[index]
-                    );
-
-                  if (arraysEqual) {
-                    const response = await createAnswer(
-                      questions[pageIndex].question._id
-                    );
-                    setAnswers([
-                      ...answers,
-                      {
-                        _id: response.data._id,
-                        question: { _id: response.data.question },
-                      },
-                    ]);
-                  } else {
-                    const updatedAnswers = answers.filter(
-                      (a) =>
-                        a.question._id !== questions[pageIndex].question._id
-                    );
-
-                    const answerToDelete = answers.find(
-                      (a) =>
-                        a.question._id === questions[pageIndex].question._id
-                    );
-
-                    if (answerToDelete) {
-                      await deleteAnswer(answerToDelete._id);
-                      setAnswers(updatedAnswers);
-                    }
-                  }
-
-                  setEvaluated(true);
+                  handleEvaluation();
                 }}
               >
                 évaluer
@@ -328,10 +356,11 @@ const FavoriteQuiz = () => {
             {questions.map((e, index) => (
               <div
                 key={e._id}
-                className={`w-20 h-20 ${
-                  index === pageIndex ? "bg-teal-100" : "bg-white"
+                className={`w-16 h-16 ${
+                  index === pageIndex ? "bg-teal-200" : "bg-white"
                 } rounded-xl cursor-pointer
-                    shadow-lg p-4 flex flex-col justify-center items-center m-4 
+                    shadow-lg p-4 flex flex-col justify-center items-center m-2
+                    border-2 border-teal-500 
                     text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl 
                     transition-all duration-300 text-center relative`}
                 onClick={() => {
@@ -344,14 +373,14 @@ const FavoriteQuiz = () => {
                   setEvaluated(false);
                 }}
               >
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-1 right-1">
                   {e.note ? (
-                    <FaLightbulb className="text-yellow-500 mb-1" />
+                    <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
                   ) : null}
                   {answers
                     .map((a) => a.question._id)
                     .includes(e.question._id) ? (
-                    <FaCheckCircle className="text-green-500 " />
+                    <FaCheckCircle className="text-green-500 text-sm" />
                   ) : null}
                 </div>
                 {index + 1}

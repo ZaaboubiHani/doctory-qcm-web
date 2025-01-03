@@ -44,7 +44,6 @@ const QuestionsProvider = ({ children }) => {
         },
       }
     );
-    console.log(response);
     
 
     return response;

@@ -8,6 +8,8 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import WingsImg from "../assets/wings.png";
 import { useNavigate } from "react-router-dom";
+import CategoriesBgImg from "../assets/categories-bg.png";
+
 const CategoryImgs = [CategoryImg1, CategoryImg2, CategoryImg3];
 const FavoriteCategories = () => {
   const navigate = useNavigate();
@@ -40,8 +42,8 @@ const FavoriteCategories = () => {
     <div className="flex-grow-1 flex flex-row flex-wrap h-full 
     justify-evenly items-center overflow-auto relative py-4">
       <img
-          className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
-          src={WingsImg}
+           className="absolute top-0 left-0 w-full h-full object-cover object-top opacity-70 -z-10"
+          src={CategoriesBgImg}
           alt=""
         />
       {isLoading ? (

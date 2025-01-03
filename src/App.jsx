@@ -30,6 +30,7 @@ import SimulationQuiz from "./pages/SimulationQuiz";
 import SimulationDetails from "./pages/SimulationDetails";
 import Stats from "./pages/Stats";
 import Residency from "./pages/Residency";
+import ResidencyStats from "./pages/ResidencyStats";
 
 function AppContent({ setToken }) {
   const navigate = useNavigate();
@@ -94,6 +95,7 @@ function AppContent({ setToken }) {
         <Route path="/simulation-details/:id" element={<SimulationDetails />} />
         <Route path="/simulation-quiz" element={<SimulationQuiz />} />
         <Route path="/residency" element={<Residency />} />
+        <Route path="/residency-stats" element={<ResidencyStats />} />
         <Route path="/profile" element={<Profile setToken={setToken} />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>

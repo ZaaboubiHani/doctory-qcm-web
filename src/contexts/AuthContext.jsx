@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import Api from "../api/api.source";
+import { v4 as uuidv4 } from "uuid";
 export const AuthContext = createContext();
 const apiInstance = Api.instance;
 const AuthProvider = ({ children }) => {
@@ -22,24 +23,48 @@ const AuthProvider = ({ children }) => {
       },
     });
     return response;
-    
   };
 
+  function getDeviceId() {
+    // Check if a device ID is already stored
+    let deviceId = localStorage.getItem("deviceId");
+    if (!deviceId) {
+      // Generate a new UUID
+      deviceId = uuidv4();
+      localStorage.setItem("deviceId", deviceId);
+    }
+    return deviceId;
+  }
+
   const updateUserInfo = async (user) => {
-    const response = await apiInstance.getAxios().put(`/users/${user._id}`,{
-      name:user.name,
-      phoneNumber:user.phoneNumber,
-    } ,{
-      headers: {
-        Authorization: `Bearer ${user.token}`,
+    const response = await apiInstance.getAxios().put(
+      `/users/${user._id}`,
+      {
+        name: user.name,
+        phoneNumber: user.phoneNumber,
+        deviceToken: user.deviceToken,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
     return response;
-    
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, setCurrentUser,createAccount, login,getMe,updateUserInfo }}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        setCurrentUser,
+        createAccount,
+        login,
+        getMe,
+        updateUserInfo,
+        getDeviceId,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

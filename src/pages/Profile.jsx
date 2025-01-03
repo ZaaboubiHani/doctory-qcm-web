@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import BgImg from "../assets/bg-1.jpg";
+import DoctorSideImg from "../assets/doctor.png";
 import TextField from "../components/TextField";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
@@ -22,21 +23,15 @@ const apiInstance = Api.instance;
 
 const Profile = ({ setToken }) => {
   const navigate = useNavigate();
-  const { updateUserInfo, setCurrentUser, getMe, currentUser } =
+  const { updateUserInfo, setCurrentUser, getMe, currentUser , getDeviceId} =
     useContext(AuthContext);
   const { showSnackbar } = useContext(SnackbarContext);
 
   const [isLoading, setIsLoading] = useState(true);
   const [showStats, setShowStats] = useState(false);
-  const [loadingStats, setLoadingStats] = useState(true);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const {
-    simulations,
-    setSimulations,
-    getRisidantStats,
-    getSingleRisidantStats,
-  } = useContext(ExamContext);
+
 
   useEffect(() => {
     initData();
@@ -57,22 +52,19 @@ const Profile = ({ setToken }) => {
       setIsLoading(false);
     }
   };
-  const handleGetStats = async () => {
-    setLoadingStats(true);
-    var response = await getRisidantStats();
-    setSimulations(response.data);
-    setLoadingStats(false);
-  };
+
 
   return (
-    <div className="flex-grow-1 flex flex-row flex-wrap h-full justify-evenly items-center overflow-auto relative ">
-     <img
-         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
-         src={WingsImg}
-         alt=""
-       />
+    <div className="flex flex-col h-full justify-center items-center md:items-start overflow-hidden relative">
+       <img
+              className="absolute -right-32 -z-10 w-full h-full object-cover"
+              src={DoctorSideImg}
+              alt=""
+            />
+            <img className="absolute left-0 opacity-20 -z-10" src={WingsImg} alt="" />
+      
       {isLoading ? (
-        <div className="flex flex-col justify-evenly items-center">
+        <div className="flex flex-col justify-evenly items-center w-full">
           <ClipLoader
             color={"#09BAB0"}
             loading={true}
@@ -81,7 +73,7 @@ const Profile = ({ setToken }) => {
           />
         </div>
       ) : (
-        <div className="flex h-full w-full items-center justify-evenly">
+        <div className="h-[500px] flex flex-col justify-evenly md:ml-64 ">
           <div
             className={`h-[410px]  flex-col justify-evenly ${
               showStats ? "hidden" : "flex"
@@ -136,6 +128,7 @@ const Profile = ({ setToken }) => {
                     phoneNumber: phoneNumber.trim(),
                     email: currentUser.email,
                     name: name.trim(),
+                    deviceToken: getDeviceId(),
                   };
                   const response = await updateUserInfo(user);
                   setCurrentUser(user);
@@ -149,14 +142,7 @@ const Profile = ({ setToken }) => {
                 }
               }}
             />
-            <Button
-              icon={<IoStatsChartSharp className="text-3xl" />}
-              text="Statistiques Résidanat"
-              onClick={() => {
-                setShowStats(!showStats);
-                handleGetStats();
-              }}
-            />
+           
             <Button
               icon={<MdOutlinePhoneAndroid className="text-3xl" />}
               text="Télécharger APK"
@@ -185,56 +171,18 @@ const Profile = ({ setToken }) => {
                 icon={<BiLogOut className="text-3xl" />}
                 text="Déconnecter"
                 onClick={() => {
+                  setIsLoading(true);
                   localStorage.clear();
+                  currentUser.deviceToken = null;
+                  updateUserInfo(currentUser);
                   setToken(undefined);
+                  setIsLoading(false);
                 }}
               />
             </Link>
           </div>
-          {showStats ? (
-            <>
-              <div className="border-l hidden md:block h-full" />
-              <FaArrowAltCircleLeft
-                className="text-3xl min-h-8 absolute md:hidden left-4 top-4"
-                onClick={() => {
-                  setShowStats(!showStats);
-                }}
-              ></FaArrowAltCircleLeft>
-              {loadingStats ? (
-                <div className="flex flex-col justify-evenly items-center">
-                  <ClipLoader
-                    color={"#09BAB0"}
-                    loading={true}
-                    size={50}
-                    aria-label="Loading Spinner"
-                  />
-                </div>
-              ) : simulations.length > 0 ? (
-                <div className="h-full overflow-scroll">
-                  {simulations.map((sim, index) => (
-                    <div
-                    key={sim._id}
-                      className="w-[250px] flex items-center justify-between h-10 bg-white px-4 m-4 rounded-xl shadow-xl"
-                      onClick={() => {
-                        navigate(`/simulation-details/${sim._id}`);
-                      }}
-                    >
-                      <div>{index + 1}</div>
-                      <div>
-                        {new Date(sim.updatedAt).getDay() + 1}-
-                        {new Date(sim.updatedAt).getMonth() + 1}-
-                        {new Date(sim.updatedAt).getFullYear()}
-                      </div>
-                      <div>{sim.timeSpent ?? "00:00:00"}</div>
-                      <div>{sim.score ?? "0"}/150</div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div>Aucune simulation n’a été trouvée</div>
-              )}
-            </>
-          ) : null}
+          
+        
         </div>
       )}
     </div>

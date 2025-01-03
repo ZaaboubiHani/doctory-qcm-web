@@ -7,11 +7,12 @@ import { CategoriesContext } from "../contexts/CategoriesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import { useNavigate } from "react-router-dom";
-import WingsImg from "../assets/wings.png";
-
+import FbImg from "../assets/fb.png";
+import IgImg from "../assets/ig.png";
+import TeImg from "../assets/te.png";
+import CategoriesBgImg from "../assets/categories-bg.png";
 
 const CategoryImgs = [CategoryImg1, CategoryImg2, CategoryImg3];
-
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -23,7 +24,6 @@ const Categories = () => {
     initData();
   }, []);
   const initData = async () => {
-    
     setIsLoading(true);
     if (categories.length === 0) {
       const response = await getCategories();
@@ -42,51 +42,89 @@ const Categories = () => {
 
   return (
     <div
-  className="flex-grow-1 flex flex-row flex-wrap h-full 
+      className="flex-grow-1 flex flex-row flex-wrap h-full 
   justify-evenly items-center overflow-auto relative py-4"
->
-  <img
-    className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
-    src={WingsImg}
-    alt=""
-  />
-  {isLoading ? (
-    <div className="flex flex-col justify-evenly items-center">
-      <ClipLoader
-        color={"#09BAB0"}
-        loading={true}
-        size={50}
-        aria-label="Loading Spinner"
-        data-testid="loader"
+    >
+      <img
+        className="absolute top-0 left-0 w-full h-full object-cover object-top opacity-70 -z-10"
+        src={CategoriesBgImg}
+        alt=""
       />
-    </div>
-  ) : (
-    <>
-      {categories.map((e, index) => (
-        <div
-          key={e.category._id}
-          onClick={() => {
-            navigate(`/modules/${e.category._id}`);
-          }}
-          className="w-80 h-96 bg-white rounded-xl cursor-pointer
+      {isLoading ? (
+        <div className="flex flex-col justify-evenly items-center">
+          <ClipLoader
+            color={"#09BAB0"}
+            loading={true}
+            size={50}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
+      ) : (
+        <>
+          {categories.map((e, index) => (
+            <div
+              key={e.category._id}
+              onClick={() => {
+                navigate(`/modules/${e.category._id}`);
+              }}
+              className="w-60 h-64 md:w-80 md:h-96 bg-white rounded-3xl cursor-pointer
              shadow-lg p-4 flex flex-col justify-center items-start m-2"
-        >
-          <div className="w-full flex justify-center">
+            >
+              <div className="w-full flex justify-center">
+                <img
+                  className="h-[130px] md:h-[230px] rounded-xl hover:scale-110 transition-all duration-300"
+                  src={CategoryImgs[index]}
+                  alt=""
+                />
+              </div>
+              <h1 className="text-xl md:text-2xl z-40 font-black">
+                {e.category.name}
+              </h1>
+              <h1 className="text-md md:text-lg z-40">
+                Modules {e.modulesNum}
+              </h1>
+              <h1 className="text-md md:text-lg z-40">Cours {e.coursesNum}</h1>
+              <h1 className="text-md md:text-lg z-40">
+                Questions {e.questionsNum}
+              </h1>
+            </div>
+          ))}
+          <div className="absolute bottom-8 right-8 flex flex-col md:flex-row">
             <img
-              className="h-[230px] rounded-xl hover:h-[240px] transition-all duration-300"
-              src={CategoryImgs[index]}
+              src={FbImg}
               alt=""
+              onClick={() => {
+                window.open(
+                  "https://www.facebook.com/profile.php?id=100087161524361&mibextid=ZbWKwL",
+                  "_blank"
+                );
+              }}
+              className="w-20 cursor-pointer hover:scale-110 transition-all duration-300"
+            />
+            <img
+              src={IgImg}
+              alt=""
+              onClick={() => {
+                window.open(
+                  "https://www.instagram.com/doctory_?igsh=MTZlN2xkYjJjemdlNg==",
+                  "_blank"
+                );
+              }}
+              className="w-20 cursor-pointer hover:scale-110 transition-all duration-300"
+            />
+            <img
+              src={TeImg}
+              alt=""
+              onClick={() => {
+                window.open("https://t.me/doctory_qcm", "_blank");
+              }}
+              className="w-20 cursor-pointer hover:scale-110 transition-all duration-300"
             />
           </div>
-          <h1 className="text-2xl z-40 font-black">{e.category.name}</h1>
-          <h1 className="text-lg z-40">Modules {e.modulesNum}</h1>
-          <h1 className="text-lg z-40">Cours {e.coursesNum}</h1>
-          <h1 className="text-lg z-40">Questions {e.questionsNum}</h1>
-        </div>
-      ))}
-    </>
-  )}
-</div>
+        </>
+      )}
+    </div>
   );
 };
 

@@ -11,12 +11,14 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
+
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import Api from "../api/api.source";
 const apiInstance = Api.instance;
 const Login = ({ setToken }) => {
   const navigate = useNavigate();
-  const { login, setCurrentUser, getMe } = useContext(AuthContext);
+  const { login, setCurrentUser, getMe, updateUserInfo, getDeviceId } =
+    useContext(AuthContext);
   const { showSnackbar } = useContext(SnackbarContext);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -56,6 +58,9 @@ const Login = ({ setToken }) => {
         localStorage.setItem("token", response.data.token);
         setToken(response.data.token); // updates the token state in App
         const userRes = await getMe(response.data.token);
+        userRes.data.deviceToken = getDeviceId();
+        userRes.data.token = response.data.token;
+        updateUserInfo(userRes.data);
         setCurrentUser(userRes.data);
         navigate("/categories");
       } else {
