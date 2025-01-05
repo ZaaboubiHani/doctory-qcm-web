@@ -36,6 +36,7 @@ const Questions = () => {
   const initData = async () => {
     const response = await getQuestions(id);
     if (response.status === 200) {
+      
       setQuestions(response.data);
     } else {
       showSnackbar(
@@ -57,6 +58,7 @@ const Questions = () => {
 
     setIsLoading(false);
   };
+
   const getData = async (courseId) => {
     const response = await getQuestions(courseId);
     
@@ -176,7 +178,7 @@ const Questions = () => {
             ) : (
               questions.map((e, index) => (
                 <div
-                  key={e.question._id}
+                  key={e.question?._id ?? e._id}
                   className="w-16 h-16 bg-white rounded-xl cursor-pointer
          shadow-lg p-4 flex flex-col justify-center items-center m-2
          border-2 border-teal-500 
@@ -190,7 +192,7 @@ const Questions = () => {
                     {e.note ? (
                       <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
                     ) : null}
-                    {answers.map((a) => a.question._id).includes(e._id) || answers.map((a) => a.question._id).includes(e.question._id) ? (
+                    {answers.map((a) => a.question?._id).includes(e._id) || answers.map((a) => a.question?._id).includes(e.question?._id ?? e._id) ? (
                       <FaCheckCircle className="text-green-500 text-sm" />
                     ) : null}
                   </div>

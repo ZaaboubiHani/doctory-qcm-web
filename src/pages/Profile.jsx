@@ -160,7 +160,7 @@ const Profile = ({ setToken }) => {
                 );
                 const link = document.createElement("a");
                 link.href = url;
-                link.setAttribute("download", "dctory_qcm_1.2.5.apk");
+                link.setAttribute("download", "dctory_qcm_1.3.0.apk");
                 document.body.appendChild(link);
                 link.click();
                 link.remove();
