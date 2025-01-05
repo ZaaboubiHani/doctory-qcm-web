@@ -209,9 +209,9 @@ const Quiz = () => {
   return (
     <div
       className="flex flex-row h-full overflow-hidden relative"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      // onTouchStart={handleTouchStart}
+      // onTouchMove={handleTouchMove}
+      // onTouchEnd={handleTouchEnd}
     >
       <img
         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
@@ -363,6 +363,7 @@ const Quiz = () => {
                   transition-all duration-300 text-left`}
                 onClick={() => {
                   setPageIndex(pageIndex - 1);
+
                   setCheckedBoxes(
                     questions[pageIndex - 1]?.choices?.map((e) => false) ??
                       questions[pageIndex - 1].question.choices.map(
@@ -378,7 +379,7 @@ const Quiz = () => {
                 className={`h-20 bg-teal-500 rounded-xl cursor-pointer
                   shadow-lg p-4 flex justify-start items-center m-4 
                   text-lg font-black hover:text-xl lg:hover:text-2xl
-                  transition-all duration-300 text-left`}
+                  transition-all duration-300 text-left select-none`}
                 onClick={async () => {
                   handleEvaluation();
                 }}
@@ -394,6 +395,7 @@ const Quiz = () => {
                 transition-all duration-300 text-left`}
                 onClick={() => {
                   setPageIndex(pageIndex + 1);
+
                   setCheckedBoxes(
                     questions[pageIndex + 1]?.choices?.map((e) => false) ??
                       questions[pageIndex + 1].question.choices.map(
@@ -449,7 +451,7 @@ const Quiz = () => {
                   {answers.map((a) => a.question._id).includes(e._id) ||
                   answers
                     .map((a) => a.question._id)
-                    .includes(e.question._id) ? (
+                    .includes(e.question?._id ?? e._id) ? (
                     <FaCheckCircle className="text-green-500 text-sm" />
                   ) : null}
                 </div>
