@@ -21,7 +21,6 @@ const FavoriteCategories = () => {
     initData();
   }, []);
   const initData = async () => {
-    
     setIsLoading(true);
     if (categories.length === 0) {
       const response = await getFavoriteCategories();
@@ -39,13 +38,15 @@ const FavoriteCategories = () => {
   };
 
   return (
-    <div className="flex-grow-1 flex flex-row flex-wrap h-full 
-    justify-evenly items-center overflow-auto relative py-4">
+    <div
+      className="flex-grow-1 flex flex-row flex-wrap h-full 
+    justify-evenly items-center overflow-auto relative py-4"
+    >
       <img
-           className="absolute top-0 left-0 w-full h-full object-cover object-top opacity-70 -z-10"
-          src={CategoriesBgImg}
-          alt=""
-        />
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover object-top opacity-70 -z-10 "
+        src={CategoriesBgImg}
+        alt=""
+      />
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center">
           <ClipLoader
@@ -61,23 +62,29 @@ const FavoriteCategories = () => {
           {categories.map((e, index) => (
             <div
               key={e.category._id}
-              onClick={()=>{
-                navigate(`/favorites-modules/${e.category._id}`)
+              onClick={() => {
+                navigate(`/favorites-modules/${e.category._id}`);
               }}
-              className="w-80 h-96 bg-white rounded-xl cursor-pointer
-         shadow-lg p-4 flex flex-col justify-center items-start m-2"
+              className="w-60 h-64 md:w-80 md:h-96 bg-white rounded-3xl cursor-pointer
+             shadow-lg p-4 flex flex-col justify-center items-start m-2"
             >
               <div className="w-full flex justify-center">
                 <img
-                  className="h-[230px] rounded-xl hover:h-[240px] transition-all duration-300"
+                  className="h-[130px] md:h-[230px] rounded-xl hover:scale-110 transition-all duration-300"
                   src={CategoryImgs[index]}
                   alt=""
                 />
               </div>
-              <h1 className="text-2xl z-40 font-black">{e.category.name}</h1>
-              <h1 className="text-lg z-40">Modules {e.modulesNum}</h1>
-              <h1 className="text-lg z-40">Cours {e.coursesNum}</h1>
-              <h1 className="text-lg z-40">Questions {e.questionsNum}</h1>
+              <h1 className="text-xl md:text-2xl z-40 font-black">
+                {e.category.name}
+              </h1>
+              <h1 className="text-md md:text-lg z-40">
+                Modules {e.modulesNum}
+              </h1>
+              <h1 className="text-md md:text-lg z-40">Cours {e.coursesNum}</h1>
+              <h1 className="text-md md:text-lg z-40">
+                Questions {e.questionsNum}
+              </h1>
             </div>
           ))}
         </>

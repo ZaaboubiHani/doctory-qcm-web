@@ -43,10 +43,10 @@ const Categories = () => {
   return (
     <div
       className="flex-grow-1 flex flex-row flex-wrap h-full 
-  justify-evenly items-center overflow-auto relative py-4"
+  justify-evenly items-center overflow-auto relative py-4 "
     >
       <img
-        className="absolute top-0 left-0 w-full h-full object-cover object-top opacity-70 -z-10"
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover object-top opacity-70 -z-10 "
         src={CategoriesBgImg}
         alt=""
       />
@@ -90,7 +90,7 @@ const Categories = () => {
               </h1>
             </div>
           ))}
-          <div className="absolute bottom-8 right-8 flex flex-col md:flex-row">
+          <div className="fixed bottom-4 right-4 flex flex-col md:flex-row">
             <img
               src={FbImg}
               alt=""
@@ -100,7 +100,7 @@ const Categories = () => {
                   "_blank"
                 );
               }}
-              className="w-20 cursor-pointer hover:scale-110 transition-all duration-300"
+              className="w-16 md:w-20 cursor-pointer hover:scale-110 transition-all duration-300"
             />
             <img
               src={IgImg}
@@ -111,7 +111,7 @@ const Categories = () => {
                   "_blank"
                 );
               }}
-              className="w-20 cursor-pointer hover:scale-110 transition-all duration-300"
+              className="w-16 md:w-20 cursor-pointer hover:scale-110 transition-all duration-300"
             />
             <img
               src={TeImg}
@@ -119,7 +119,7 @@ const Categories = () => {
               onClick={() => {
                 window.open("https://t.me/doctory_qcm", "_blank");
               }}
-              className="w-20 cursor-pointer hover:scale-110 transition-all duration-300"
+              className="w-16 md:w-20 cursor-pointer hover:scale-110 transition-all duration-300"
             />
           </div>
         </>
