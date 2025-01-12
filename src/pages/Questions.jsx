@@ -72,7 +72,6 @@ const Questions = () => {
       );
     }
     const ansResponse = await getAnswers(courseId);
-    console.log(ansResponse);
     if (ansResponse.status === 200) {
       setAnswers(ansResponse.data);
     } else {

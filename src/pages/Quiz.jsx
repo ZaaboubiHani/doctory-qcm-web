@@ -126,6 +126,7 @@ const Quiz = () => {
   };
 
   const handleEvaluation = async () => {
+    setEvaluated(true);
     const selectedChoices = (
       questions[pageIndex].choices ?? questions[pageIndex].question.choices
     )
@@ -142,7 +143,7 @@ const Quiz = () => {
 
     if (arraysEqual) {
       const response = await createAnswer(
-        questions[pageIndex]._id ?? questions[pageIndex].question._id
+        questions[pageIndex]?._id ?? questions[pageIndex]?.question?._id
       );
       setAnswers([
         ...answers,
@@ -154,14 +155,14 @@ const Quiz = () => {
     } else {
       const updatedAnswers = answers.filter(
         (a) =>
-          a.question._id !== questions[pageIndex]._id &&
-          a.question._id !== questions[pageIndex].question._id
+          a.question._id !== questions[pageIndex]?._id &&
+          a.question._id !== questions[pageIndex]?.question?._id
       );
 
       const answerToDelete = answers.find(
         (a) =>
-          a.question._id === questions[pageIndex]._id ||
-          a.question._id === questions[pageIndex].question._id
+          a.question._id === questions[pageIndex]?._id ||
+          a.question._id === questions[pageIndex]?.question?._id
       );
 
       if (answerToDelete) {
@@ -169,8 +170,6 @@ const Quiz = () => {
         setAnswers(updatedAnswers);
       }
     }
-
-    setEvaluated(true);
   };
 
   const touchStartX = useRef(0);

@@ -50,7 +50,6 @@ const FavoritesProvider = ({ children }) => {
         },
       }
     );
-    console.log(response);
     
 
     return response;

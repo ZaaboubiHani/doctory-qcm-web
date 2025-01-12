@@ -147,7 +147,6 @@ const Profile = ({ setToken }) => {
               icon={<MdOutlinePhoneAndroid className="text-3xl" />}
               text="Télécharger APK"
               onClick={async () => {
-                console.log("get apk");
 
                 const response = await apiInstance
                   .getAxios()
