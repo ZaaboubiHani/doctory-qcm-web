@@ -267,6 +267,7 @@ const FavoriteQuiz = () => {
                         var checks = [...checkedBoxes];
                         checks[i] = !checks[i];
                         setCheckedBoxes(checks);
+                        setEvaluated(false);
                       }}
                       checked={checkedBoxes[i]}
                     />
@@ -278,7 +279,7 @@ const FavoriteQuiz = () => {
                           ? questions[
                               pageIndex
                             ].question.correctAnswers.includes(c.letter)
-                            ? "border-2 border-green-500"
+                            ? "border-2 border-green-700"
                             : "border-2 border-red-500"
                           : "border-0"
                       }
@@ -287,6 +288,7 @@ const FavoriteQuiz = () => {
                         var checks = [...checkedBoxes];
                         checks[i] = !checks[i];
                         setCheckedBoxes(checks);
+                        setEvaluated(false);
                       }}
                     >
                       {c.text}
@@ -361,7 +363,7 @@ const FavoriteQuiz = () => {
                 } rounded-xl cursor-pointer
                     shadow-lg p-4 flex flex-col justify-center items-center m-2
                     border-2 border-teal-500 
-                    text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl 
+                    text-lg lg:text-xl hover:text-xl lg:hover:text-2xl 
                     transition-all duration-300 text-center relative`}
                 onClick={() => {
                   setIsLoading(true);

@@ -74,7 +74,7 @@ const SimulationDetails = () => {
                   className={`w-[350px] ${
                     question.question._id === selectedQuestion._id ? "bg-teal-100" : "bg-white"
                 } px-4 m-4 rounded-xl shadow-xl border-2 ${
-                    isCorrect ? "border-green-500" : "border-red-500"
+                    isCorrect ? "border-green-700" : "border-red-500"
                   } transition-all duration-300 `}
                   onClick={() => {
                     setShowQuestionDetails(true);
@@ -124,7 +124,7 @@ const SimulationDetails = () => {
                         selectedQuestion.correctAnswers.includes(
                               c.letter
                             )
-                            ? "border-2 border-green-500"
+                            ? "border-2 border-green-700"
                             : "border-2 border-red-500"
                           
                       }

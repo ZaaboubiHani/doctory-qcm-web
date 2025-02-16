@@ -66,11 +66,11 @@ const FavoriteCategories = () => {
                 navigate(`/favorites-modules/${e.category._id}`);
               }}
               className="w-60 h-64 md:w-80 md:h-96 bg-white rounded-3xl cursor-pointer
-             shadow-lg p-4 flex flex-col justify-center items-start m-2"
+             shadow-lg p-4 flex flex-col justify-center items-start m-2 border-2 border-teal-500 "
             >
               <div className="w-full flex justify-center">
                 <img
-                  className="h-[130px] md:h-[230px] rounded-xl hover:scale-110 transition-all duration-300"
+                  className="h-[130px] md:h-[230px] rounded-xl scale-90 hover:scale-100 transition-all duration-300"
                   src={CategoryImgs[index]}
                   alt=""
                 />
