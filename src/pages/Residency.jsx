@@ -140,7 +140,7 @@ const Residency = () => {
                     e._id === selectedResidency ? "bg-teal-100" : "bg-white"
                   } rounded-xl cursor-pointer
                     shadow-lg p-4 flex justify-start items-center m-4 
-                    text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl transition-all duration-300 text-left`}
+                    text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300 text-left`}
                 >
                   <div className="flex-1">
                     {e.name} {new Date(e.date).getFullYear()}
@@ -189,23 +189,23 @@ const Residency = () => {
                 residencyQuestions?.map((e, index) => (
                   <div
                     key={e.question._id}
-                    className={`w-16 h-16 ${
+                    className={`w-12 h-12 md:h-16 md:w-16 ${
                       e.question._id === selectedQuestion
                         ? "bg-teal-200"
                         : "bg-white"
-                    } rounded-xl cursor-pointer
+                    } rounded-lg md:rounded-xl cursor-pointer
                shadow-lg p-4 flex flex-col justify-center items-center m-2
-               border-2 border-teal-500  
-               text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl 
+               border-2 border-teal-500 text-sm
+               md:text-lg lg:text-xl hover:text-xl lg:hover:text-2xl 
                transition-all duration-300 text-center relative`}
                     onClick={() => {
                       setSelectedQuestion(e.question._id);
                       setPageIndex(index);
                     }}
                   >
-                    <div className="absolute top-1 right-1">
+                    <div className="absolute top-[2px] right-[2px] md:top-1 md:right-1">
                       {e.note ? (
-                        <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
+                        <FaLightbulb className="text-yellow-500 mb-1 text-xs md:text-sm" />
                       ) : null}
                     </div>
                     {index + 1}
@@ -244,23 +244,29 @@ const Residency = () => {
                         {pageIndex + 1}
                         {") " + residencyQuestions[pageIndex].question.text}
                       </div>
-                      {residencyQuestions[pageIndex]?.note ? (
-                        <FaLightbulb
-                          className="text-yellow-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
-                          onClick={() => {
-                            setSelectedNote(residencyQuestions[pageIndex].note);
-                            setOpenNoteDialog(true);
-                          }}
-                        />
-                      ) : (
-                        <FaRegLightbulb
-                          className="text-yellow-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
-                          onClick={() => {
-                            setSelectedNote(residencyQuestions[pageIndex].note);
-                            setOpenNoteDialog(true);
-                          }}
-                        />
-                      )}
+                      <div className="h-10 w-10 mr-2">
+                        {residencyQuestions[pageIndex]?.note ? (
+                          <FaLightbulb
+                            className="text-yellow-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
+                            onClick={() => {
+                              setSelectedNote(
+                                residencyQuestions[pageIndex].note
+                              );
+                              setOpenNoteDialog(true);
+                            }}
+                          />
+                        ) : (
+                          <FaRegLightbulb
+                            className="text-yellow-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
+                            onClick={() => {
+                              setSelectedNote(
+                                residencyQuestions[pageIndex].note
+                              );
+                              setOpenNoteDialog(true);
+                            }}
+                          />
+                        )}
+                      </div>
                     </div>
                     <div className="w-full">
                       {residencyQuestions[pageIndex].question.choices.map(

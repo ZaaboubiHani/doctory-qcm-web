@@ -88,7 +88,7 @@ const Courses = () => {
                   e._id === selectedModule ? "bg-teal-100" : "bg-white"
                 } rounded-xl cursor-pointer
             shadow-lg p-4 flex justify-start items-center m-4 
-            text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl transition-all duration-300 text-left`}
+            text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300 text-left`}
               >
                 <img src={moduleImg} alt="" />
                 {e.name}
@@ -131,7 +131,7 @@ const Courses = () => {
                   key={e._id}
                   className="h-20 bg-white rounded-xl cursor-pointer text-left
                 shadow-lg p-4 flex justify-start items-center m-4 
-                text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl transition-all duration-300"
+                text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300"
                 >
                   <img src={courseImg} className="mr-1" alt="" />
                   {e.name}

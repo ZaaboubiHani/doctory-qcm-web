@@ -16,20 +16,19 @@ import { ExamContext } from "../contexts/ExamContext";
 const ResidencyStats = () => {
   const navigate = useNavigate();
   const { showSnackbar } = useContext(SnackbarContext);
- 
+
   const [isLoading, setIsLoading] = useState(true);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
-  
+
   const {
     simulations,
     setSimulations,
     getRisidantStats,
     getSingleRisidantStats,
   } = useContext(ExamContext);
-  
+
   const [selectedSimulation, setSelectedSimulation] = useState();
   const [selectedQuestion, setSelectedQuestion] = useState();
-  
 
   useEffect(() => {
     initData();
@@ -96,7 +95,11 @@ const ResidencyStats = () => {
                   {simulations.map((sim, index) => (
                     <div
                       key={sim._id}
-                      className={`flex items-center justify-between h-16 ${selectedSimulation?._id === sim._id ? "bg-teal-300" : "bg-[#ffffff88]"} px-4 m-4 rounded-xl shadow-xl cursor-pointer`}
+                      className={`flex items-center justify-between h-16 ${
+                        selectedSimulation?._id === sim._id
+                          ? "bg-teal-300"
+                          : "bg-[#ffffff88]"
+                      } px-4 m-4 rounded-xl shadow-xl cursor-pointer`}
                       onClick={async () => {
                         setLoadingQuestions(true);
                         const response = await getSingleRisidantStats(sim._id);
@@ -123,7 +126,9 @@ const ResidencyStats = () => {
           <div className="border-l hidden md:block" />
           <div
             className={`w-full md:w-1/2 lg:w-[31%] h-full  flex-col ${
-              selectedSimulation && !selectedQuestion ? "flex" : "hidden md:flex"
+              selectedSimulation && !selectedQuestion
+                ? "flex"
+                : "hidden md:flex"
             }`}
           >
             <div
@@ -170,9 +175,11 @@ const ResidencyStats = () => {
                           ? "bg-teal-100"
                           : "bg-white"
                       } px-4 m-4 rounded-xl shadow-xl border-2 cursor-pointer ${
-                        isCorrect ? "border-green-500" : "border-red-500"
+                        isCorrect ? "border-green-700" : "border-red-500"
                       } transition-all duration-300 `}
                       onClick={() => {
+                        console.log(question.question);
+
                         setSelectedQuestion(question.question);
                       }}
                     >
@@ -209,7 +216,6 @@ const ResidencyStats = () => {
               <FaArrowAltCircleLeft
                 className="text-3xl min-h-8 mr-2 md:hidden"
                 onClick={() => {
-                  
                   setSelectedQuestion(undefined);
                 }}
               />
@@ -221,30 +227,28 @@ const ResidencyStats = () => {
                   <div className="w-full h-full flex flex-col items-center overflow-y-auto">
                     <div className="flex items-center">
                       <div className="h-fit max-w-[600px] bg-white rounded-xl cursor-pointer shadow-lg p-4 flex justify-start items-center m-4 text-lg font-black transition-all duration-300 text-left">
-                        
                         {selectedQuestion.text}
                       </div>
-                      
                     </div>
                     <div className="w-full">
-                      {selectedQuestion.choices.map(
-                        (c, i) => (
+                      {selectedQuestion.choices.map((c, i) => (
+                        <div
+                          className={`flex items-center justify-center`}
+                          key={i}
+                        >
                           <div
-                            className="flex items-center justify-center"
-                            key={i}
+                            className={`max-w-96 w-full bg-white rounded-xl cursor-pointer shadow-lg p-4 m-2 text-md transition-all duration-300 text-left  ${
+                              selectedQuestion.correctAnswers.includes(c.letter)
+                                ? "border-2 border-green-700"
+                                : "border-2 border-red-500"
+                            }`}
                           >
-                            <div
-                              className="max-w-96 w-full bg-white rounded-xl cursor-pointer shadow-lg p-4 m-2 text-md transition-all duration-300 text-left"
-                             
-                            >
-                              {c.text}
-                            </div>
+                            {c.text}
                           </div>
-                        )
-                      )}
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  
                 </div>
               ) : (
                 <div className="flex-grow overflow-y-auto flex justify-center items-center">
@@ -255,7 +259,6 @@ const ResidencyStats = () => {
           </div>
         </div>
       )}
-      
     </div>
   );
 };

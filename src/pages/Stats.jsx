@@ -101,7 +101,7 @@ const Stats = () => {
                     e._id === selectedCategory ? "bg-teal-100" : "bg-white"
                   } rounded-xl cursor-pointer
                 shadow-lg p-4 flex justify-start items-center m-4 
-                text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl transition-all duration-300 text-left`}
+                text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300 text-left`}
                 >
                   <img src={moduleImg} alt="" className="mr-2" />
                   <div className="flex-1">{e.name}</div>
@@ -173,7 +173,7 @@ const Stats = () => {
                       e._id === selectedModule ? "bg-teal-100" : "bg-white"
                     } rounded-xl cursor-pointer text-left
                     shadow-lg p-4 flex justify-start items-center m-4 
-                    text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl transition-all duration-300`}
+                    text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300`}
                   >
                     <img src={courseImg} className="mr-1" alt="" />
                     <div className="flex-1">{e.name}</div>
@@ -237,7 +237,7 @@ const Stats = () => {
                       e._id === selectedModule ? "bg-teal-100" : "bg-white"
                     } rounded-xl cursor-pointer text-left
                     shadow-lg p-4 flex justify-start items-center m-4 
-                    text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl transition-all duration-300`}
+                    text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300`}
                   >
                     <img src={courseImg} className="mr-1" alt="" />
                     <div className="flex-1">{e.name}</div>

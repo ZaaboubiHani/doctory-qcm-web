@@ -119,7 +119,7 @@ const Login = ({ setToken }) => {
             />
             <Button text="Se connecter" onClick={handleLoginClick} />
             <Link to="/signup">
-              <Button text="Insciption" />
+              <Button text="Inscription" />
             </Link>
             <Button
               icon={<MdOutlinePhoneAndroid className="text-3xl" />}

@@ -112,7 +112,7 @@ const Questions = () => {
                   e._id === selectedModule ? "bg-teal-100" : "bg-white"
                 } rounded-xl cursor-pointer
             shadow-lg p-4 flex justify-start items-center m-4 
-           text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl
+           text-lg lg:text-xl hover:text-xl lg:hover:text-2xl
             transition-all duration-300 text-left`}
               >
                 <img src={moduleImg} alt="" />
@@ -143,7 +143,7 @@ const Questions = () => {
                   e._id === selectedCourse ? "bg-teal-100" : "bg-white"
                 } rounded-xl cursor-pointer
             shadow-lg p-4 flex justify-start items-center m-4 
-            text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl
+            text-lg lg:text-xl hover:text-xl lg:hover:text-2xl
              transition-all duration-300 text-left`}
               >
                 <img src={courseImg} className="mr-1" alt="" />
@@ -178,21 +178,21 @@ const Questions = () => {
               questions.map((e, index) => (
                 <div
                   key={e.question?._id ?? e._id}
-                  className="w-16 h-16 bg-white rounded-xl cursor-pointer
+                  className="w-12 h-12 md:h-16 md:w-16 bg-white rounded-lg md:rounded-xl cursor-pointer
          shadow-lg p-4 flex flex-col justify-center items-center m-2
-         border-2 border-teal-500 
-         text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl 
+         border-2 border-teal-500 text-sm
+         md:text-lg lg:text-xl hover:text-xl lg:hover:text-2xl 
          transition-all duration-300 text-center relative"
                   onClick={() => {
                     navigate(`/quiz/${index}`);
                   }}
                 >
-                  <div className="absolute top-1 right-1">
+                  <div className="absolute top-[2px] right-[2px] md:top-1 md:right-1">
                     {e.note ? (
-                      <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
+                      <FaLightbulb className="text-yellow-500 mb-1 text-xs md:text-sm" />
                     ) : null}
                     {answers.map((a) => a.question?._id).includes(e._id) || answers.map((a) => a.question?._id).includes(e.question?._id ?? e._id) ? (
-                      <FaCheckCircle className="text-green-500 text-sm" />
+                      <FaCheckCircle className="text-green-500 text-xs md:text-sm" />
                     ) : null}
                   </div>
                   {index + 1}

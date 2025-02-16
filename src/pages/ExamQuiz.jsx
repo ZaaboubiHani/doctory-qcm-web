@@ -205,7 +205,7 @@ const ExamQuiz = () => {
                           ? examQuestions[pageIndex].correctAnswers.includes(
                               c.letter
                             )
-                            ? "border-2 border-green-500"
+                            ? "border-2 border-green-700"
                             : "border-2 border-red-500"
                           : "border-0"
                       }

@@ -54,25 +54,24 @@ const SimulationQuiz = () => {
       } else {
         // Handle checkbox toggling
         Object.entries(keyMap).forEach(([index, keys]) => {
-          
-
-
-          if (keys.includes(event.key) ) {
-            
+          if (keys.includes(event.key)) {
             if (!examQuestions[pageIndex].selectedChoices) {
               examQuestions[pageIndex].selectedChoices = [];
             }
-  
+
             if (
               examQuestions[pageIndex].selectedChoices.includes(
                 examQuestions[pageIndex].question.choices[index].letter
               )
             ) {
               // Remove c.letter if it exists
-              examQuestions[pageIndex].selectedChoices =
-                examQuestions[pageIndex].selectedChoices.filter(
-                  (choice) => choice !== examQuestions[pageIndex].question.choices[index].letter
-                );
+              examQuestions[pageIndex].selectedChoices = examQuestions[
+                pageIndex
+              ].selectedChoices.filter(
+                (choice) =>
+                  choice !==
+                  examQuestions[pageIndex].question.choices[index].letter
+              );
             } else {
               // Add c.letter if it doesn't exist
               examQuestions[pageIndex].selectedChoices = [
@@ -80,7 +79,7 @@ const SimulationQuiz = () => {
                 examQuestions[pageIndex].question.choices[index].letter,
               ];
             }
-  
+
             // Update the state with the modified array
             setExamQuestions([...examQuestions]);
           }
@@ -95,7 +94,7 @@ const SimulationQuiz = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [pageIndex, examQuestions.length,examQuestions]);
+  }, [pageIndex, examQuestions.length, examQuestions]);
 
   useEffect(() => {
     timerInterval.current = setInterval(() => {
@@ -294,13 +293,13 @@ const SimulationQuiz = () => {
             {examQuestions.map((e, index) => (
               <div
                 key={e._id}
-                className={`w-16 h-16 ${
+                className={`w-12 h-12 md:h-16 md:w-16 ${
                   index === pageIndex ? "bg-teal-200" : "bg-white"
-                } rounded-xl cursor-pointer
-                            shadow-lg p-4 flex flex-col justify-center items-center m-2
-                            border-2 border-teal-500  
-                            text-lg lg:text-xl font-black hover:text-xl lg:hover:text-2xl 
-                            transition-all duration-300 text-center relative`}
+                } rounded-lg md:rounded-xl cursor-pointer
+                  shadow-lg p-4 flex flex-col justify-center items-center m-2
+                  border-2 border-teal-500 text-sm
+                  md:text-lg lg:text-xl hover:text-xl lg:hover:text-2xl 
+                  transition-all duration-300 text-center relative`}
                 onClick={() => {
                   setPageIndex(parseInt(index));
                 }}
