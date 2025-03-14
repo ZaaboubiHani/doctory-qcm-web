@@ -44,12 +44,12 @@ const Login = ({ setToken }) => {
           setCurrentUser(userRes.data.data);
         } else {
           const deviceId = localStorage.getItem("deviceId");
-          console.log(userRes.data.data.deviceToken === deviceId);
           if (userRes.data.data.deviceToken === deviceId) {
             userRes.data.data.token = token;
             setCurrentUser(userRes.data.data);
             navigate("/categories");
           } else {
+            setToken(null);
             localStorage.clear();
           }
         }
