@@ -28,9 +28,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     <SnackbarProvider>
                       <ResidencyProvider>
                         <AuthProvider>
-                          <React.StrictMode>
                             <App />
-                          </React.StrictMode>
                         </AuthProvider>
                       </ResidencyProvider>
                     </SnackbarProvider>
