@@ -33,8 +33,26 @@ const Login = ({ setToken }) => {
       const token = localStorage.getItem("token");
       if (token) {
         const userRes = await getMe(token);
-        setCurrentUser(userRes.data);
-        navigate("/categories");
+        if (
+          userRes.data.data.deviceToken === null ||
+          userRes.data.data.deviceToken === undefined ||
+          userRes.data.data.deviceToken === ""
+        ) {
+          userRes.data.data.deviceToken = getDeviceId();
+          userRes.data.data.token = token;
+          updateUserInfo(userRes.data.data);
+          setCurrentUser(userRes.data.data);
+        } else {
+          const deviceId = localStorage.getItem("deviceId");
+          console.log(userRes.data.data.deviceToken === deviceId);
+          if (userRes.data.data.deviceToken === deviceId) {
+            userRes.data.data.token = token;
+            setCurrentUser(userRes.data.data);
+            navigate("/categories");
+          } else {
+            localStorage.clear();
+          }
+        }
       }
       setIsLoading(false);
     } catch (error) {
@@ -54,21 +72,41 @@ const Login = ({ setToken }) => {
       });
 
       if (response.status === 200) {
-        showSnackbar(response.data.message, 3000);
-        localStorage.setItem("token", response.data.token);
-        setToken(response.data.token); // updates the token state in App
-        const userRes = await getMe(response.data.token);
-        userRes.data.deviceToken = getDeviceId();
-        userRes.data.token = response.data.token;
-        updateUserInfo(userRes.data);
-        setCurrentUser(userRes.data);
-        navigate("/categories");
+        if (
+          response.data.data.deviceToken === null ||
+          response.data.data.deviceToken === undefined ||
+          response.data.data.deviceToken === ""
+        ) {
+          showSnackbar(response.data.message, 3000);
+          localStorage.setItem("token", response.data.token);
+          setToken(response.data.token);
+          response.data.data.deviceToken = getDeviceId();
+          response.data.data.token = response.data.token;
+          updateUserInfo(response.data.data);
+          setCurrentUser(response.data.data);
+          navigate("/categories");
+        } else {
+          const deviceId = localStorage.getItem("deviceId");
+
+          if (response.data.data.deviceToken === deviceId) {
+            showSnackbar(response.data.message, 3000);
+            response.data.data.token = response.data.token;
+            setCurrentUser(response.data.data);
+            navigate("/categories");
+          } else {
+            localStorage.clear();
+            showSnackbar(
+              "Connexion impossible : Ce compte est déjà utilisé sur un autre appareil. \nVeuillez contacter ce numéro : 06 71 84 68 73",
+              10000,
+              SnackbarType.ERROR
+            );
+          }
+        }
       } else {
         localStorage.clear();
         showSnackbar("échec de l'inscription", 5000, SnackbarType.ERROR);
       }
     } catch (error) {
-      localStorage.clear();
       if (error.response?.status !== 500) {
         showSnackbar(error.response?.data.message, 5000, SnackbarType.ERROR);
       } else {
