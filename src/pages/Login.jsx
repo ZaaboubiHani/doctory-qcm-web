@@ -31,6 +31,8 @@ const Login = ({ setToken }) => {
   const handleAutoLogin = async () => {
     try {
       const token = localStorage.getItem("token");
+      console.log("autologin");
+      
       if (token) {
         const userRes = await getMe(token);
         if (
@@ -38,10 +40,12 @@ const Login = ({ setToken }) => {
           userRes.data.data.deviceToken === undefined ||
           userRes.data.data.deviceToken === ""
         ) {
-          userRes.data.data.deviceToken = getDeviceId();
-          userRes.data.data.token = token;
-          updateUserInfo(userRes.data.data);
-          setCurrentUser(userRes.data.data);
+          // userRes.data.data.deviceToken = getDeviceId();
+          // userRes.data.data.token = token;
+          // updateUserInfo(userRes.data.data);
+          // setCurrentUser(userRes.data.data);
+          localStorage.clear();
+          setToken(null);
         } else {
           const deviceId = localStorage.getItem("deviceId");
           if (userRes.data.data.deviceToken === deviceId) {
