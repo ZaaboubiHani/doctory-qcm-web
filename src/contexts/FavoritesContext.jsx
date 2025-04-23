@@ -15,7 +15,10 @@ const FavoritesProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance
       .getAxios()
-      .get(`/favourites/questions?course=${course}`, {
+      .get(`/favourites/v2/questions`, {
+        params: {
+          course: course,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -26,13 +29,14 @@ const FavoritesProvider = ({ children }) => {
 
   const getAnswers = async (course) => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance
-      .getAxios()
-      .get(`/answers?course=${course}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const response = await apiInstance.getAxios().get(`/answers/v2`, {
+      params: {
+        course: course,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return response;
   };
@@ -40,7 +44,7 @@ const FavoritesProvider = ({ children }) => {
   const createAnswer = async (questionId) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance.getAxios().post(
-      `/answers`,
+      `/answers/v2`,
       {
         question: questionId,
       },
@@ -50,53 +54,61 @@ const FavoritesProvider = ({ children }) => {
         },
       }
     );
-    
 
     return response;
   };
 
   const deleteAnswer = async (answerId) => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance.getAxios().delete(
-      `/answers/${answerId}`,
-      {
+    const response = await apiInstance
+      .getAxios()
+      .delete(`/answers/v2/${answerId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
-    );
+      });
 
     return response;
   };
 
-  const getFavoriteCourses = async (category) => {
+  const getFavoriteCourses = async (module) => {
     const token = localStorage.getItem("token");
+    const year = localStorage.getItem("year");
     const response = await apiInstance
       .getAxios()
-      .get(`/favourites/courses?module=${category}`, {
+      .get(`/favourites/v2/courses`, {
+        params: {
+          module: module,
+          year: year,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
     return response;
   };
+
   const getFavoriteModules = async (category) => {
     const token = localStorage.getItem("token");
+    const year = localStorage.getItem("year");
     const response = await apiInstance
       .getAxios()
-      .get(`/favourites/modules?category=${category}`, {
+      .get(`/favourites/v2/modules`, {
+        params: {
+          category: category,
+          year: year,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
     return response;
   };
-
 
   const onCreateFavoriteQuestion = async (questionId) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance.getAxios().post(
-      `/favourites`,
+      `/favourites/v2`,
       {
         question: questionId,
       },
@@ -125,11 +137,13 @@ const FavoritesProvider = ({ children }) => {
 
   const getFavoriteCategories = async () => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance.getAxios().get(`/stats/favourites`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await apiInstance
+      .getAxios()
+      .get(`/favourites/v2/categories`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
     return response;
   };

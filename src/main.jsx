@@ -14,6 +14,7 @@ import ReportsProvider from "./contexts/ReportsContext.jsx";
 import ExamProvider from "./contexts/ExamContext.jsx";
 import StatsProvider from "./contexts/StatsContext.jsx";
 import ResidencyProvider from "./contexts/ResidencyContext.jsx";
+import VersionProvider from "./contexts/VersionContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <CategoriesProvider>
@@ -27,9 +28,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                   <StatsProvider>
                     <SnackbarProvider>
                       <ResidencyProvider>
-                        <AuthProvider>
+                        <VersionProvider>
+                          <AuthProvider>
                             <App />
-                        </AuthProvider>
+                          </AuthProvider>
+                        </VersionProvider>
                       </ResidencyProvider>
                     </SnackbarProvider>
                   </StatsProvider>

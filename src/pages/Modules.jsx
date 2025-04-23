@@ -22,7 +22,7 @@ const Modules = () => {
   const initData = async () => {
     const response = await getModules(id);
     if (response.status === 200) {
-      setModules(response.data);
+      setModules(response.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les modules",

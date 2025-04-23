@@ -11,6 +11,7 @@ import { ExamContext } from "../contexts/ExamContext";
 import { useNavigate } from "react-router-dom";
 import WingsImg from "../assets/wings.png";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
 const Courses = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -27,10 +28,7 @@ const Courses = () => {
   const initData = async () => {
     const response = await getCourses(id);
     if (response.status === 200) {
-      const sortedCourses = response.data.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-      setCourses(sortedCourses);
+      setCourses(response.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les courses",
@@ -44,10 +42,7 @@ const Courses = () => {
   const getData = async (moduleId) => {
     const response = await getCourses(moduleId);
     if (response.status === 200) {
-      const sortedCourses = response.data.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-      setCourses(sortedCourses);
+      setCourses(response.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les courses",
@@ -124,17 +119,43 @@ const Courses = () => {
             ) : (
               courses.map((e, index) => (
                 <div
-                  onClick={() => {
-                    navigate(`/questions/${e._id}`);
-                    setSelectedCourse(e._id);
-                  }}
                   key={e._id}
                   className="h-20 bg-white rounded-xl cursor-pointer text-left
                 shadow-lg p-4 flex justify-start items-center m-4 
                 text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300"
                 >
-                  <img src={courseImg} className="mr-1" alt="" />
-                  {e.name}
+                  <img
+                    src={courseImg}
+                    className="mr-1"
+                    alt=""
+                    onClick={() => {
+                      navigate(`/questions/${e._id}`);
+                      setSelectedCourse(e._id);
+                      
+                    }}
+                  />
+                  <div
+                    className="w-full"
+                    onClick={() => {
+                      navigate(`/questions/${e._id}`);
+                      setSelectedCourse(e._id);
+                    }}
+                  >
+                    {e.name}
+                  </div>
+                  {e.file?.url && (
+                    <FaDownload
+                      onClick={() => {
+                        const link = document.createElement("a");
+                        link.href = e.file.url;
+                        link.setAttribute("download", ""); // prevent opening in tab
+                        link.setAttribute("target", "_blank"); // optional, won't affect download but safe
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                    />
+                  )}
                 </div>
               ))
             )}

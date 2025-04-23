@@ -25,7 +25,7 @@ const FavoriteCategories = () => {
     if (categories.length === 0) {
       const response = await getFavoriteCategories();
       if (response.status === 200) {
-        setCategories(response.data);
+        setCategories(response.data.data);
       } else {
         showSnackbar(
           "N'a pas réussi à obtenir les catégories",
@@ -59,11 +59,11 @@ const FavoriteCategories = () => {
         </div>
       ) : (
         <>
-          {categories.map((e, index) => (
+          {categories.map((category, index) => (
             <div
-              key={e.category._id}
+              key={category._id}
               onClick={() => {
-                navigate(`/favorites-modules/${e.category._id}`);
+                navigate(`/favorites-modules/${category._id}`);
               }}
               className="w-60 h-64 md:w-80 md:h-96 bg-white rounded-3xl cursor-pointer
              shadow-lg p-4 flex flex-col justify-center items-start m-2 border-2 border-teal-500 "
@@ -76,14 +76,14 @@ const FavoriteCategories = () => {
                 />
               </div>
               <h1 className="text-xl md:text-2xl z-40 font-black">
-                {e.category.name}
+                {category.name}
               </h1>
               <h1 className="text-md md:text-lg z-40">
-                Modules {e.modulesNum}
+                Modules {category.modulesNum}
               </h1>
-              <h1 className="text-md md:text-lg z-40">Cours {e.coursesNum}</h1>
+              <h1 className="text-md md:text-lg z-40">Cours {category.coursesNum}</h1>
               <h1 className="text-md md:text-lg z-40">
-                Questions {e.questionsNum}
+                Questions {category.questionsNum}
               </h1>
             </div>
           ))}

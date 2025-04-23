@@ -8,25 +8,27 @@ const QuestionsProvider = ({ children }) => {
 
   const getQuestions = async (course) => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance
-      .getAxios()
-      .get(`/questions/details?course=${course}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const response = await apiInstance.getAxios().get(`/questions/v2/details`, {
+      params: {
+        course: course,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return response;
   };
   const getAnswers = async (course) => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance
-      .getAxios()
-      .get(`/answers?course=${course}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const response = await apiInstance.getAxios().get(`/answers/v2`, {
+      params: {
+        course: course,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return response;
   };
@@ -34,7 +36,7 @@ const QuestionsProvider = ({ children }) => {
   const createAnswer = async (questionId) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance.getAxios().post(
-      `/answers`,
+      `/answers/v2`,
       {
         question: questionId,
       },
@@ -44,21 +46,19 @@ const QuestionsProvider = ({ children }) => {
         },
       }
     );
-    
 
     return response;
   };
 
   const deleteAnswer = async (answerId) => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance.getAxios().delete(
-      `/answers/${answerId}`,
-      {
+    const response = await apiInstance
+      .getAxios()
+      .delete(`/answers/v2/${answerId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
-    );
+      });
 
     return response;
   };

@@ -118,6 +118,7 @@ const Quiz = () => {
 
   const initData = async () => {
     setPageIndex(parseInt(index));
+
     setCheckedBoxes(
       questions[index]?.choices?.map((e) => false) ||
         questions[index].question.choices.map((e) => false)
@@ -145,24 +146,16 @@ const Quiz = () => {
       const response = await createAnswer(
         questions[pageIndex]?._id ?? questions[pageIndex]?.question?._id
       );
-      setAnswers([
-        ...answers,
-        {
-          _id: response.data._id,
-          question: { _id: response.data.question },
-        },
-      ]);
+      setAnswers([...answers, response.data.data]);
     } else {
       const updatedAnswers = answers.filter(
         (a) =>
-          a.question._id !== questions[pageIndex]?._id &&
-          a.question._id !== questions[pageIndex]?.question?._id
+          a.question !== questions[pageIndex]?._id &&
+          a.question !== questions[pageIndex]?.question?._id
       );
 
       const answerToDelete = answers.find(
-        (a) =>
-          a.question._id === questions[pageIndex]?._id ||
-          a.question._id === questions[pageIndex]?.question?._id
+        (a) => a.question === questions[pageIndex]?._id
       );
 
       if (answerToDelete) {
@@ -249,11 +242,11 @@ const Quiz = () => {
                     }}
                   />
                 )}
-                {questions[pageIndex].isFavourite ? (
+                {questions[pageIndex].favourite ? (
                   <FaHeart
                     onClick={() => {
                       onRemoveFavoriteQuestion(questions[pageIndex]._id);
-                      questions[pageIndex].isFavourite = false;
+                      questions[pageIndex].favourite = false;
                       setQuestions([...questions]);
                       showSnackbar(
                         "Retiré des favoris",
@@ -267,7 +260,7 @@ const Quiz = () => {
                   <FaRegHeart
                     onClick={() => {
                       onCreateFavoriteQuestion(questions[pageIndex]._id);
-                      questions[pageIndex].isFavourite = true;
+                      questions[pageIndex].favourite = true;
                       setQuestions([...questions]);
                       showSnackbar(
                         "Ajouté aux favoris",
@@ -449,10 +442,7 @@ const Quiz = () => {
                   {e.note ? (
                     <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
                   ) : null}
-                  {answers.map((a) => a.question._id).includes(e._id) ||
-                  answers
-                    .map((a) => a.question._id)
-                    .includes(e.question?._id ?? e._id) ? (
+                  {answers.map((a) => a.question).includes(e._id) ? (
                     <FaCheckCircle className="text-green-500 text-sm" />
                   ) : null}
                 </div>
@@ -486,7 +476,7 @@ const Quiz = () => {
               questions[pageIndex]._id,
               text
             );
-            questions[pageIndex].note = res.data;
+            questions[pageIndex].note = res.data.data;
             setQuestions([...questions]);
             showSnackbar("Note ajoutée", 3000, SnackbarType.SUCCESS);
           }

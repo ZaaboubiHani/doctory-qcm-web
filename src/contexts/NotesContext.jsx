@@ -6,7 +6,7 @@ const NotesProvider = ({ children }) => {
   const onCreateQuestionNote = async (questionId, note) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance.getAxios().post(
-      `/notes`,
+      `/notes/v2`,
       {
         question: questionId,
         note: note,
@@ -24,7 +24,7 @@ const NotesProvider = ({ children }) => {
   const onUpdateQuestionNote = async (noteId, note) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance.getAxios().put(
-      `/notes/${noteId}`,
+      `/notes/v2/${noteId}`,
       {
         note: note,
       },

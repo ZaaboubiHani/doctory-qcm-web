@@ -60,8 +60,7 @@ const FavoriteQuiz = () => {
         if (evaluated) {
           setEvaluated(false);
           setCheckedBoxes(
-            questions[pageIndex]?.choices?.map(() => false) ??
-              questions[pageIndex].question.choices.map(() => false)
+            questions[pageIndex]?.choices?.map(() => false) 
           );
         } else {
           handleEvaluation();
@@ -84,8 +83,7 @@ const FavoriteQuiz = () => {
           );
           setEvaluated(false);
         }
-      }
-      else {
+      } else {
         // Handle checkbox toggling
         Object.entries(keyMap).forEach(([index, keys]) => {
           if (keys.includes(event.key) && index < checkedBoxes.length) {
@@ -104,35 +102,29 @@ const FavoriteQuiz = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [pageIndex, questions.length,evaluated, checkedBoxes]);
+  }, [pageIndex, questions.length, evaluated, checkedBoxes]);
 
   const handleEvaluation = async () => {
-    const selectedChoices = questions[pageIndex].question.choices
+    const selectedChoices = questions[pageIndex].choices
       .filter((e, i) => checkedBoxes[i])
       .map((e) => e.letter);
 
-    const correctChoices = questions[pageIndex].question.correctAnswers;
+    const correctChoices = questions[pageIndex].correctAnswers;
 
     const arraysEqual =
       selectedChoices.length === correctChoices.length &&
       selectedChoices.every((value, index) => value === correctChoices[index]);
 
     if (arraysEqual) {
-      const response = await createAnswer(questions[pageIndex].question._id);
-      setAnswers([
-        ...answers,
-        {
-          _id: response.data._id,
-          question: { _id: response.data.question },
-        },
-      ]);
+      const response = await createAnswer(questions[pageIndex]._id);
+      setAnswers([...answers, response.data.data]);
     } else {
       const updatedAnswers = answers.filter(
-        (a) => a.question._id !== questions[pageIndex].question._id
+        (a) => a.question !== questions[pageIndex]._id
       );
 
       const answerToDelete = answers.find(
-        (a) => a.question._id === questions[pageIndex].question._id
+        (a) => a.question === questions[pageIndex]._id
       );
 
       if (answerToDelete) {
@@ -150,7 +142,7 @@ const FavoriteQuiz = () => {
 
   const initData = async () => {
     setPageIndex(parseInt(index));
-    setCheckedBoxes(questions[index].question.choices.map((e) => false));
+    setCheckedBoxes(questions[index].choices.map((e) => false));
     setIsLoading(false);
   };
 
@@ -193,13 +185,13 @@ const FavoriteQuiz = () => {
                     }}
                   />
                 )}
-                {!questions[pageIndex].question.isFavourite ? (
+                {questions[pageIndex].favourite ? (
                   <FaHeart
                     onClick={() => {
                       onRemoveFavoriteQuestion(
-                        questions[pageIndex].question._id
+                        questions[pageIndex]._id
                       );
-                      questions[pageIndex].question.isFavourite = false;
+                      questions[pageIndex].favourite = undefined;
                       setQuestions([...questions]);
                       showSnackbar(
                         "Retiré des favoris",
@@ -215,7 +207,7 @@ const FavoriteQuiz = () => {
                       onCreateFavoriteQuestion(
                         questions[pageIndex].question._id
                       );
-                      questions[pageIndex].question.isFavourite = true;
+                      questions[pageIndex].favourite = true;
                       setQuestions([...questions]);
                       showSnackbar(
                         "Ajouté aux favoris",
@@ -237,7 +229,7 @@ const FavoriteQuiz = () => {
                   onClick={() => {
                     setEvaluated(false);
                     setCheckedBoxes(
-                      questions[pageIndex].question.choices.map((e) => false)
+                      questions[pageIndex].choices.map((e) => false)
                     );
                     showSnackbar("Actualiser", 1000, SnackbarType.SUCCESS);
                   }}
@@ -251,10 +243,10 @@ const FavoriteQuiz = () => {
                 transition-all duration-300 text-left`}
               >
                 {pageIndex + 1}
-                {") " + questions[pageIndex].question.text}
+                {") " + questions[pageIndex].text}
               </div>
               <div>
-                {questions[pageIndex].question.choices.map((c, i) => (
+                {questions[pageIndex].choices.map((c, i) => (
                   <div className="flex items-center justify-start" key={i}>
                     <input
                       type="checkbox"
@@ -278,7 +270,7 @@ const FavoriteQuiz = () => {
                         evaluated
                           ? questions[
                               pageIndex
-                            ].question.correctAnswers.includes(c.letter)
+                            ].correctAnswers.includes(c.letter)
                             ? "border-2 border-green-700"
                             : "border-2 border-red-500"
                           : "border-0"
@@ -306,7 +298,7 @@ const FavoriteQuiz = () => {
                 onClick={() => {
                   setPageIndex(pageIndex - 1);
                   setCheckedBoxes(
-                    questions[pageIndex - 1].question.choices.map((e) => false)
+                    questions[pageIndex - 1].choices.map((e) => false)
                   );
                   setEvaluated(false);
                 }}
@@ -334,7 +326,7 @@ const FavoriteQuiz = () => {
                 onClick={() => {
                   setPageIndex(pageIndex + 1);
                   setCheckedBoxes(
-                    questions[pageIndex + 1].question.choices.map((e) => false)
+                    questions[pageIndex + 1].choices.map((e) => false)
                   );
                   setEvaluated(false);
                 }}
@@ -369,7 +361,7 @@ const FavoriteQuiz = () => {
                   setIsLoading(true);
                   setPageIndex(parseInt(index));
                   setCheckedBoxes(
-                    questions[index].question.choices.map((e) => false)
+                    questions[index].choices.map((e) => false)
                   );
                   setIsLoading(false);
                   setEvaluated(false);
@@ -380,8 +372,8 @@ const FavoriteQuiz = () => {
                     <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
                   ) : null}
                   {answers
-                    .map((a) => a.question._id)
-                    .includes(e.question._id) ? (
+                    .map((a) => a.question)
+                    .includes(e._id) ? (
                     <FaCheckCircle className="text-green-500 text-sm" />
                   ) : null}
                 </div>
