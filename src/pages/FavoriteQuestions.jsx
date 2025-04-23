@@ -11,6 +11,8 @@ import { FaLightbulb } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
 import WingsImg from "../assets/wings.png";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
+
 const FavoriteQuestions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -34,7 +36,7 @@ const FavoriteQuestions = () => {
   const initData = async () => {
     const response = await getFavoriteQuestions(id);
     if (response.status === 200) {
-      setQuestions(response.data);
+      setQuestions(response.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les questions",
@@ -44,7 +46,7 @@ const FavoriteQuestions = () => {
     }
     const ansResponse = await getAnswers(id);
     if (ansResponse.status === 200) {
-      setAnswers(ansResponse.data);
+      setAnswers(ansResponse.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les réponses",
@@ -58,7 +60,7 @@ const FavoriteQuestions = () => {
   const getData = async (courseId) => {
     const response = await getFavoriteQuestions(courseId);
     if (response.status === 200) {
-      setQuestions(response.data);
+      setQuestions(response.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les questions",
@@ -68,7 +70,7 @@ const FavoriteQuestions = () => {
     }
     const ansResponse = await getAnswers(courseId);
     if (ansResponse.status === 200) {
-      setAnswers(ansResponse.data);
+      setAnswers(ansResponse.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les réponses",
@@ -128,12 +130,6 @@ const FavoriteQuestions = () => {
             {courses.map((e, index) => (
               <div
                 key={e._id}
-                onClick={() => {
-                  setIsLoading(true);
-                  navigate(`/favorites-questions/${e._id}`);
-                  setSelectedCourse(e._id);
-                  getData(e._id);
-                }}
                 className={`h-20 ${
                   e._id === selectedCourse ? "bg-teal-100" : "bg-white"
                 } rounded-xl cursor-pointer
@@ -141,8 +137,41 @@ const FavoriteQuestions = () => {
             text-lg lg:text-xl hover:text-xl lg:hover:text-2xl
              transition-all duration-300 text-left`}
               >
-                <img src={courseImg} className="mr-1" alt="" />
-                {e.name}
+                <img
+                  src={courseImg}
+                  className="mr-1"
+                  alt=""
+                  onClick={() => {
+                    setIsLoading(true);
+                    navigate(`/favorites-questions/${e._id}`);
+                    setSelectedCourse(e._id);
+                    getData(e._id);
+                  }}
+                />
+                <div
+                  className="w-full"
+                  onClick={() => {
+                    setIsLoading(true);
+                    navigate(`/favorites-questions/${e._id}`);
+                    setSelectedCourse(e._id);
+                    getData(e._id);
+                  }}
+                >
+                  {e.name}
+                </div>
+                {e.file?.url && (
+                  <FaDownload
+                    onClick={() => {
+                      const link = document.createElement("a");
+                      link.href = e.file.url;
+                      link.setAttribute("download", ""); // prevent opening in tab
+                      link.setAttribute("target", "_blank"); // optional, won't affect download but safe
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -187,8 +216,8 @@ const FavoriteQuestions = () => {
                       <FaLightbulb className="text-yellow-500 mb-1 text-xs md:text-sm" />
                     ) : null}
                     {answers
-                      .map((a) => a.question._id)
-                      .includes(e.question._id) ? (
+                      .map((a) => a.question)
+                      .includes(e._id) ? (
                       <FaCheckCircle className="text-green-500 text-xs md:text-sm" />
                     ) : null}
                   </div>

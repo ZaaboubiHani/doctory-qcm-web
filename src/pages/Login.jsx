@@ -9,17 +9,20 @@ import Button from "../components/Button";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
+import { VersionContext } from "../contexts/VersionContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
 
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import Api from "../api/api.source";
+import { use } from "react";
 const apiInstance = Api.instance;
 const Login = ({ setToken }) => {
   const navigate = useNavigate();
   const { login, setCurrentUser, getMe, updateUserInfo, getDeviceId } =
     useContext(AuthContext);
   const { showSnackbar } = useContext(SnackbarContext);
+  const { version, setVersion, getLatestVersion } = useContext(VersionContext);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -31,24 +34,23 @@ const Login = ({ setToken }) => {
   const handleAutoLogin = async () => {
     try {
       const token = localStorage.getItem("token");
-      console.log("autologin");
-      
+      var verRes = await getLatestVersion();
+
+      setVersion(verRes.data.data);
       if (token) {
         const userRes = await getMe(token);
+
         if (
           userRes.data.data.deviceToken === null ||
           userRes.data.data.deviceToken === undefined ||
           userRes.data.data.deviceToken === ""
         ) {
-          // userRes.data.data.deviceToken = getDeviceId();
-          // userRes.data.data.token = token;
-          // updateUserInfo(userRes.data.data);
-          // setCurrentUser(userRes.data.data);
           localStorage.clear();
           setToken(null);
         } else {
           const deviceId = localStorage.getItem("deviceId");
           if (userRes.data.data.deviceToken === deviceId) {
+            localStorage.setItem("year", userRes.data.data.year);
             userRes.data.data.token = token;
             setCurrentUser(userRes.data.data);
             navigate("/categories");
@@ -167,21 +169,15 @@ const Login = ({ setToken }) => {
               icon={<MdOutlinePhoneAndroid className="text-3xl" />}
               text="Télécharger APK"
               onClick={async () => {
-                const response = await apiInstance
-                  .getAxios()
-                  .get(`/downloads`, {
-                    responseType: "blob",
-                  });
+                const fileUrl = version.file.url;
+                const fileName = `doctory_qcm_${version.number}.apk`; // <-- Set your desired file name here
 
-                const url = window.URL.createObjectURL(
-                  new Blob([response.data])
-                );
                 const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", "dctory_qcm_1.2.5.apk");
+                link.href = fileUrl;
+                link.download = fileName; // This sets the downloaded file's name
                 document.body.appendChild(link);
                 link.click();
-                link.remove();
+                document.body.removeChild(link);
               }}
             />
           </>

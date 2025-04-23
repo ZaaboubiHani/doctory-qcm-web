@@ -19,12 +19,16 @@ import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import WingsImg from "../assets/wings.png";
 import Api from "../api/api.source";
+import { VersionContext } from "../contexts/VersionContext";
+
 const apiInstance = Api.instance;
 
 const Profile = ({ setToken }) => {
   const navigate = useNavigate();
-  const { updateUserInfo, setCurrentUser, getMe, currentUser , getDeviceId} =
+  const { updateUserInfo, setCurrentUser, getMe, currentUser, getDeviceId } =
     useContext(AuthContext);
+  const { version, setVersion, getLatestVersion } = useContext(VersionContext);
+
   const { showSnackbar } = useContext(SnackbarContext);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -32,13 +36,15 @@ const Profile = ({ setToken }) => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-
   useEffect(() => {
     initData();
   }, []);
 
   const initData = async () => {
     setIsLoading(true);
+    var verRes = await getLatestVersion();
+
+    setVersion(verRes.data.data);
     if (currentUser) {
       setName(currentUser.name);
       setPhoneNumber(currentUser.phoneNumber);
@@ -53,16 +59,15 @@ const Profile = ({ setToken }) => {
     }
   };
 
-
   return (
     <div className="flex flex-col h-full justify-center items-center md:items-start overflow-hidden relative">
-       <img
-              className="absolute -right-32 -z-10 w-full h-full object-cover"
-              src={DoctorSideImg}
-              alt=""
-            />
-            <img className="absolute left-0 opacity-20 -z-10" src={WingsImg} alt="" />
-      
+      <img
+        className="absolute -right-32 -z-10 w-full h-full object-cover"
+        src={DoctorSideImg}
+        alt=""
+      />
+      <img className="absolute left-0 opacity-20 -z-10" src={WingsImg} alt="" />
+
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center w-full">
           <ClipLoader
@@ -142,27 +147,20 @@ const Profile = ({ setToken }) => {
                 }
               }}
             />
-           
+
             <Button
               icon={<MdOutlinePhoneAndroid className="text-3xl" />}
               text="Télécharger APK"
               onClick={async () => {
+                const fileUrl = version.file.url;
+                const fileName = `doctory_qcm_${version.number}.apk`; // <-- Set your desired file name here
 
-                const response = await apiInstance
-                  .getAxios()
-                  .get(`/downloads`, {
-                    responseType: "blob",
-                  });
-
-                const url = window.URL.createObjectURL(
-                  new Blob([response.data])
-                );
                 const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", "dctory_qcm_1.3.0.apk");
+                link.href = fileUrl;
+                link.download = fileName; // This sets the downloaded file's name
                 document.body.appendChild(link);
                 link.click();
-                link.remove();
+                document.body.removeChild(link);
               }}
             />
             <Link to="/">
@@ -180,8 +178,6 @@ const Profile = ({ setToken }) => {
               />
             </Link>
           </div>
-          
-        
         </div>
       )}
     </div>

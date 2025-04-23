@@ -8,13 +8,17 @@ const ModulesProvider = ({ children }) => {
 
   const getModules = async (category) => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance
-      .getAxios()
-      .get(`/modules?category=${category}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const year = localStorage.getItem("year");
+    const response = await apiInstance.getAxios().get('/modules/v2', {
+      params: {
+        category: category,
+        year: year,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    
     return response;
   };
   return (

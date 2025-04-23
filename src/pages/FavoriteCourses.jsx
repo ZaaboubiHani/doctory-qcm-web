@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import BgImg from "../assets/bg-1.jpg";
 import moduleImg from "../assets/cube-3d.png";
 import courseImg from "../assets/des-documents.png";
 import { FavoritesContext } from "../contexts/FavoritesContext";
@@ -9,6 +8,8 @@ import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import { useNavigate } from "react-router-dom";
 import WingsImg from "../assets/wings.png";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
+
 const FavoriteCourses = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -24,10 +25,8 @@ const FavoriteCourses = () => {
   const initData = async () => {
     const response = await getFavoriteCourses(id);
     if (response.status === 200) {
-      const sortedCourses = response.data.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-      setCourses(sortedCourses);
+      
+      setCourses(response.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les courses",
@@ -41,10 +40,7 @@ const FavoriteCourses = () => {
   const getData = async (moduleId) => {
     const response = await getFavoriteCourses(moduleId);
     if (response.status === 200) {
-      const sortedCourses = response.data.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-      setCourses(sortedCourses);
+      setCourses(response.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les courses",
@@ -55,15 +51,14 @@ const FavoriteCourses = () => {
 
     setIsLoading(false);
   };
-  
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
-     <img
-         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
-         src={WingsImg}
-         alt=""
-       />
+      <img
+        className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
+        src={WingsImg}
+        alt=""
+      />
       <div className="w-full h-full flex">
         <div className="w-1/3 md:w-1/2 lg:w-1/3 h-full flex-col hidden md:flex">
           <div
@@ -100,12 +95,12 @@ const FavoriteCourses = () => {
             className="min-h-20 shadow-lg flex-shrink bg-teal-500 
           text-xl font-black flex justify-center items-center rounded-b-2xl"
           >
-              <FaArrowAltCircleLeft
-                            className={`text-3xl min-h-8 mr-2 flex lg:hidden`}
-                            onClick={() => {
-                              navigate(-1);
-                            }}
-                          ></FaArrowAltCircleLeft>
+            <FaArrowAltCircleLeft
+              className={`text-3xl min-h-8 mr-2 flex lg:hidden`}
+              onClick={() => {
+                navigate(-1);
+              }}
+            ></FaArrowAltCircleLeft>
             Cours
           </div>
           <div className="flex-grow-1 overflow-y-auto flex-1">
@@ -122,17 +117,42 @@ const FavoriteCourses = () => {
             ) : (
               courses.map((e, index) => (
                 <div
-                  onClick={() => {
-                    navigate(`/favorites-questions/${e._id}`);
-                    setSelectedCourse(e._id);
-                  }}
                   key={e._id}
                   className="h-20 bg-white rounded-xl cursor-pointer text-left
                 shadow-lg p-4 flex justify-start items-center m-4 
                 text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300"
                 >
-                  <img src={courseImg} className="mr-1" alt="" />
-                  {e.name}
+                  <img
+                    src={courseImg}
+                    className="mr-1"
+                    alt=""
+                    onClick={() => {
+                      navigate(`/favorites-questions/${e._id}`);
+                      setSelectedCourse(e._id);
+                    }}
+                  />
+                  <div
+                    className="w-full"
+                    onClick={() => {
+                      navigate(`/favorites-questions/${e._id}`);
+                      setSelectedCourse(e._id);
+                    }}
+                  >
+                    {e.name}
+                  </div>
+                  {e.file?.url && (
+                    <FaDownload
+                      onClick={() => {
+                        const link = document.createElement("a");
+                        link.href = e.file.url;
+                        link.setAttribute("download", ""); // prevent opening in tab
+                        link.setAttribute("target", "_blank"); // optional, won't affect download but safe
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                    />
+                  )}
                 </div>
               ))
             )}

@@ -22,7 +22,7 @@ const FavoriteModules = () => {
   const initData = async () => {
     const response = await getFavoriteModules(id);
     if (response.status === 200) {
-      setModules(response.data);
+      setModules(response.data.data);
     } else {
       showSnackbar(
         "N'a pas réussi à obtenir les modules",

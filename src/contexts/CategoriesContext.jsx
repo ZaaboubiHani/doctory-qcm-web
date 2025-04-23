@@ -7,15 +7,18 @@ const CategoriesProvider = ({ children }) => {
 
   const getCategories = async () => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance.getAxios().get(`/categories/stats`, {
+    const response = await apiInstance.getAxios().get(`/categories/v2`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
     return response;
   };
   return (
-    <CategoriesContext.Provider value={{ getCategories, setCategories ,categories }}>
+    <CategoriesContext.Provider
+      value={{ getCategories, setCategories, categories }}
+    >
       {children}
     </CategoriesContext.Provider>
   );
