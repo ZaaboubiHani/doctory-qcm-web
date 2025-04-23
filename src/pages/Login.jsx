@@ -169,7 +169,6 @@ const Login = ({ setToken }) => {
               icon={<MdOutlinePhoneAndroid className="text-3xl" />}
               text="Télécharger APK"
               onClick={async () => {
-                console.log(version);
                 const fileUrl = version.file.url;
                 const fileName = `doctory_qcm_${version.number}.apk`; // <-- Set your desired file name here
 
