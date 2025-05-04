@@ -25,7 +25,6 @@ const FavoriteCourses = () => {
   const initData = async () => {
     const response = await getFavoriteCourses(id);
     if (response.status === 200) {
-      
       setCourses(response.data.data);
     } else {
       showSnackbar(
@@ -62,8 +61,8 @@ const FavoriteCourses = () => {
       <div className="w-full h-full flex">
         <div className="w-1/3 md:w-1/2 lg:w-1/3 h-full flex-col hidden md:flex">
           <div
-            className="min-h-20 flex-shrink shadow-lg bg-teal-500 
-          text-xl font-black flex justify-center items-center rounded-b-2xl"
+            role="alert"
+            className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
             Modules
           </div>
@@ -77,14 +76,17 @@ const FavoriteCourses = () => {
                   setSelectedModule(e._id);
                   getData(e._id);
                 }}
-                className={`h-20 ${
-                  e._id === selectedModule ? "bg-teal-100" : "bg-white"
-                } rounded-xl cursor-pointer
-            shadow-lg p-4 flex justify-start items-center m-4 
-            text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300 text-left`}
+                className={`flex items-center gap-4 p-4 m-4 rounded-md border 
+                                 ${
+                                   e._id === selectedModule
+                                     ? "bg-slate-200 dark:bg-slate-700"
+                                     : "bg-white dark:bg-gray-800"
+                                 } 
+                                 border-slate-200 dark:border-slate-500 
+                                 shadow-lg cursor-pointer hover:bg-slate-300 hover:dark:bg-slate-700 transition-all duration-300`}
               >
-                <img src={moduleImg} alt="" />
-                {e.name}
+                <img src={moduleImg} alt="" className="w-6 h-6" />
+                <span className="text-lg font-medium">{e.name}</span>
               </div>
             ))}
           </div>
@@ -92,16 +94,14 @@ const FavoriteCourses = () => {
         <div className="border-l hidden md:block" />
         <div className="w-full md:w-1/2 lg:w-1/3 h-full flex flex-col  ">
           <div
-            className="min-h-20 shadow-lg flex-shrink bg-teal-500 
-          text-xl font-black flex justify-center items-center rounded-b-2xl"
+            role="alert"
+            className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
             <FaArrowAltCircleLeft
-              className={`text-3xl min-h-8 mr-2 flex lg:hidden`}
-              onClick={() => {
-                navigate(-1);
-              }}
-            ></FaArrowAltCircleLeft>
-            Cours
+              className="text-2xl mr-2 cursor-pointer lg:hidden"
+              onClick={() => navigate(-1)}
+            />
+            <div className="font-sans text-base font-bold">Cours</div>
           </div>
           <div className="flex-grow-1 overflow-y-auto flex-1">
             {isLoading ? (
@@ -118,13 +118,11 @@ const FavoriteCourses = () => {
               courses.map((e, index) => (
                 <div
                   key={e._id}
-                  className="h-20 bg-white rounded-xl cursor-pointer text-left
-                shadow-lg p-4 flex justify-start items-center m-4 
-                text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300"
+                  className="flex items-center gap-3 p-4 m-4 rounded-md border bg-white dark:bg-gray-800 border-slate-200 dark:border-slate-500 shadow-lg hover:bg-slate-300 hover:dark:bg-slate-700 cursor-pointer transition-all duration-300"
                 >
                   <img
                     src={courseImg}
-                    className="mr-1"
+                    className="w-6 h-6"
                     alt=""
                     onClick={() => {
                       navigate(`/favorites-questions/${e._id}`);
@@ -160,7 +158,10 @@ const FavoriteCourses = () => {
         </div>
         <div className="border-l hidden lg:block" />
         <div className="w-1/3 h-full hidden lg:flex flex-col">
-          <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center rounded-b-2xl">
+        <div
+            role="alert"
+            className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
+          >
             Questions
           </div>
           <div className="flex-grow-1 overflow-y-auto flex-1">

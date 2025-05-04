@@ -52,11 +52,6 @@ const Stats = () => {
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
-      <img
-                className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
-                src={WingsImg}
-                alt=""
-              />
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center w-full h-full">
           <ClipLoader
@@ -79,11 +74,15 @@ const Stats = () => {
             }`}
           >
             <div
-              className="min-h-20 flex-shrink shadow-lg bg-teal-500 
-              text-xl font-black flex justify-center items-center rounded-b-2xl"
+              role="alert"
+              class="relative flex w-full items-start rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
+             dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
-              Catégories
+              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
+                Catégories
+              </div>
             </div>
+
             <div className="flex-grow-1 overflow-y-auto ">
               {categoriesStats.map((e, index) => (
                 <div
@@ -97,38 +96,49 @@ const Stats = () => {
                     setModulesStats(response.data);
                     setLoadingModulesStats(false);
                   }}
-                  className={`h-20 ${
-                    e._id === selectedCategory ? "bg-teal-100" : "bg-white"
-                  } rounded-xl cursor-pointer
-                shadow-lg p-4 flex justify-start items-center m-4 
-                text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300 text-left`}
+                  role="alert"
+                  className="p-2"
                 >
-                  <img src={moduleImg} alt="" className="mr-2" />
-                  <div className="flex-1">{e.name}</div>
-                  <div style={{ width: 50, height: 50 }}>
-                    <CircularProgressbar
-                      value={e.percentage}
-                      text={`${parseFloat(e.percentage.toFixed())}%`}
-                      styles={buildStyles({
-                        textColor: "#09BAB0",
-                        pathColor: "#09BAB0",
-                        trailColor: "#e0f2f1",
-                      })}
-                    />
+                  <div
+                    class={`relative flex w-full items-center rounded-md border ${
+                      e._id === selectedCategory
+                        ? "bg-teal-100 dark:bg-teal-800"
+                        : "bg-white dark:bg-gray-800"
+                    }  border-slate-200 bg-opacity-75 transition-all duration-300
+           dark:border-slate-500 hover:dark:bg-slate-700 hover:bg-slate-300 shadow-lg p-2 cursor-pointer`}
+                  >
+                    <img src={moduleImg} alt="" className="mr-2 h-10" />
+                    <div className="flex-1">{e.name}</div>
+                    <div style={{ width: 40, height: 40 }}>
+                      <CircularProgressbar
+                        value={e.percentage}
+                        text={`${parseFloat(e.percentage.toFixed())}%`}
+                        styles={buildStyles({
+                          textColor: "#09BAB0",
+                          pathColor: "#09BAB0",
+                          trailColor: "#e0f2f1",
+                          strokeWidth: 12, // default is 8, so this increases the thickness
+                          textSize: "24px",
+                        })}
+                        strokeWidth={12} // This is also required here
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
           <div className="border-l hidden md:block" />
+
           <div
             className={`w-full md:w-1/2 lg:w-1/3 h-full  flex-col ${
               selectedCategory && !selectedModule ? "flex" : "hidden md:flex"
             }`}
           >
             <div
-              className="min-h-20 shadow-lg flex-shrink bg-teal-500 
-              text-xl font-black flex justify-center items-center px-8 rounded-b-2xl"
+              role="alert"
+              class="relative flex w-full items-start rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
+             dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
               <FaArrowAltCircleLeft
                 className={`text-3xl min-h-8 mr-2 ${
@@ -144,8 +154,11 @@ const Stats = () => {
                   }
                 }}
               ></FaArrowAltCircleLeft>
-              Modules
+              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
+                Modules
+              </div>
             </div>
+
             <div className="flex-grow-1 overflow-y-auto flex-1">
               {loadingModulesStats ? (
                 <div className="flex flex-col justify-evenly items-center w-full h-full">
@@ -169,24 +182,33 @@ const Stats = () => {
                       setLoadingCoursesStats(false);
                     }}
                     key={e._id}
-                    className={`h-20 ${
-                      e._id === selectedModule ? "bg-teal-100" : "bg-white"
-                    } rounded-xl cursor-pointer text-left
-                    shadow-lg p-4 flex justify-start items-center m-4 
-                    text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300`}
+                    role="alert"
+                    className="p-2"
                   >
-                    <img src={courseImg} className="mr-1" alt="" />
-                    <div className="flex-1">{e.name}</div>
-                    <div style={{ width: 50, height: 50 }}>
-                      <CircularProgressbar
-                        value={e.percentage}
-                        text={`${parseFloat(e.percentage.toFixed())}%`}
-                        styles={buildStyles({
-                          textColor: "#09BAB0",
-                          pathColor: "#09BAB0",
-                          trailColor: "#e0f2f1",
-                        })}
-                      />
+                    <div
+                      class={`relative flex w-full items-center rounded-md border ${
+                        e._id === selectedModule
+                          ? "bg-teal-100 dark:bg-teal-800"
+                          : "bg-white dark:bg-gray-800"
+                      }  border-slate-200 bg-opacity-75 transition-all duration-300
+           dark:border-slate-500 hover:dark:bg-slate-700 hover:bg-slate-300 shadow-lg p-2 cursor-pointer`}
+                    >
+                      <img src={courseImg} className="mr-1 h-10" alt="" />
+                      <div className="flex-1">{e.name}</div>
+                      <div style={{ width: 40, height: 40 }}>
+                        <CircularProgressbar
+                          value={e.percentage}
+                          text={`${parseFloat(e.percentage.toFixed())}%`}
+                          styles={buildStyles({
+                            textColor: "#09BAB0",
+                            pathColor: "#09BAB0",
+                            trailColor: "#e0f2f1",
+                            strokeWidth: 12, // default is 8, so this increases the thickness
+                            textSize: "24px",
+                          })}
+                          strokeWidth={12} // This is also required here
+                        />
+                      </div>
                     </div>
                   </div>
                 ))
@@ -205,7 +227,11 @@ const Stats = () => {
               selectedModule ? "flex md:w-1/2" : "hidden lg:flex"
             }`}
           >
-            <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center rounded-b-2xl">
+            <div
+              role="alert"
+              class="relative flex w-full items-start rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
+             dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
+            >
               <FaArrowAltCircleLeft
                 className="text-3xl min-h-8 mr-2 md:hidden"
                 onClick={() => {
@@ -213,8 +239,11 @@ const Stats = () => {
                   setCoursesStats(undefined);
                 }}
               ></FaArrowAltCircleLeft>
-              Cours
+              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
+                Cours
+              </div>
             </div>
+
             <div className="flex-grow-1 overflow-y-auto flex-1">
               {loadingCoursesStats ? (
                 <div className="flex flex-col justify-evenly items-center w-full h-full">
@@ -229,28 +258,35 @@ const Stats = () => {
               ) : coursesStats ? (
                 coursesStats?.map((e, index) => (
                   <div
-                    onClick={() => {
-                      setSelectedModule(e._id);
-                    }}
+                   
                     key={e._id}
-                    className={` ${
-                      e._id === selectedModule ? "bg-teal-100" : "bg-white"
-                    } rounded-xl cursor-pointer text-left
-                    shadow-lg p-4 flex justify-start items-center m-4 
-                    text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300`}
+                    role="alert"
+                    className="p-2"
                   >
-                    <img src={courseImg} className="mr-1" alt="" />
-                    <div className="flex-1">{e.name}</div>
-                    <div style={{ width: 50, height: 50 }}>
-                      <CircularProgressbar
-                        value={e.percentage}
-                        text={`${parseFloat(e.percentage.toFixed())}%`}
-                        styles={buildStyles({
-                          textColor: "#09BAB0",
-                          pathColor: "#09BAB0",
-                          trailColor: "#e0f2f1",
-                        })}
-                      />
+                    <div
+                      class={`relative flex w-full items-center rounded-md border ${
+                        e._id === selectedModule
+                          ? "bg-teal-100 dark:bg-teal-800"
+                          : "bg-white dark:bg-gray-800"
+                      }  border-slate-200 bg-opacity-75 transition-all duration-300
+           dark:border-slate-500 hover:dark:bg-slate-700 hover:bg-slate-300 shadow-lg p-2 cursor-pointer`}
+                    >
+                      <img src={courseImg} className="mr-1 h-10" alt="" />
+                      <div className="flex-1">{e.name}</div>
+                      <div style={{ width: 40, height: 40 }}>
+                        <CircularProgressbar
+                          value={e.percentage}
+                          text={`${parseFloat(e.percentage.toFixed())}%`}
+                          styles={buildStyles({
+                            textColor: "#09BAB0",
+                            pathColor: "#09BAB0",
+                            trailColor: "#e0f2f1",
+                            strokeWidth: 12, // default is 8, so this increases the thickness
+                            textSize: "24px",
+                          })}
+                          strokeWidth={12} // This is also required here
+                        />
+                      </div>
                     </div>
                   </div>
                 ))

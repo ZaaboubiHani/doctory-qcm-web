@@ -22,6 +22,18 @@ const Categories = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/gh/creativetimofficial/tailwind-starter-kit@david-ui-js/dist%20/david-ui-tailwind.min.js';
+    script.defer = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+
+  useEffect(() => {
     initData();
   }, []);
   const initData = async () => {
@@ -29,7 +41,6 @@ const Categories = () => {
     if (categories.length === 0) {
       const response = await getCategories();
       if (response.status === 200) {
-        
         setCategories(response.data.data);
       } else {
         showSnackbar(
@@ -47,11 +58,11 @@ const Categories = () => {
       className="flex-grow-1 flex flex-row flex-wrap h-full 
   justify-evenly items-center overflow-auto relative py-4 "
     >
-      <img
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover object-top opacity-70 -z-10 "
+      {/* <img
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover object-top opacity-70 -z-10 dark:opacity-20"
         src={CategoriesBgImg}
         alt=""
-      />
+      /> */}
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center">
           <ClipLoader
@@ -64,32 +75,37 @@ const Categories = () => {
         </div>
       ) : (
         <>
+         
           {categories.map((category, index) => (
             <div
+              className="w-full max-w-60  lg:max-w-xs  overflow-hidden rounded-lg border bg-white border-slate-200 dark:bg-gray-800
+             dark:border-slate-500 shadow-lg m-4"
               key={category._id}
               onClick={() => {
                 navigate(`/modules/${category._id}`);
               }}
-              className="w-60 h-64 md:w-80 md:h-96 bg-white rounded-3xl cursor-pointer
-             shadow-lg p-4 flex flex-col justify-center items-start m-2  border-2 border-teal-500 "
             >
               <div className="w-full flex justify-center">
                 <img
-                  className="h-[130px] md:h-[230px] rounded-xl scale-90 hover:scale-100 transition-all duration-300"
+                  className="h-[130px] md:h-[230px] rounded-xl scale-90 hover:scale-95 transition-all duration-300"
                   src={CategoryImgs[index]}
-                  alt=""
+                  alt="image"
                 />
               </div>
-              <h1 className="text-xl md:text-2xl z-40 font-black">
-                {category.name}
-              </h1>
-              <h1 className="text-md md:text-lg z-40">
-                Modules {category.modulesNum}
-              </h1>
-              <h1 className="text-md md:text-lg z-40">Cours {category.coursesNum}</h1>
-              <h1 className="text-md md:text-lg z-40">
-                Questions {category.questionsNum}
-              </h1>
+              <div className="h-max w-full rounded px-3 py-2">
+                <h1 className="text-xl md:text-2xl z-40 font-black">
+                  {category.name}
+                </h1>
+                <h1 className="text-md md:text-lg z-40">
+                  Modules {category.modulesNum}
+                </h1>
+                <h1 className="text-md md:text-lg z-40">
+                  Cours {category.coursesNum}
+                </h1>
+                <h1 className="text-md md:text-lg z-40">
+                  Questions {category.questionsNum}
+                </h1>
+              </div>
             </div>
           ))}
           <div className="fixed bottom-4 right-4 flex flex-col md:flex-row">

@@ -38,15 +38,15 @@ const FavoriteCategories = () => {
   };
 
   return (
-    <div
-      className="flex-grow-1 flex flex-row flex-wrap h-full 
-    justify-evenly items-center overflow-auto relative py-4"
-    >
-      <img
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover object-top opacity-70 -z-10 "
-        src={CategoriesBgImg}
-        alt=""
-      />
+   <div
+         className="flex-grow-1 flex flex-row flex-wrap h-full 
+     justify-evenly items-center overflow-auto relative py-4 "
+       >
+         {/* <img
+           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover object-top opacity-70 -z-10 dark:opacity-20"
+           src={CategoriesBgImg}
+           alt=""
+         /> */}
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center">
           <ClipLoader
@@ -61,30 +61,35 @@ const FavoriteCategories = () => {
         <>
           {categories.map((category, index) => (
             <div
-              key={category._id}
+            className="w-full max-w-60  lg:max-w-xs  overflow-hidden rounded-lg border bg-white border-slate-200 dark:bg-gray-800
+           dark:border-slate-500 shadow-lg m-4"
+            key={category._id}
               onClick={() => {
                 navigate(`/favorites-modules/${category._id}`);
               }}
-              className="w-60 h-64 md:w-80 md:h-96 bg-white rounded-3xl cursor-pointer
-             shadow-lg p-4 flex flex-col justify-center items-start m-2 border-2 border-teal-500 "
+             
             >
-              <div className="w-full flex justify-center">
+               <div className="w-full flex justify-center">
                 <img
-                  className="h-[130px] md:h-[230px] rounded-xl scale-90 hover:scale-100 transition-all duration-300"
+                  className="h-[130px] md:h-[230px] rounded-xl scale-90 hover:scale-95 transition-all duration-300"
                   src={CategoryImgs[index]}
-                  alt=""
+                  alt="image"
                 />
               </div>
-              <h1 className="text-xl md:text-2xl z-40 font-black">
-                {category.name}
-              </h1>
-              <h1 className="text-md md:text-lg z-40">
-                Modules {category.modulesNum}
-              </h1>
-              <h1 className="text-md md:text-lg z-40">Cours {category.coursesNum}</h1>
-              <h1 className="text-md md:text-lg z-40">
-                Questions {category.questionsNum}
-              </h1>
+              <div className="h-max w-full rounded px-3 py-2">
+                <h1 className="text-xl md:text-2xl z-40 font-black">
+                  {category.name}
+                </h1>
+                <h1 className="text-md md:text-lg z-40">
+                  Modules {category.modulesNum}
+                </h1>
+                <h1 className="text-md md:text-lg z-40">
+                  Cours {category.coursesNum}
+                </h1>
+                <h1 className="text-md md:text-lg z-40">
+                  Questions {category.questionsNum}
+                </h1>
+              </div>
             </div>
           ))}
         </>

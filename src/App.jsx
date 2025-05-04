@@ -39,8 +39,7 @@ function AppContent({ setToken }) {
   useEffect(() => {
     const checkToken = () => {
       const token = localStorage.getItem("token");
-      
-      
+
       if (
         !token &&
         location.pathname !== "/" &&
@@ -49,12 +48,11 @@ function AppContent({ setToken }) {
         navigate("/");
       }
     };
-  
+
     checkToken();
-  
+
     // Optionally, set up a listener for storage changes (if token might be removed from another tab)
     const storageListener = () => {
-  
       if (
         !localStorage.getItem("token") &&
         location.pathname !== "/" &&
@@ -64,7 +62,7 @@ function AppContent({ setToken }) {
       }
     };
     window.addEventListener("storage", storageListener);
-  
+
     // Clean up the event listener
     return () => {
       window.removeEventListener("storage", storageListener);
@@ -72,34 +70,47 @@ function AppContent({ setToken }) {
   }, [location, navigate]);
 
   return (
-    <div className="flex-grow-1 w-full h-full overflow-auto">
-      <Routes>
-        <Route path="/" element={<Login setToken={setToken} />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/favorites-categories" element={<FavoriteCategories />} />
-        <Route path="/favorites-modules/:id" element={<FavoriteModules />} />
-        <Route path="/favorites-courses/:id" element={<FavoriteCourses />} />
-        <Route
-          path="/favorites-questions/:id"
-          element={<FavoriteQuestions />}
-        />
-        <Route path="/favorites-quiz/:index" element={<FavoriteQuiz />} />
-        <Route path="/modules/:id" element={<Modules />} />
-        <Route path="/courses/:id" element={<Courses />} />
-        <Route path="/questions/:id" element={<Questions />} />
-        <Route path="/quiz/:index" element={<Quiz />} />
-        <Route path="/exam/:id" element={<ExamQuiz />} />
-        <Route path="/stats" element={<Stats />} />
-        <Route path="/simulation" element={<Simulation />} />
-        <Route path="/simulation-details/:id" element={<SimulationDetails />} />
-        <Route path="/simulation-quiz" element={<SimulationQuiz />} />
-        <Route path="/residency" element={<Residency />} />
-        <Route path="/residency-stats" element={<ResidencyStats />} />
-        <Route path="/profile" element={<Profile setToken={setToken} />} />
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
-    </div>
+    
+        <div className="flex-grow-1 w-full h-full overflow-auto mt-16 lg:mt-0">
+          <Routes>
+            <Route path="/" element={<Login setToken={setToken} />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route
+              path="/favorites-categories"
+              element={<FavoriteCategories />}
+            />
+            <Route
+              path="/favorites-modules/:id"
+              element={<FavoriteModules />}
+            />
+            <Route
+              path="/favorites-courses/:id"
+              element={<FavoriteCourses />}
+            />
+            <Route
+              path="/favorites-questions/:id"
+              element={<FavoriteQuestions />}
+            />
+            <Route path="/favorites-quiz/:index" element={<FavoriteQuiz />} />
+            <Route path="/modules/:id" element={<Modules />} />
+            <Route path="/courses/:id" element={<Courses />} />
+            <Route path="/questions/:id" element={<Questions />} />
+            <Route path="/quiz/:index" element={<Quiz />} />
+            <Route path="/exam/:id" element={<ExamQuiz />} />
+            <Route path="/stats" element={<Stats />} />
+            <Route path="/simulation" element={<Simulation />} />
+            <Route
+              path="/simulation-details/:id"
+              element={<SimulationDetails />}
+            />
+            <Route path="/simulation-quiz" element={<SimulationQuiz />} />
+            <Route path="/residency" element={<Residency />} />
+            <Route path="/residency-stats" element={<ResidencyStats />} />
+            <Route path="/profile" element={<Profile setToken={setToken} />} />
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+        </div>
   );
 }
 

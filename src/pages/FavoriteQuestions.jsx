@@ -92,10 +92,10 @@ const FavoriteQuestions = () => {
       <div className="w-full h-full flex">
         <div className="w-1/3 h-full hidden lg:flex flex-col justify-start">
           <div
-            className="min-h-20 shadow-lg bg-teal-500 text-xl font-black 
-          flex justify-center items-center rounded-b-2xl"
+            role="alert"
+            className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            Modules
+            <div className="font-sans text-base font-bold">Modules</div>
           </div>
           <div className="flex-grow-1 overflow-y-auto">
             {modules.map((e, index) => (
@@ -105,41 +105,38 @@ const FavoriteQuestions = () => {
                   navigate(`/favorites-courses/${e._id}`);
                   setSelectedModule(e._id);
                 }}
-                className={`h-20 ${
-                  e._id === selectedModule ? "bg-teal-100" : "bg-white"
-                } rounded-xl cursor-pointer
-            shadow-lg p-4 flex justify-start items-center m-4 
-           text-lg lg:text-xl hover:text-xl lg:hover:text-2xl
-            transition-all duration-300 text-left`}
+                className={`flex items-center gap-4 p-4 m-4 rounded-md border 
+                                                  ${
+                                                    e._id === selectedModule
+                                                      ? "bg-slate-200 dark:bg-slate-700"
+                                                      : "bg-white dark:bg-gray-800"
+                                                  } 
+                                                  border-slate-200 dark:border-slate-500 
+                                                  shadow-lg cursor-pointer hover:bg-slate-300 hover:dark:bg-slate-700 transition-all duration-300`}
               >
-                <img src={moduleImg} alt="" />
-                {e.name}
+                <img src={moduleImg} alt="" className="w-6 h-6" />
+                <span className="text-lg font-medium">{e.name}</span>
               </div>
             ))}
           </div>
         </div>
         <div className="border-l hidden lg:block" />
         <div className="w-1/3 md:w-1/2 lg:w-1/3 h-full hidden md:flex flex-col">
-          <div
-            className="min-h-20 bg-teal-500 shadow-lg text-xl font-black flex 
-          justify-center items-center rounded-b-2xl"
+        <div
+            role="alert"
+            className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            Cours
+            <div className="font-sans text-base font-bold">Cours</div>
           </div>
           <div className="flex-grow-1 overflow-y-auto">
             {courses.map((e, index) => (
               <div
-                key={e._id}
-                className={`h-20 ${
-                  e._id === selectedCourse ? "bg-teal-100" : "bg-white"
-                } rounded-xl cursor-pointer
-            shadow-lg p-4 flex justify-start items-center m-4 
-            text-lg lg:text-xl hover:text-xl lg:hover:text-2xl
-             transition-all duration-300 text-left`}
-              >
+              key={e._id}
+              className="flex items-center gap-3 p-4 m-4 rounded-md border bg-white dark:bg-gray-800 border-slate-200 dark:border-slate-500 shadow-lg hover:bg-slate-300 hover:dark:bg-slate-700 cursor-pointer transition-all duration-300"
+            >
                 <img
                   src={courseImg}
-                  className="mr-1"
+                  className="w-6 h-6"
                   alt=""
                   onClick={() => {
                     setIsLoading(true);
@@ -178,15 +175,16 @@ const FavoriteQuestions = () => {
         </div>
         <div className="border-l hidden md:block" />
         <div className="w-full md:w-1/2 lg:w-1/3 h-full flex flex-col">
-          <div className="min-h-20 bg-teal-500 shadow-lg text-xl font-black flex justify-center items-center rounded-b-2xl">
-            <FaArrowAltCircleLeft
-              className={`text-3xl min-h-8 mr-2 flex lg:hidden`}
-              onClick={() => {
-                navigate(-1);
-              }}
-            ></FaArrowAltCircleLeft>
-            Questions
-          </div>
+           <div
+                      role="alert"
+                      className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
+                    >
+                      <FaArrowAltCircleLeft
+                        className="text-3xl min-h-8 mr-2 flex lg:hidden"
+                        onClick={() => navigate(-1)}
+                      />
+                      Questions
+                    </div>
           <div className="flex-grow-1 overflow-y-auto flex flex-wrap justify-start items-start">
             {isLoading ? (
               <div className="flex flex-col justify-evenly items-center w-full h-full">
@@ -202,11 +200,11 @@ const FavoriteQuestions = () => {
               questions.map((e, index) => (
                 <div
                   key={e._id}
-                  className="w-12 h-12 md:h-16 md:w-16 bg-white rounded-lg md:rounded-xl cursor-pointer
-         shadow-lg p-4 flex flex-col justify-center items-center m-2
-         border-2 border-teal-500 text-sm
-         md:text-lg lg:text-xl hover:text-xl lg:hover:text-2xl 
-         transition-all duration-300 text-center relative"
+                  className={`w-12 h-12 md:h-16 md:w-16 bg-white dark:bg-gray-800 rounded-md border border-slate-200 
+                    dark:border-slate-500 cursor-pointer
+                      shadow-lg p-4 flex flex-col justify-center items-center m-2 text-sm
+                      md:text-lg lg:text-xl hover:dark:bg-slate-700 hover:bg-slate-300
+                      transition-all duration-300 text-center relative`}
                   onClick={() => {
                     navigate(`/favorites-quiz/${index}`);
                   }}
@@ -215,9 +213,7 @@ const FavoriteQuestions = () => {
                     {e.note ? (
                       <FaLightbulb className="text-yellow-500 mb-1 text-xs md:text-sm" />
                     ) : null}
-                    {answers
-                      .map((a) => a.question)
-                      .includes(e._id) ? (
+                    {answers.map((a) => a.question).includes(e._id) ? (
                       <FaCheckCircle className="text-green-500 text-xs md:text-sm" />
                     ) : null}
                   </div>
