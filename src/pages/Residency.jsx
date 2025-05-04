@@ -11,6 +11,7 @@ import { FaRegLightbulb } from "react-icons/fa";
 import NoteDialog from "../components/Note-Dialog";
 import { NotesContext } from "../contexts/NotesContext";
 import WingsImg from "../assets/wings.png";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Residency = () => {
   const navigate = useNavigate();
@@ -90,11 +91,6 @@ const Residency = () => {
       className="flex-grow-1 flex flex-row flex-wrap h-full 
     justify-evenly items-center overflow-hidden relative "
     >
-      <img
-        className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
-        src={WingsImg}
-        alt=""
-      />
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center">
           <ClipLoader
@@ -117,10 +113,13 @@ const Residency = () => {
             }`}
           >
             <div
-              className="min-h-20 flex-shrink shadow-lg bg-teal-500 
-                  text-xl font-black flex justify-center items-center rounded-b-2xl"
+              role="alert"
+              class="relative flex w-full items-start rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
+             dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
-              Résidanat
+              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
+                Résidanat
+              </div>
             </div>
             <div className="flex-grow-1 overflow-y-auto ">
               {residencies.map((e, index) => (
@@ -136,13 +135,17 @@ const Residency = () => {
                     setResidencyQuestions(response.data);
                     setLoadingQuestions(false);
                   }}
-                  className={`h-20 ${
-                    e._id === selectedResidency ? "bg-teal-100" : "bg-white"
-                  } rounded-xl cursor-pointer
-                    shadow-lg p-4 flex justify-start items-center m-4 
-                    text-lg lg:text-xl hover:text-xl lg:hover:text-2xl transition-all duration-300 text-left`}
+                  role="alert"
+                  className="p-2"
                 >
-                  <div className="flex-1">
+                  <div
+                    class={`relative flex w-full items-start rounded-md border ${
+                      e._id === selectedResidency
+                        ? "bg-teal-100 dark:bg-teal-800"
+                        : "bg-white dark:bg-gray-800"
+                    }  border-slate-200 bg-opacity-75 transition-all duration-300
+             dark:border-slate-500 hover:dark:bg-slate-700 hover:bg-slate-300 shadow-lg p-4 cursor-pointer`}
+                  >
                     {e.name} {new Date(e.date).getFullYear()}
                   </div>
                 </div>
@@ -156,13 +159,11 @@ const Residency = () => {
             }`}
           >
             <div
-              className="min-h-20 shadow-lg flex-shrink bg-teal-500 
-                  text-xl font-black flex justify-center items-center px-8 rounded-b-2xl"
+              role="alert"
+              class="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
+             dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
-              <FaArrowAltCircleLeft
-                className={`text-3xl min-h-8 mr-2 ${
-                  selectedQuestion ? "flex lg:hidden" : "md:hidden"
-                }`}
+              <button
                 onClick={() => {
                   if (selectedQuestion) {
                     setSelectedQuestion(undefined);
@@ -171,9 +172,19 @@ const Residency = () => {
                     setResidencyQuestions([]);
                   }
                 }}
-              ></FaArrowAltCircleLeft>
-              Questions
+                class="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                 border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                 leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 lg:hidden
+                  hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+              >
+                <FaArrowLeft />
+              </button>
+
+              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
+                Questions
+              </div>
             </div>
+
             <div className="flex-grow-1 h-full overflow-y-auto flex flex-wrap justify-start items-start">
               {loadingQuestions ? (
                 <div className="flex flex-col justify-evenly items-center w-full h-full">
@@ -191,12 +202,12 @@ const Residency = () => {
                     key={e.question._id}
                     className={`w-12 h-12 md:h-16 md:w-16 ${
                       e.question._id === selectedQuestion
-                        ? "bg-teal-200"
-                        : "bg-white"
-                    } rounded-lg md:rounded-xl cursor-pointer
-               shadow-lg p-4 flex flex-col justify-center items-center m-2
-               border-2 border-teal-500 text-sm
-               md:text-lg lg:text-xl hover:text-xl lg:hover:text-2xl 
+                        ? "bg-teal-100 dark:bg-teal-800"
+                        : "bg-white dark:bg-gray-800"
+                    } rounded-md border border-slate-200 
+             dark:border-slate-500 cursor-pointer
+               shadow-lg p-4 flex flex-col justify-center items-center m-2 text-sm
+               md:text-lg lg:text-xl hover:dark:bg-slate-700 hover:bg-slate-300
                transition-all duration-300 text-center relative`}
                     onClick={() => {
                       setSelectedQuestion(e.question._id);
@@ -226,28 +237,52 @@ const Residency = () => {
               selectedQuestion ? "flex md:w-1/2" : "hidden lg:flex"
             }`}
           >
-            <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center rounded-b-2xl">
-              <FaArrowAltCircleLeft
-                className="text-3xl min-h-8 mr-2 md:hidden"
+            <div
+              role="alert"
+              class="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
+             dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
+            >
+              <button
                 onClick={() => {
                   setSelectedQuestion(undefined);
                 }}
-              />
-              Details
+                class="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                 border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                 leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 lg:hidden
+                  hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+              >
+                <FaArrowLeft />
+              </button>
+
+              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
+                Details
+              </div>
             </div>
             <div className="flex-grow h-full flex flex-col overflow-y-auto">
               {selectedQuestion ? (
                 <div className="w-full flex flex-col h-full">
                   <div className="w-full h-full flex flex-col items-center overflow-y-auto">
                     <div className="flex items-center">
-                      <div className="h-fit max-w-[600px] bg-white rounded-xl cursor-pointer shadow-lg p-4 flex justify-start items-center m-4 text-lg font-black transition-all duration-300 text-left">
+                      <div
+                        className="h-fit max-w-[600px] border
+                      dark:border-slate-500 dark:bg-slate-800 text-black bg-slate-50 dark:text-slate-50 rounded-md
+                      shadow-lg p-4 flex justify-start items-start m-4 text-lg font-black transition-all duration-300 text-left"
+                      >
                         {pageIndex + 1}
                         {") " + residencyQuestions[pageIndex].question.text}
                       </div>
-                      <div className="h-10 w-10 mr-2">
+                      <button
+                        onClick={() => {
+                          setSelectedQuestion(undefined);
+                        }}
+                        class="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                 border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                 leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
+                  hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                      >
                         {residencyQuestions[pageIndex]?.note ? (
                           <FaLightbulb
-                            className="text-yellow-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
+                            className="text-yellow-500 text-xl"
                             onClick={() => {
                               setSelectedNote(
                                 residencyQuestions[pageIndex].note
@@ -257,7 +292,7 @@ const Residency = () => {
                           />
                         ) : (
                           <FaRegLightbulb
-                            className="text-yellow-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
+                            className="text-yellow-500 text-xl "
                             onClick={() => {
                               setSelectedNote(
                                 residencyQuestions[pageIndex].note
@@ -266,7 +301,7 @@ const Residency = () => {
                             }}
                           />
                         )}
-                      </div>
+                      </button>
                     </div>
                     <div className="w-full">
                       {residencyQuestions[pageIndex].question.choices.map(
@@ -276,7 +311,8 @@ const Residency = () => {
                             key={i}
                           >
                             <div
-                              className="max-w-96 w-full bg-white rounded-xl cursor-pointer shadow-lg p-4 m-2 text-md transition-all duration-300 text-left"
+                              className="max-w-96 w-full border
+                      dark:border-slate-500 dark:bg-slate-800 text-black bg-slate-50 dark:text-slate-50 rounded-md shadow-lg p-4 m-2 text-md transition-all duration-300 text-left"
                               onClick={() => {}}
                             >
                               {c.text}
@@ -286,36 +322,44 @@ const Residency = () => {
                       )}
                     </div>
                   </div>
-                  <div className="flex bottom-1 bg-white w-full justify-evenly">
-                    <div
-                      className={`h-20 bg-teal-500 rounded-xl cursor-pointer shadow-lg p-4 justify-start items-center m-4 text-lg font-black ${
-                        pageIndex > 0 ? "flex" : "hidden"
-                      } transition-all duration-300 text-left`}
+                  <div
+                    role="alert"
+                    className="flex bottom-1 w-full justify-evenly mb-4"
+                  >
+                    <button
                       onClick={() => {
                         setSelectedQuestion(
                           residencyQuestions[pageIndex - 1].question._id
                         );
                         setPageIndex(pageIndex - 1);
                       }}
+                      class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
+                        pageIndex > 0 ? "flex" : "hidden"
+                      }
+                 dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                 leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+                  hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                     >
                       <BiSolidLeftArrow />
-                    </div>
-
-                    <div
-                      className={`h-20 bg-teal-500 rounded-xl cursor-pointer shadow-lg p-4 justify-start items-center m-4 text-lg font-black ${
-                        pageIndex < residencyQuestions.length - 1
-                          ? "flex"
-                          : "hidden"
-                      } transition-all duration-300 text-left`}
+                    </button>
+                    <button
                       onClick={() => {
                         setSelectedQuestion(
                           residencyQuestions[pageIndex + 1].question._id
                         );
                         setPageIndex(pageIndex + 1);
                       }}
+                      class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md ${
+                        pageIndex < residencyQuestions.length - 1
+                          ? "flex"
+                          : "hidden"
+                      }
+                  dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                 leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in 
+                  hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                     >
                       <BiSolidRightArrow />
-                    </div>
+                    </button>
                   </div>
                 </div>
               ) : (

@@ -1,22 +1,24 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
-import BgImg from "../assets/bg-1.jpg";
-import moduleImg from "../assets/cube-3d.png";
-import courseImg from "../assets/des-documents.png";
+import React, { useContext, useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { QuestionsContext } from "../contexts/QuestionsContext";
 import { ModulesContext } from "../contexts/ModulesContext";
 import { CoursesContext } from "../contexts/CoursesContext";
-import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
-import { useNavigate } from "react-router-dom";
-import { FaLightbulb } from "react-icons/fa";
-import { FaCheckCircle } from "react-icons/fa";
+import {
+  FaArrowAltCircleLeft,
+  FaCheckCircle,
+  FaDownload,
+  FaLightbulb,
+} from "react-icons/fa";
 import WingsImg from "../assets/wings.png";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
-import { FaDownload } from "react-icons/fa";
+import moduleImg from "../assets/cube-3d.png";
+import courseImg from "../assets/des-documents.png";
+import ClipLoader from "react-spinners/ClipLoader";
+
 const Questions = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const { showSnackbar } = useContext(SnackbarContext);
   const {
     getQuestions,
@@ -30,60 +32,36 @@ const Questions = () => {
     useContext(ModulesContext);
   const { courses, selectedCourse, setSelectedCourse } =
     useContext(CoursesContext);
+
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     initData();
   }, []);
-  const initData = async () => {
-    const response = await getQuestions(id);
-    if (response.status === 200) {
-      setQuestions(response.data.data);
-    } else {
-      showSnackbar(
-        "N'a pas réussi à obtenir les questions",
-        5000,
-        SnackbarType.ERROR
-      );
-    }
-    const ansResponse = await getAnswers(id);
-    if (ansResponse.status === 200) {
-      setAnswers(ansResponse.data.data);
-    } else {
-      showSnackbar(
-        "N'a pas réussi à obtenir les réponses",
-        5000,
-        SnackbarType.ERROR
-      );
-    }
 
+  const initData = async () => {
+    await fetchQA(id);
     setIsLoading(false);
   };
 
-  const getData = async (courseId) => {
-    const response = await getQuestions(courseId);
+  const fetchQA = async (courseId) => {
+    const resQ = await getQuestions(courseId);
+    resQ.status === 200
+      ? setQuestions(resQ.data.data)
+      : showSnackbar(
+          "N'a pas réussi à obtenir les questions",
+          5000,
+          SnackbarType.ERROR
+        );
 
-    if (response.status === 200) {
-      setQuestions(response.data.data);
-    } else {
-      showSnackbar(
-        "N'a pas réussi à obtenir les questions",
-        5000,
-        SnackbarType.ERROR
-      );
-    }
-    const ansResponse = await getAnswers(courseId);
-    if (ansResponse.status === 200) {
-
-      setAnswers(ansResponse.data.data);
-    } else {
-      showSnackbar(
-        "N'a pas réussi à obtenir les réponses",
-        5000,
-        SnackbarType.ERROR
-      );
-    }
-
-    setIsLoading(false);
+    const resA = await getAnswers(courseId);
+    resA.status === 200
+      ? setAnswers(resA.data.data)
+      : showSnackbar(
+          "N'a pas réussi à obtenir les réponses",
+          5000,
+          SnackbarType.ERROR
+        );
   };
 
   return (
@@ -93,72 +71,73 @@ const Questions = () => {
         src={WingsImg}
         alt=""
       />
+
       <div className="w-full h-full flex">
+        {/* Modules */}
         <div className="w-1/3 h-full hidden lg:flex flex-col justify-start">
           <div
-            className="min-h-20 shadow-lg bg-teal-500 text-xl font-black 
-          flex justify-center items-center rounded-b-2xl"
+            role="alert"
+            className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            Modules
+            <div className="font-sans text-base font-bold">Modules</div>
           </div>
           <div className="flex-grow-1 overflow-y-auto">
-            {modules.map((e, index) => (
+            {modules.map((e) => (
               <div
                 key={e._id}
                 onClick={() => {
                   navigate(`/courses/${e._id}`);
                   setSelectedModule(e._id);
                 }}
-                className={`h-20 ${
-                  e._id === selectedModule ? "bg-teal-100" : "bg-white"
-                } rounded-xl cursor-pointer
-            shadow-lg p-4 flex justify-start items-center m-4 
-           text-lg lg:text-xl hover:text-xl lg:hover:text-2xl
-            transition-all duration-300 text-left`}
+                className={`flex items-center gap-4 p-4 m-4 rounded-md border 
+                                  ${
+                                    e._id === selectedModule
+                                      ? "bg-slate-200 dark:bg-slate-700"
+                                      : "bg-white dark:bg-gray-800"
+                                  } 
+                                  border-slate-200 dark:border-slate-500 
+                                  shadow-lg cursor-pointer hover:bg-slate-300 hover:dark:bg-slate-700 transition-all duration-300`}
               >
-                <img src={moduleImg} alt="" />
-                {e.name}
+                <img src={moduleImg} alt="" className="w-6 h-6" />
+                <span className="text-lg font-medium">{e.name}</span>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Courses */}
         <div className="border-l hidden lg:block" />
         <div className="w-1/3 md:w-1/2 lg:w-1/3 h-full hidden md:flex flex-col">
           <div
-            className="min-h-20 bg-teal-500 shadow-lg text-xl font-black flex 
-          justify-center items-center rounded-b-2xl"
+            role="alert"
+            className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            Cours
+            <div className="font-sans text-base font-bold">Cours</div>
           </div>
           <div className="flex-grow-1 overflow-y-auto">
-            {courses.map((e, index) => (
+            {courses.map((e) => (
               <div
                 key={e._id}
-                className={`h-20 ${
-                  e._id === selectedCourse ? "bg-teal-100" : "bg-white"
-                } rounded-xl cursor-pointer
-            shadow-lg p-4 flex justify-start items-center m-4 
-            text-lg lg:text-xl hover:text-xl lg:hover:text-2xl
-             transition-all duration-300 text-left`}
+                className="flex items-center gap-3 p-4 m-4 rounded-md border bg-white dark:bg-gray-800 border-slate-200 dark:border-slate-500 shadow-lg hover:bg-slate-300 hover:dark:bg-slate-700 cursor-pointer transition-all duration-300"
               >
                 <img
                   src={courseImg}
-                  className="mr-1"
+                  className="w-6 h-6"
                   alt=""
                   onClick={() => {
                     setIsLoading(true);
                     navigate(`/questions/${e._id}`);
                     setSelectedCourse(e._id);
-                    getData(e._id);
+                    fetchQA(e._id);
                   }}
                 />
                 <div
-                  className="w-full"
+                   className="flex-1 text-lg font-medium"
                   onClick={() => {
                     setIsLoading(true);
                     navigate(`/questions/${e._id}`);
                     setSelectedCourse(e._id);
-                    getData(e._id);
+                    fetchQA(e._id);
                   }}
                 >
                   {e.name}
@@ -168,8 +147,8 @@ const Questions = () => {
                     onClick={() => {
                       const link = document.createElement("a");
                       link.href = e.file.url;
-                      link.setAttribute("download", ""); // prevent opening in tab
-                      link.setAttribute("target", "_blank"); // optional, won't affect download but safe
+                      link.setAttribute("download", "");
+                      link.setAttribute("target", "_blank");
                       document.body.appendChild(link);
                       link.click();
                       document.body.removeChild(link);
@@ -180,48 +159,43 @@ const Questions = () => {
             ))}
           </div>
         </div>
+
+        {/* Questions */}
         <div className="border-l hidden md:block" />
         <div className="w-full md:w-1/2 lg:w-1/3 h-full flex flex-col">
-          <div className="min-h-20 bg-teal-500 shadow-lg text-xl font-black flex justify-center items-center rounded-b-2xl">
+          <div
+            role="alert"
+            className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
+          >
             <FaArrowAltCircleLeft
-              className={`text-3xl min-h-8 mr-2 flex lg:hidden`}
-              onClick={() => {
-                navigate(-1);
-              }}
-            ></FaArrowAltCircleLeft>
+              className="text-3xl min-h-8 mr-2 flex lg:hidden"
+              onClick={() => navigate(-1)}
+            />
             Questions
           </div>
           <div className="flex-grow-1 overflow-y-auto flex flex-wrap justify-start items-start">
             {isLoading ? (
               <div className="flex flex-col justify-evenly items-center w-full h-full">
-                <ClipLoader
-                  color={"#09BAB0"}
-                  loading={true}
-                  size={50}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
+                <ClipLoader color="#09BAB0" loading={true} size={50} />
               </div>
             ) : (
-              questions.map((e, index) => (
+              questions.map((q, index) => (
                 <div
-                  key={e.question?._id ?? e._id}
-                  className="w-12 h-12 md:h-16 md:w-16 bg-white rounded-lg md:rounded-xl cursor-pointer
-         shadow-lg p-4 flex flex-col justify-center items-center m-2
-         border-2 border-teal-500 text-sm
-         md:text-lg lg:text-xl hover:text-xl lg:hover:text-2xl 
-         transition-all duration-300 text-center relative"
-                  onClick={() => {
-                    navigate(`/quiz/${index}`);
-                  }}
+                  key={q.question?._id ?? q._id}
+                  className={`w-12 h-12 md:h-16 md:w-16 bg-white dark:bg-gray-800 rounded-md border border-slate-200 
+           dark:border-slate-500 cursor-pointer
+             shadow-lg p-4 flex flex-col justify-center items-center m-2 text-sm
+             md:text-lg lg:text-xl hover:dark:bg-slate-700 hover:bg-slate-300
+             transition-all duration-300 text-center relative`}
+                  onClick={() => navigate(`/quiz/${index}`)}
                 >
                   <div className="absolute top-[2px] right-[2px] md:top-1 md:right-1">
-                    {e.note ? (
+                    {q.note && (
                       <FaLightbulb className="text-yellow-500 mb-1 text-xs md:text-sm" />
-                    ) : null}
-                    {answers.map((a) => a.question).includes(e._id)  ? (
+                    )}
+                    {answers.map((a) => a.question).includes(q._id) && (
                       <FaCheckCircle className="text-green-500 text-xs md:text-sm" />
-                    ) : null}
+                    )}
                   </div>
                   {index + 1}
                 </div>

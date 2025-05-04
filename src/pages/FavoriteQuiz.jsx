@@ -59,9 +59,7 @@ const FavoriteQuiz = () => {
       if (event.key === "Enter") {
         if (evaluated) {
           setEvaluated(false);
-          setCheckedBoxes(
-            questions[pageIndex]?.choices?.map(() => false) 
-          );
+          setCheckedBoxes(questions[pageIndex]?.choices?.map(() => false));
         } else {
           handleEvaluation();
         }
@@ -168,64 +166,85 @@ const FavoriteQuiz = () => {
           <div className="w-full md:w-1/2 flex justify-center flex-col ">
             <div className="w-full h-full flex flex-col items-center overflow-auto">
               <div className="flex w-[300px] h-16 mt-4 justify-evenly items-center">
-                {questions[pageIndex].note ? (
-                  <FaLightbulb
-                    className="text-yellow-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
-                    onClick={() => {
-                      setSelectedNote(questions[pageIndex].note);
-                      setOpenNoteDialog(true);
-                    }}
-                  />
-                ) : (
-                  <FaRegLightbulb
-                    className="text-yellow-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
-                    onClick={() => {
-                      setSelectedNote(questions[pageIndex].note);
-                      setOpenNoteDialog(true);
-                    }}
-                  />
-                )}
-                {questions[pageIndex].favourite ? (
-                  <FaHeart
-                    onClick={() => {
-                      onRemoveFavoriteQuestion(
-                        questions[pageIndex]._id
-                      );
-                      questions[pageIndex].favourite = undefined;
-                      setQuestions([...questions]);
-                      showSnackbar(
-                        "Retiré des favoris",
-                        3000,
-                        SnackbarType.SUCCESS
-                      );
-                    }}
-                    className="text-red-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
-                  />
-                ) : (
-                  <FaRegHeart
-                    onClick={() => {
-                      onCreateFavoriteQuestion(
-                        questions[pageIndex].question._id
-                      );
-                      questions[pageIndex].favourite = true;
-                      setQuestions([...questions]);
-                      showSnackbar(
-                        "Ajouté aux favoris",
-                        3000,
-                        SnackbarType.SUCCESS
-                      );
-                    }}
-                    className="text-red-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
-                  />
-                )}
+                <button
+                  class="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                 border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                 leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
+                  hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                >
+                  {questions[pageIndex].note ? (
+                    <FaLightbulb
+                      className="text-yellow-500 text-xl "
+                      onClick={() => {
+                        setSelectedNote(questions[pageIndex].note);
+                        setOpenNoteDialog(true);
+                      }}
+                    />
+                  ) : (
+                    <FaRegLightbulb
+                      className="text-yellow-500 text-xl"
+                      onClick={() => {
+                        setSelectedNote(questions[pageIndex].note);
+                        setOpenNoteDialog(true);
+                      }}
+                    />
+                  )}
+                </button>
+                <button
+                  class="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                 border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                 leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
+                  hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                >
+                  {questions[pageIndex].favourite ? (
+                    <FaHeart
+                      onClick={() => {
+                        onRemoveFavoriteQuestion(questions[pageIndex]._id);
+                        questions[pageIndex].favourite = undefined;
+                        setQuestions([...questions]);
+                        showSnackbar(
+                          "Retiré des favoris",
+                          3000,
+                          SnackbarType.SUCCESS
+                        );
+                      }}
+                      className="text-red-500 text-xl"
+                    />
+                  ) : (
+                    <FaRegHeart
+                      onClick={() => {
+                        onCreateFavoriteQuestion(
+                          questions[pageIndex].question._id
+                        );
+                        questions[pageIndex].favourite = true;
+                        setQuestions([...questions]);
+                        showSnackbar(
+                          "Ajouté aux favoris",
+                          3000,
+                          SnackbarType.SUCCESS
+                        );
+                      }}
+                      className="text-red-500 text-xl"
+                    />
+                  )}
+                </button>
                 <div></div>
-                <MdReportProblem
+                <button
+                  class="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                 border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                 leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
+                  hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   onClick={() => {
                     setOpenReportDialog(true);
                   }}
-                  className="text-orange-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
-                />
-                <TfiReload
+                >
+                  <MdReportProblem className="text-orange-500 text-xl" />
+                </button>
+                <button
+                  class="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                 border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                 leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
+                  hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   onClick={() => {
                     setEvaluated(false);
                     setCheckedBoxes(
@@ -233,14 +252,14 @@ const FavoriteQuiz = () => {
                     );
                     showSnackbar("Actualiser", 1000, SnackbarType.SUCCESS);
                   }}
-                  className="text-teal-500 text-4xl cursor-pointer hover:text-5xl transition-all duration-300"
-                />
+                >
+                  <TfiReload className="text-teal-500 text-xl" />
+                </button>
               </div>
               <div
-                className={`h-fit max-w-[600px] bg-white rounded-xl cursor-pointer
-                shadow-lg p-4 flex justify-start items-center m-4 
-                text-lg font-black 
-                transition-all duration-300 text-left`}
+                className="h-fit max-w-[600px] border
+                dark:border-slate-500 dark:bg-slate-800 text-black bg-slate-50 dark:text-slate-50 rounded-md
+                shadow-lg p-4 flex justify-start items-start m-4 text-lg font-black transition-all duration-300 text-left"
               >
                 {pageIndex + 1}
                 {") " + questions[pageIndex].text}
@@ -248,34 +267,55 @@ const FavoriteQuiz = () => {
               <div>
                 {questions[pageIndex].choices.map((c, i) => (
                   <div className="flex items-center justify-start" key={i}>
-                    <input
-                      type="checkbox"
-                      className="min-w-6 min-h-6 ml-2 
-                    border-2 border-gray-400 
-                    checked:bg-teal-500 checked:border-transparent 
-                    accent-teal-500 rounded-lg transition-all duration-300 
-                    focus:outline-none focus:ring-2 focus:ring-teal-500"
-                      onChange={() => {
-                        var checks = [...checkedBoxes];
-                        checks[i] = !checks[i];
-                        setCheckedBoxes(checks);
-                        setEvaluated(false);
-                      }}
-                      checked={checkedBoxes[i]}
-                    />
+                    <label
+                      class="flex items-center cursor-pointer relative shadow-lg"
+                      for={i}
+                    >
+                      <input
+                        onChange={() => {
+                          var checks = [...checkedBoxes];
+                          checks[i] = !checks[i];
+                          setCheckedBoxes(checks);
+                          setEvaluated(false);
+                        }}
+                        type="checkbox"
+                        checked={checkedBoxes[i]}
+                        class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow-sm  border border-slate-800 checked:bg-slate-200 checked:border-slate-800 dark:border-slate-200 dark:checked:bg-slate-800 dark:checked:border-slate-800"
+                        id={i}
+                      />
+                      <span class="absolute text-black dark:text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <svg
+                          fill="none"
+                          width="18px"
+                          height="18px"
+                          stroke-width="2"
+                          color="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M5 13L9 17L19 7"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></path>
+                        </svg>
+                      </span>
+                    </label>
                     <div
-                      className={`max-w-96 w-full bg-white rounded-xl cursor-pointer
-                      shadow-lg p-4 flex justify-start items-start m-2 
-                      text-md ${
-                        evaluated
-                          ? questions[
-                              pageIndex
-                            ].correctAnswers.includes(c.letter)
-                            ? "border-2 border-green-700"
-                            : "border-2 border-red-500"
-                          : "border-0"
-                      }
-                        transition-all duration-300 text-left`}
+                      className={`max-w-96 w-full border select-none cursor-pointer
+${
+  evaluated
+    ? questions[pageIndex].correctAnswers.includes(c.letter)
+      ? "border-green-500 bg-green-300 dark:bg-green-800 "
+      : checkedBoxes[i]
+      ? "border-red-500 bg-red-300 dark:bg-red-800 "
+      : "dark:border-slate-500 dark:bg-slate-800 bg-slate-50"
+    : "dark:border-slate-500 dark:bg-slate-800 bg-slate-50"
+}
+                       text-black  dark:text-slate-50 
+                      rounded-md shadow-lg p-4 m-2 text-md transition-all duration-300 text-left`}
                       onClick={() => {
                         var checks = [...checkedBoxes];
                         checks[i] = !checks[i];
@@ -289,80 +329,95 @@ const FavoriteQuiz = () => {
                 ))}
               </div>
             </div>
-            <div className="flex bottom-1 bg-white w-full justify-evenly">
-              <div
-                className={`h-20 bg-teal-500 rounded-xl cursor-pointer
-                  shadow-lg p-4 justify-start items-center m-4 
-                  text-lg font-black ${pageIndex > 0 ? "flex" : "hidden"}
-                  transition-all duration-300 text-left`}
+            <div className="flex mb-4 w-full justify-evenly">
+              <button
+                class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
+                  pageIndex > 0 ? "flex" : "hidden"
+                }
+                          dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                          leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+                           hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                 onClick={() => {
                   setPageIndex(pageIndex - 1);
+
                   setCheckedBoxes(
-                    questions[pageIndex - 1].choices.map((e) => false)
+                    questions[pageIndex - 1]?.choices?.map((e) => false) ??
+                      questions[pageIndex - 1].question.choices.map(
+                        (e) => false
+                      )
                   );
                   setEvaluated(false);
                 }}
               >
                 <BiSolidLeftArrow />
-              </div>
-              <div
-                className={`h-20 bg-teal-500 rounded-xl cursor-pointer
-                  shadow-lg p-4 flex justify-start items-center m-4 
-                  text-lg font-black hover:text-xl lg:hover:text-2xl
-                  transition-all duration-300 text-left`}
+              </button>
+              <button
+                class={`inline-grid h-16 min-w-[36px] select-none place-items-center rounded-md border p-4
+             dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+             leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+              hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                 onClick={async () => {
                   handleEvaluation();
                 }}
               >
-                évaluer
-              </div>
-              <div
-                className={`h-20 bg-teal-500 rounded-xl cursor-pointer
-                  shadow-lg p-4 justify-start items-center m-4 
-                  text-lg font-black ${
-                    pageIndex < questions.length - 1 ? "flex" : "hidden"
-                  }
-                transition-all duration-300 text-left`}
+                Évaluer
+              </button>
+              <button
+                class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
+                  pageIndex < questions.length - 1 ? "flex" : "hidden"
+                }
+                        dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                        leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+                         hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                 onClick={() => {
                   setPageIndex(pageIndex + 1);
+
                   setCheckedBoxes(
-                    questions[pageIndex + 1].choices.map((e) => false)
+                    questions[pageIndex + 1]?.choices?.map((e) => false) ??
+                      questions[pageIndex + 1].question.choices.map(
+                        (e) => false
+                      )
                   );
                   setEvaluated(false);
                 }}
               >
                 <BiSolidRightArrow />
-              </div>
+              </button>
             </div>
           </div>
         )}
         <div className="border-l hidden md:block" />
         <div className="md:w-1/2 lg:w-1/2 hidden md:flex h-full flex-col">
-          <div className="min-h-20 bg-teal-500 shadow-lg font-black flex flex-col justify-center items-start pl-8 rounded-b-2xl">
-            <div>
+          <div
+            role="alert"
+            className="relative w-full rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
+          >
+            <div className="font-sans text-base font-bold">
+              {" "}
               Module: {modules.filter((m) => m._id === selectedModule)[0]?.name}
             </div>
-            <div>
+            <div className="font-sans text-base font-bold">
+              {" "}
               Cour: {courses.filter((m) => m._id === selectedCourse)[0]?.name}
             </div>
           </div>
           <div className="flex-grow-1 overflow-y-auto flex flex-wrap justify-start items-start">
             {questions.map((e, index) => (
               <div
-                key={e._id}
-                className={`w-16 h-16 ${
-                  index === pageIndex ? "bg-teal-200" : "bg-white"
-                } rounded-xl cursor-pointer
-                    shadow-lg p-4 flex flex-col justify-center items-center m-2
-                    border-2 border-teal-500 
-                    text-lg lg:text-xl hover:text-xl lg:hover:text-2xl 
-                    transition-all duration-300 text-center relative`}
+              key={e._id}
+              className={`w-12 h-12 md:h-16 md:w-16 ${
+                index === pageIndex
+                  ? "bg-teal-100 dark:bg-teal-800"
+                  : "bg-white dark:bg-gray-800"
+              } rounded-md border border-slate-200 
+           dark:border-slate-500 cursor-pointer
+             shadow-lg p-4 flex flex-col justify-center items-center m-2 text-sm
+             md:text-lg lg:text-xl hover:dark:bg-slate-700 hover:bg-slate-300
+             transition-all duration-300 text-center relative`}
                 onClick={() => {
                   setIsLoading(true);
                   setPageIndex(parseInt(index));
-                  setCheckedBoxes(
-                    questions[index].choices.map((e) => false)
-                  );
+                  setCheckedBoxes(questions[index].choices.map((e) => false));
                   setIsLoading(false);
                   setEvaluated(false);
                 }}
@@ -371,9 +426,7 @@ const FavoriteQuiz = () => {
                   {e.note ? (
                     <FaLightbulb className="text-yellow-500 mb-1 text-sm" />
                   ) : null}
-                  {answers
-                    .map((a) => a.question)
-                    .includes(e._id) ? (
+                  {answers.map((a) => a.question).includes(e._id) ? (
                     <FaCheckCircle className="text-green-500 text-sm" />
                   ) : null}
                 </div>

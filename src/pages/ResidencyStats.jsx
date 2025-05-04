@@ -1,15 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
-import { ResidencyContext } from "../contexts/ResidencyContext";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
-import { BiSolidLeftArrow } from "react-icons/bi";
-import { BiSolidRightArrow } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { FaLightbulb } from "react-icons/fa";
-import { FaRegLightbulb } from "react-icons/fa";
-import NoteDialog from "../components/Note-Dialog";
-import { NotesContext } from "../contexts/NotesContext";
 import WingsImg from "../assets/wings.png";
 import { ExamContext } from "../contexts/ExamContext";
 
@@ -48,11 +41,11 @@ const ResidencyStats = () => {
       className="flex-grow-1 flex flex-row flex-wrap h-full 
     justify-evenly items-center overflow-hidden relative "
     >
-      <img
+      {/* <img
         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
         src={WingsImg}
         alt=""
-      />
+      /> */}
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center">
           <ClipLoader
@@ -75,10 +68,13 @@ const ResidencyStats = () => {
             }`}
           >
             <div
-              className="min-h-20 flex-shrink shadow-lg bg-teal-500 
-                  text-xl font-black flex justify-center items-center rounded-b-2xl"
+              role="alert"
+              class="relative flex w-full items-start rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
+             dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
-              Résidanat
+              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
+                Résidanat
+              </div>
             </div>
             <div
               className="min-h-8 flex-shrink mt-4
@@ -132,8 +128,9 @@ const ResidencyStats = () => {
             }`}
           >
             <div
-              className="min-h-20 shadow-lg flex-shrink bg-teal-500 
-                  text-xl font-black flex justify-center items-center px-8 rounded-b-2xl"
+              role="alert"
+              class="relative flex w-full items-start rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
+             dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
               <FaArrowAltCircleLeft
                 className={`text-3xl min-h-8 mr-2 cursor-pointer ${
@@ -144,8 +141,11 @@ const ResidencyStats = () => {
                   setSelectedQuestion(undefined);
                 }}
               ></FaArrowAltCircleLeft>
-              Questions
+              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
+                Questions
+              </div>
             </div>
+
             <div className="flex-grow-1 h-full overflow-y-auto flex flex-wrap justify-start items-start">
               {loadingQuestions ? (
                 <div className="flex flex-col justify-evenly items-center w-full h-full">
@@ -161,10 +161,10 @@ const ResidencyStats = () => {
                 selectedSimulation?.questions.map((question, index) => {
                   // Check if the arrays match
                   const isCorrect =
-                    question.question.correctAnswers.length ===
-                      question.answers.length &&
-                    question.question.correctAnswers.every((answer) =>
-                      question.answers.includes(answer)
+                    question.question.correctAnswers?.length ===
+                      question.answers?.length &&
+                    question.question.correctAnswers?.every((answer) =>
+                      question.answers?.includes(answer)
                     );
 
                   return (
@@ -172,10 +172,10 @@ const ResidencyStats = () => {
                       key={question._id}
                       className={` w-full ${
                         question.question._id === selectedQuestion?._id
-                          ? "bg-teal-100"
-                          : "bg-white"
-                      } px-4 m-4 rounded-xl shadow-xl border-2 cursor-pointer ${
-                        isCorrect ? "border-green-700" : "border-red-500"
+                          ? "bg-teal-100 dark:bg-teal-800"
+                          : "bg-white dark:bg-gray-800"
+                      } p-4 m-4 rounded-xl shadow-xl border cursor-pointer ${
+                        isCorrect ? "border-green-500" : "border-red-500"
                       } transition-all duration-300 `}
                       onClick={() => {
                         console.log(question.question);
@@ -187,10 +187,10 @@ const ResidencyStats = () => {
                         {question.question.category.name}
                       </div>
                       <div className="">
-                        Module: {question.question.module.name}
+                        Module: {question.question.module?.name}
                       </div>
                       <div className="">
-                        Course: {question.question.course.name}
+                        Course: {question.question.course?.name}
                       </div>
                       <div className="border-b block w-full" />
                       <div className="">Question: {question.question.text}</div>
@@ -212,36 +212,49 @@ const ResidencyStats = () => {
               selectedQuestion ? "flex md:w-1/2" : "hidden lg:flex"
             }`}
           >
-            <div className="min-h-20 bg-teal-500 text-xl shadow-lg font-black flex justify-center items-center rounded-b-2xl cursor-pointer">
+            <div
+              role="alert"
+              class="relative flex w-full items-start rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
+             dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
+            >
               <FaArrowAltCircleLeft
                 className="text-3xl min-h-8 mr-2 md:hidden"
                 onClick={() => {
                   setSelectedQuestion(undefined);
                 }}
               />
-              Details
+              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
+                Details
+              </div>
             </div>
+
             <div className="flex-grow h-full flex flex-col overflow-y-auto">
               {selectedQuestion?._id ? (
                 <div className="w-full flex flex-col h-full ">
                   <div className="w-full h-full flex flex-col items-center overflow-y-auto">
-                    <div className="flex items-center">
-                      <div className="h-fit max-w-[600px] bg-white rounded-xl cursor-pointer shadow-lg p-4 flex justify-start items-center m-4 text-lg font-black transition-all duration-300 text-left">
-                        {selectedQuestion.text}
-                      </div>
+                    <div
+                      className="h-fit max-w-[600px] border
+                      dark:border-slate-500 dark:bg-slate-800 text-black bg-slate-50 dark:text-slate-50 rounded-md
+                      shadow-lg p-4 flex justify-start items-start m-4 text-lg font-black transition-all duration-300 text-left"
+                    >
+                      {selectedQuestion.text}
                     </div>
+
                     <div className="w-full">
                       {selectedQuestion.choices.map((c, i) => (
                         <div
-                          className={`flex items-center justify-center`}
+                          className="flex items-center justify-center"
                           key={i}
                         >
                           <div
-                            className={`max-w-96 w-full bg-white rounded-xl cursor-pointer shadow-lg p-4 m-2 text-md transition-all duration-300 text-left  ${
+                            className={`max-w-96 w-full border
+                            ${
                               selectedQuestion.correctAnswers.includes(c.letter)
-                                ? "border-2 border-green-700"
-                                : "border-2 border-red-500"
-                            }`}
+                                ? " border-green-500"
+                                : " border-red-500"
+                            }
+                   dark:bg-slate-800 text-black bg-slate-50 dark:text-slate-50 
+                  rounded-md shadow-lg p-4 m-2 text-md transition-all duration-300 text-left`}
                           >
                             {c.text}
                           </div>

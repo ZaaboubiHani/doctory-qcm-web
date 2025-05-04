@@ -9,27 +9,21 @@ const Simulation = () => {
 
   return (
     <div className="flex flex-col h-screen justify-center items-center md:items-start overflow-hidden relative">
-      
       {/* <img
-        className="absolute -right-32 -z-10 w-full h-full object-cover"
-        src={DoctorSideImg}
+        className="absolute left-0 top-0 w-full blur-sm opacity-50 -z-10"
+        src={WingsImg}
         alt=""
       /> */}
 
-      <img className="absolute left-0 top-0 w-full blur-sm opacity-50 -z-10" src={WingsImg} alt="" />
-
       <div className="w-full h-screen flex items-center justify-center">
-        <div
-          className={`bg-teal-500 w-fit rounded-xl cursor-pointer
-              shadow-lg p-4 flex justify-start items-center mt-4
-              text-md font-black hover:text-lg
-              transition-all duration-300 text-left`}
+        <button
           onClick={() => {
-            navigate('/simulation-quiz');
+            navigate("/simulation-quiz");
           }}
+          className="px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition"
         >
           Commencez votre examen
-        </div>
+        </button>
       </div>
     </div>
   );

@@ -160,58 +160,81 @@ const SimulationQuiz = () => {
                 </p>
               </div>
               <div
-                className={`h-fit max-w-[600px] bg-white rounded-xl cursor-pointer
-                shadow-lg p-4 flex justify-start items-center m-4 
-                text-lg font-black 
-                transition-all duration-300 text-left`}
+                className="h-fit max-w-[600px] border
+                      dark:border-slate-500 dark:bg-slate-800 text-black bg-slate-50 dark:text-slate-50 rounded-md
+                      shadow-lg p-4 flex justify-start items-start m-4 text-lg font-black transition-all duration-300 text-left"
               >
                 {pageIndex + 1}
                 {") " + examQuestions[pageIndex].question.text}
               </div>
+
               <div>
                 {examQuestions[pageIndex].question.choices.map((c, i) => (
                   <div className="flex items-center justify-start" key={i}>
-                    <input
-                      type="checkbox"
-                      className="min-w-6 min-h-6 ml-2 
-                    border-2 border-gray-400 
-                    checked:bg-teal-500 checked:border-transparent 
-                    accent-teal-500 rounded-lg transition-all duration-300 
-                    focus:outline-none focus:ring-2 focus:ring-teal-500"
-                      onChange={() => {
-                        if (!examQuestions[pageIndex].selectedChoices) {
-                          examQuestions[pageIndex].selectedChoices = [];
-                        }
+                    <label
+                      class="flex items-center cursor-pointer relative shadow-lg"
+                      for={i}
+                    >
+                      <input
+                        onChange={() => {
+                          if (!examQuestions[pageIndex].selectedChoices) {
+                            examQuestions[pageIndex].selectedChoices = [];
+                          }
 
-                        if (
-                          examQuestions[pageIndex].selectedChoices.includes(
-                            c.letter
-                          )
-                        ) {
-                          // Remove c.letter if it exists
-                          examQuestions[pageIndex].selectedChoices =
-                            examQuestions[pageIndex].selectedChoices.filter(
-                              (choice) => choice !== c.letter
-                            );
-                        } else {
-                          // Add c.letter if it doesn't exist
-                          examQuestions[pageIndex].selectedChoices = [
-                            ...examQuestions[pageIndex].selectedChoices,
-                            c.letter,
-                          ];
-                        }
+                          if (
+                            examQuestions[pageIndex].selectedChoices.includes(
+                              c.letter
+                            )
+                          ) {
+                            // Remove c.letter if it exists
+                            examQuestions[pageIndex].selectedChoices =
+                              examQuestions[pageIndex].selectedChoices.filter(
+                                (choice) => choice !== c.letter
+                              );
+                          } else {
+                            // Add c.letter if it doesn't exist
+                            examQuestions[pageIndex].selectedChoices = [
+                              ...examQuestions[pageIndex].selectedChoices,
+                              c.letter,
+                            ];
+                          }
 
-                        // Update the state with the modified array
-                        setExamQuestions([...examQuestions]);
-                      }}
-                      checked={examQuestions[
-                        pageIndex
-                      ].selectedChoices?.includes(c.letter)}
-                    />
+                          // Update the state with the modified array
+                          setExamQuestions([...examQuestions]);
+                        }}
+                        type="checkbox"
+                        checked={examQuestions[
+                          pageIndex
+                        ].selectedChoices?.includes(c.letter)}
+                        class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow-sm  border border-slate-800 checked:bg-slate-200 checked:border-slate-800 dark:border-slate-200 dark:checked:bg-slate-800 dark:checked:border-slate-800"
+                        id={i}
+                      />
+                      <span class="absolute text-black dark:text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <svg
+                          fill="none"
+                          width="18px"
+                          height="18px"
+                          stroke-width="2"
+                          color="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M5 13L9 17L19 7"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></path>
+                        </svg>
+                      </span>
+                    </label>
+
                     <div
-                      className={`max-w-96 w-full bg-white rounded-xl cursor-pointer
-                      shadow-lg p-4 flex justify-start items-start m-2 
-                      text-md transition-all duration-300 text-left`}
+                      className={`max-w-96 w-full border select-none cursor-pointer
+                      dark:border-slate-500 dark:bg-slate-800 bg-slate-50
+                                               text-black  dark:text-slate-50 
+                                              rounded-md shadow-lg p-4 m-2 text-md transition-all duration-300 text-left`}
                       onClick={() => {
                         if (!examQuestions[pageIndex].selectedChoices) {
                           examQuestions[pageIndex].selectedChoices = [];
@@ -245,25 +268,27 @@ const SimulationQuiz = () => {
                 ))}
               </div>
             </div>
-            <div className="flex bottom-1 bg-white w-full justify-evenly">
-              <div
-                className={`h-20 bg-teal-500 rounded-xl cursor-pointer
-                  shadow-lg p-4 justify-start items-center m-4 
-                  text-lg font-black ${pageIndex > 0 ? "flex" : "hidden"}
-                  transition-all duration-300 text-left`}
+            <div className="flex mb-4 w-full justify-evenly">
+              <button
+                class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
+                  pageIndex > 0 ? "flex" : "hidden"
+                }
+                           dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                           leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+                            hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                 onClick={() => {
                   setPageIndex(pageIndex - 1);
                 }}
               >
                 <BiSolidLeftArrow />
-              </div>
+              </button>
 
               {pageIndex === examQuestions.length - 1 ? (
                 <div
-                  className={`h-20 bg-teal-500 rounded-xl cursor-pointer
-                  shadow-lg p-4 flex justify-start items-center m-4 
-                  text-lg font-black hover:text-xl lg:hover:text-2xl
-                  transition-all duration-300 text-left`}
+                class={`inline-grid h-16 min-w-[36px] select-none place-items-center rounded-md border p-4 cursor-pointer
+                  dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                  leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+                   hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                   onClick={async () => {
                     setSubmitDialogIsOpen(true);
                   }}
@@ -271,19 +296,19 @@ const SimulationQuiz = () => {
                   Soumettre le résultat
                 </div>
               ) : null}
-              <div
-                className={`h-20 bg-teal-500 rounded-xl cursor-pointer
-                  shadow-lg p-4 justify-start items-center m-4 
-                  text-lg font-black ${
-                    pageIndex < examQuestions.length - 1 ? "flex" : "hidden"
-                  }
-                transition-all duration-300 text-left`}
+              <button
+                class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
+                  pageIndex < examQuestions.length - 1 ? "flex" : "hidden"
+                }
+                         dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                         leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+                          hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                 onClick={() => {
                   setPageIndex(pageIndex + 1);
                 }}
               >
                 <BiSolidRightArrow />
-              </div>
+              </button>
             </div>
           </div>
         )}
@@ -294,12 +319,14 @@ const SimulationQuiz = () => {
               <div
                 key={e._id}
                 className={`w-12 h-12 md:h-16 md:w-16 ${
-                  index === pageIndex ? "bg-teal-200" : "bg-white"
-                } rounded-lg md:rounded-xl cursor-pointer
-                  shadow-lg p-4 flex flex-col justify-center items-center m-2
-                  border-2 border-teal-500 text-sm
-                  md:text-lg lg:text-xl hover:text-xl lg:hover:text-2xl 
-                  transition-all duration-300 text-center relative`}
+                  index === pageIndex
+                    ? "bg-teal-100 dark:bg-teal-800"
+                    : "bg-white dark:bg-gray-800"
+                } rounded-md border border-slate-200 
+             dark:border-slate-500 cursor-pointer
+               shadow-lg p-4 flex flex-col justify-center items-center m-2 text-sm
+               md:text-lg lg:text-xl hover:dark:bg-slate-700 hover:bg-slate-300
+               transition-all duration-300 text-center relative`}
                 onClick={() => {
                   setPageIndex(parseInt(index));
                 }}

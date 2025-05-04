@@ -16,6 +16,20 @@ import StatsProvider from "./contexts/StatsContext.jsx";
 import ResidencyProvider from "./contexts/ResidencyContext.jsx";
 import VersionProvider from "./contexts/VersionContext.jsx";
 
+const toggleTheme = () => {
+  const html = document.documentElement;
+  if (html.classList.contains("dark")) {
+    html.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  } else {
+    html.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  }
+};
+
+// Make it available globally
+window.toggleTheme = toggleTheme;
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <CategoriesProvider>
     <ModulesProvider>
