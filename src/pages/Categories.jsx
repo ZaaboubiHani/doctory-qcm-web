@@ -78,7 +78,7 @@ const Categories = () => {
          
           {categories.map((category, index) => (
             <div
-              className="w-full max-w-60  lg:max-w-xs  overflow-hidden rounded-lg border bg-white border-slate-200 dark:bg-gray-800
+              className="w-full max-w-60  lg:max-w-xs  overflow-hidden rounded-lg border bg-white border-slate-200 dark:bg-black
              dark:border-slate-500 shadow-lg m-4"
               key={category._id}
               onClick={() => {

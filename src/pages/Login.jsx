@@ -60,9 +60,17 @@ const Login = ({ setToken }) => {
           const deviceId = localStorage.getItem("deviceId");
           if (userRes.data.data.deviceToken === deviceId) {
             localStorage.setItem("year", userRes.data.data.year);
+            
             userRes.data.data.token = token;
             setCurrentUser(userRes.data.data);
-            navigate("/categories");
+            if(userRes.data.data.year === "Residency"){
+
+              navigate("/categories");
+            }
+            else{
+              navigate("/modules");
+
+            }
           } else {
             setToken(null);
             localStorage.clear();
@@ -95,7 +103,14 @@ const Login = ({ setToken }) => {
         response.data.data.token = response.data.token;
         updateUserInfo(response.data.data);
         setCurrentUser(response.data.data);
-        navigate("/categories");
+        if(response.data.data.year === "Residency"){
+
+          navigate("/categories");
+        }
+        else{
+          navigate("/modules");
+
+        }
         // if (
         //   response.data.data.deviceToken === null ||
         //   response.data.data.deviceToken === undefined ||
