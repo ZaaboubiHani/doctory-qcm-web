@@ -45,8 +45,19 @@ const Stats = () => {
 
   const initData = async () => {
     setIsLoading(true);
-    const response = await getAllCategoriesStats();
-    setCategoriesStats(response.data);
+    if (localStorage.getItem("year") === "Residency") {
+
+      const response = await getAllCategoriesStats();
+      setCategoriesStats(response.data.data);
+    } else {
+      setLoadingModulesStats(true);
+      setCoursesStats(undefined);
+      setSelectedModule(undefined);
+      const response = await getModulesStatsOfCategory(undefined);
+      setModulesStats(response.data.data);
+      setLoadingModulesStats(false);
+    }
+
     setIsLoading(false);
   };
 
@@ -65,26 +76,25 @@ const Stats = () => {
       ) : (
         <div className="w-full h-full flex">
           <div
-            className={`w-full md:w-1/2 lg:w-1/3 h-full flex-col ${
-              selectedCategory && selectedModule
-                ? "hidden lg:flex"
-                : selectedCategory && !selectedModule
+            className={`${localStorage.getItem("year") === "Residency" ? "w-full md:w-1/2 lg:w-1/3" : "w-0"}  h-full flex-col ${selectedCategory && selectedModule
+              ? "hidden lg:flex"
+              : selectedCategory && !selectedModule
                 ? "hidden md:flex"
                 : "flex"
-            }`}
+              }`}
           >
             <div
               role="alert"
               class="relative flex w-full items-start rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark
              dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
-              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
-                Catégories
-              </div>
+              <div className="font-sans text-base font-bold text-center w-full">Catégories</div>
+
+
             </div>
 
             <div className="flex-grow-1 overflow-y-auto ">
-              {categoriesStats.map((e, index) => (
+              {categoriesStats?.map((e, index) => (
                 <div
                   key={e._id}
                   onClick={async () => {
@@ -93,18 +103,17 @@ const Stats = () => {
                     setCoursesStats(undefined);
                     setSelectedModule(undefined);
                     const response = await getModulesStatsOfCategory(e._id);
-                    setModulesStats(response.data);
+                    setModulesStats(response.data.data);
                     setLoadingModulesStats(false);
                   }}
                   role="alert"
                   className="p-2"
                 >
                   <div
-                    class={`relative flex w-full items-center rounded-md border ${
-                      e._id === selectedCategory
-                        ? "bg-teal-100 dark:bg-teal-800"
-                        : "bg-white dark:bg-gray-800"
-                    }  border-slate-200 bg-opacity-75 transition-all duration-300
+                    class={`relative flex w-full items-center rounded-md border ${e._id === selectedCategory
+                      ? "bg-teal-100 dark:bg-teal-800"
+                      : "bg-white dark:bg-gray-800"
+                      }  border-slate-200 bg-opacity-75 transition-all duration-300
            dark:border-slate-500 hover:dark:bg-slate-700 hover:bg-slate-300 shadow-lg p-2 cursor-pointer`}
                   >
                     <img src={moduleImg} alt="" className="mr-2 h-10" />
@@ -131,9 +140,8 @@ const Stats = () => {
           <div className="border-l hidden md:block" />
 
           <div
-            className={`w-full md:w-1/2 lg:w-1/3 h-full  flex-col ${
-              selectedCategory && !selectedModule ? "flex" : "hidden md:flex"
-            }`}
+            className={` ${localStorage.getItem("year") === "Residency" ? "w-full md:w-1/2 lg:w-1/3" : "w-full md:w-1/2"} h-full  flex-col ${localStorage.getItem("year") === "Residency" ? selectedCategory && !selectedModule ? "flex" : "hidden md:flex" : selectedModule ? "hidden md:flex" : "md:flex"
+              }`}
           >
             <div
               role="alert"
@@ -141,9 +149,8 @@ const Stats = () => {
              dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
               <FaArrowAltCircleLeft
-                className={`text-3xl min-h-8 mr-2 ${
-                  selectedModule ? "flex lg:hidden" : "md:hidden"
-                }`}
+                className={`text-3xl min-h-8 mr-2 ${selectedModule ? "flex lg:hidden" : "md:hidden"
+                  }`}
                 onClick={() => {
                   if (selectedModule) {
                     setSelectedModule(undefined);
@@ -154,9 +161,9 @@ const Stats = () => {
                   }
                 }}
               ></FaArrowAltCircleLeft>
-              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
-                Modules
-              </div>
+              <div className="font-sans text-base font-bold text-center w-full">Modules</div>
+
+
             </div>
 
             <div className="flex-grow-1 overflow-y-auto flex-1">
@@ -178,7 +185,7 @@ const Stats = () => {
 
                       setLoadingCoursesStats(true);
                       const response = await getCoursesStatsOfModule(e._id);
-                      setCoursesStats(response.data);
+                      setCoursesStats(response.data.data);
                       setLoadingCoursesStats(false);
                     }}
                     key={e._id}
@@ -186,11 +193,10 @@ const Stats = () => {
                     className="p-2"
                   >
                     <div
-                      class={`relative flex w-full items-center rounded-md border ${
-                        e._id === selectedModule
-                          ? "bg-teal-100 dark:bg-teal-800"
-                          : "bg-white dark:bg-gray-800"
-                      }  border-slate-200 bg-opacity-75 transition-all duration-300
+                      class={`relative flex w-full items-center rounded-md border ${e._id === selectedModule
+                        ? "bg-teal-100 dark:bg-teal-800"
+                        : "bg-white dark:bg-gray-800"
+                        }  border-slate-200 bg-opacity-75 transition-all duration-300
            dark:border-slate-500 hover:dark:bg-slate-700 hover:bg-slate-300 shadow-lg p-2 cursor-pointer`}
                     >
                       <img src={courseImg} className="mr-1 h-10" alt="" />
@@ -223,9 +229,8 @@ const Stats = () => {
           </div>
           <div className="border-l hidden lg:block" />
           <div
-            className={`w-full lg:w-1/3 h-full flex-col ${
-              selectedModule ? "flex md:w-1/2" : "hidden lg:flex"
-            }`}
+            className={`${localStorage.getItem("year") === "Residency" ? "w-full lg:w-1/3" : "w-full md:w-1/2"} h-full flex-col ${localStorage.getItem("year") === "Residency" ? selectedModule ? "flex md:w-1/2" : "hidden lg:flex" : selectedModule ? "flex md:w-1/2" : "hidden lg:flex"
+              }`}
           >
             <div
               role="alert"
@@ -239,9 +244,7 @@ const Stats = () => {
                   setCoursesStats(undefined);
                 }}
               ></FaArrowAltCircleLeft>
-              <div class="m-1.5 w-full font-sans text-base leading-none font-bold">
-                Cours
-              </div>
+              <div className="font-sans text-base font-bold text-center w-full">Cours</div>
             </div>
 
             <div className="flex-grow-1 overflow-y-auto flex-1">
@@ -258,17 +261,16 @@ const Stats = () => {
               ) : coursesStats ? (
                 coursesStats?.map((e, index) => (
                   <div
-                   
+
                     key={e._id}
                     role="alert"
                     className="p-2"
                   >
                     <div
-                      class={`relative flex w-full items-center rounded-md border ${
-                        e._id === selectedModule
-                          ? "bg-teal-100 dark:bg-teal-800"
-                          : "bg-white dark:bg-gray-800"
-                      }  border-slate-200 bg-opacity-75 transition-all duration-300
+                      class={`relative flex w-full items-center rounded-md border ${e._id === selectedModule
+                        ? "bg-teal-100 dark:bg-teal-800"
+                        : "bg-white dark:bg-gray-800"
+                        }  border-slate-200 bg-opacity-75 transition-all duration-300
            dark:border-slate-500 hover:dark:bg-slate-700 hover:bg-slate-300 shadow-lg p-2 cursor-pointer`}
                     >
                       <img src={courseImg} className="mr-1 h-10" alt="" />

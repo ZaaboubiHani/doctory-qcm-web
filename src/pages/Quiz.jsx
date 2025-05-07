@@ -200,11 +200,11 @@ const Quiz = () => {
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
-      <img
+      {/* <img
         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
         src={WingsImg}
         alt=""
-      />
+      /> */}
       <div className="w-full flex ">
         {isLoading ? (
           <div className="flex flex-col justify-evenly items-center w-full h-full">
