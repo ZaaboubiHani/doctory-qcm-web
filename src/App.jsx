@@ -127,7 +127,7 @@ function AppContent({ setToken }) {
     };
 
   return (
-        <div className="flex-grow-1 w-full h-full overflow-auto mt-16 lg:mt-0 dark:bg-black">
+        <div className={`flex-grow-1 w-full h-full overflow-auto ${localStorage.getItem("token") ? "mt-16" : ""} lg:mt-0 dark:bg-black`}>
           <Routes>
             <Route path="/" element={<Login setToken={setToken} />} />
             <Route path="/signup" element={<Signup />} />
