@@ -68,7 +68,7 @@ const Quiz = () => {
           setEvaluated(false);
           setCheckedBoxes(
             questions[pageIndex]?.choices?.map(() => false) ??
-              questions[pageIndex].question.choices.map(() => false)
+            questions[pageIndex].question.choices.map(() => false)
           );
         } else {
           handleEvaluation();
@@ -78,7 +78,7 @@ const Quiz = () => {
           setPageIndex(pageIndex - 1);
           setCheckedBoxes(
             questions[pageIndex - 1]?.choices?.map((e) => false) ??
-              questions[pageIndex - 1].question.choices.map((e) => false)
+            questions[pageIndex - 1].question.choices.map((e) => false)
           );
           setEvaluated(false);
         }
@@ -87,7 +87,7 @@ const Quiz = () => {
           setPageIndex(pageIndex + 1);
           setCheckedBoxes(
             questions[pageIndex + 1]?.choices?.map((e) => false) ??
-              questions[pageIndex + 1].question.choices.map((e) => false)
+            questions[pageIndex + 1].question.choices.map((e) => false)
           );
           setEvaluated(false);
         }
@@ -121,7 +121,7 @@ const Quiz = () => {
 
     setCheckedBoxes(
       questions[index]?.choices?.map((e) => false) ||
-        questions[index].question.choices.map((e) => false)
+      questions[index].question.choices.map((e) => false)
     );
     setIsLoading(false);
   };
@@ -182,7 +182,7 @@ const Quiz = () => {
         setPageIndex(pageIndex + 1);
         setCheckedBoxes(
           questions[pageIndex + 1]?.choices?.map((e) => false) ??
-            questions[pageIndex + 1].question.choices.map((e) => false)
+          questions[pageIndex + 1].question.choices.map((e) => false)
         );
         setEvaluated(false);
       }
@@ -191,7 +191,7 @@ const Quiz = () => {
         setPageIndex(pageIndex - 1);
         setCheckedBoxes(
           questions[pageIndex - 1]?.choices?.map((e) => false) ??
-            questions[pageIndex - 1].question.choices.map((e) => false)
+          questions[pageIndex - 1].question.choices.map((e) => false)
         );
         setEvaluated(false);
       }
@@ -225,22 +225,26 @@ const Quiz = () => {
                  border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
                  leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
                   hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  onClick={() => {
+                    if (questions[pageIndex].note) {
+                      setSelectedNote(questions[pageIndex].note);
+                      setOpenNoteDialog(true);
+                    }
+                    else {
+                      setSelectedNote(questions[pageIndex].note);
+                      setOpenNoteDialog(true);
+                    }
+                  }}
                 >
                   {questions[pageIndex].note ? (
                     <FaLightbulb
                       className="text-yellow-500 text-xl"
-                      onClick={() => {
-                        setSelectedNote(questions[pageIndex].note);
-                        setOpenNoteDialog(true);
-                      }}
+
                     />
                   ) : (
                     <FaRegLightbulb
                       className="text-yellow-500 text-xl"
-                      onClick={() => {
-                        setSelectedNote(questions[pageIndex].note);
-                        setOpenNoteDialog(true);
-                      }}
+
                     />
                   )}
                 </button>
@@ -249,33 +253,37 @@ const Quiz = () => {
                  border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
                  leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
                   hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  onClick={() => {
+                    if (questions[pageIndex].favourite) {
+                      onRemoveFavoriteQuestion(questions[pageIndex]._id);
+                      questions[pageIndex].favourite = false;
+                      setQuestions([...questions]);
+                      showSnackbar(
+                        "Retiré des favoris",
+                        3000,
+                        SnackbarType.SUCCESS
+                      );
+                    }
+                    else {
+                      onCreateFavoriteQuestion(questions[pageIndex]._id);
+                      questions[pageIndex].favourite = true;
+                      setQuestions([...questions]);
+                      showSnackbar(
+                        "Ajouté aux favoris",
+                        3000,
+                        SnackbarType.SUCCESS
+                      );
+                    }
+                  }}
                 >
                   {questions[pageIndex].favourite ? (
                     <FaHeart
-                      onClick={() => {
-                        onRemoveFavoriteQuestion(questions[pageIndex]._id);
-                        questions[pageIndex].favourite = false;
-                        setQuestions([...questions]);
-                        showSnackbar(
-                          "Retiré des favoris",
-                          3000,
-                          SnackbarType.SUCCESS
-                        );
-                      }}
+
                       className="text-red-500 text-xl "
                     />
                   ) : (
                     <FaRegHeart
-                      onClick={() => {
-                        onCreateFavoriteQuestion(questions[pageIndex]._id);
-                        questions[pageIndex].favourite = true;
-                        setQuestions([...questions]);
-                        showSnackbar(
-                          "Ajouté aux favoris",
-                          3000,
-                          SnackbarType.SUCCESS
-                        );
-                      }}
+                    
                       className="text-red-500 text-xl "
                     />
                   )}
@@ -301,7 +309,7 @@ const Quiz = () => {
                     setEvaluated(false);
                     setCheckedBoxes(
                       questions[pageIndex]?.choices?.map((e) => false) ??
-                        questions[pageIndex].question.choices.map((e) => false)
+                      questions[pageIndex].question.choices.map((e) => false)
                     );
                     showSnackbar("Actualiser", 1000, SnackbarType.SUCCESS);
                   }}
@@ -364,15 +372,14 @@ const Quiz = () => {
 
                     <div
                       className={`max-w-96 w-full border select-none cursor-pointer
-${
-  evaluated
-    ? questions[pageIndex].correctAnswers.includes(c.letter)
-      ? "border-green-500 bg-green-300 dark:bg-green-800 "
-      : checkedBoxes[i]
-      ? "border-red-500 bg-red-300 dark:bg-red-800 "
-      : "dark:border-slate-500 dark:bg-slate-800 bg-slate-50"
-    : "dark:border-slate-500 dark:bg-slate-800 bg-slate-50"
-}
+${evaluated
+                          ? questions[pageIndex].correctAnswers.includes(c.letter)
+                            ? "border-green-500 bg-green-300 dark:bg-green-800 "
+                            : checkedBoxes[i]
+                              ? "border-red-500 bg-red-300 dark:bg-red-800 "
+                              : "dark:border-slate-500 dark:bg-slate-800 bg-slate-50"
+                          : "dark:border-slate-500 dark:bg-slate-800 bg-slate-50"
+                        }
                        text-black  dark:text-slate-50 
                       rounded-md shadow-lg p-4 m-2 text-md transition-all duration-300 text-left`}
                       onClick={() => {
@@ -390,9 +397,8 @@ ${
             </div>
             <div className="flex mb-4 w-full justify-evenly">
               <button
-                class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
-                  pageIndex > 0 ? "flex" : "hidden"
-                }
+                class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${pageIndex > 0 ? "flex" : "hidden"
+                  }
              dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
              leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
               hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
@@ -401,9 +407,9 @@ ${
 
                   setCheckedBoxes(
                     questions[pageIndex - 1]?.choices?.map((e) => false) ??
-                      questions[pageIndex - 1].question.choices.map(
-                        (e) => false
-                      )
+                    questions[pageIndex - 1].question.choices.map(
+                      (e) => false
+                    )
                   );
                   setEvaluated(false);
                 }}
@@ -422,9 +428,8 @@ ${
                 Évaluer
               </button>
               <button
-                class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
-                  pageIndex < questions.length - 1 ? "flex" : "hidden"
-                }
+                class={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${pageIndex < questions.length - 1 ? "flex" : "hidden"
+                  }
            dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
            leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
             hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
@@ -433,9 +438,9 @@ ${
 
                   setCheckedBoxes(
                     questions[pageIndex + 1]?.choices?.map((e) => false) ??
-                      questions[pageIndex + 1].question.choices.map(
-                        (e) => false
-                      )
+                    questions[pageIndex + 1].question.choices.map(
+                      (e) => false
+                    )
                   );
                   setEvaluated(false);
                 }}
@@ -464,11 +469,10 @@ ${
             {questions.map((e, index) => (
               <div
                 key={e._id}
-                className={`w-12 h-12 md:h-16 md:w-16 ${
-                  index === pageIndex
-                    ? "bg-teal-100 dark:bg-teal-800"
-                    : "bg-white dark:bg-gray-800"
-                } rounded-md border border-slate-200 
+                className={`w-12 h-12 md:h-16 md:w-16 ${index === pageIndex
+                  ? "bg-teal-100 dark:bg-teal-800"
+                  : "bg-white dark:bg-gray-800"
+                  } rounded-md border border-slate-200 
              dark:border-slate-500 cursor-pointer
                shadow-lg p-4 flex flex-col justify-center items-center m-2 text-sm
                md:text-lg lg:text-xl hover:dark:bg-slate-700 hover:bg-slate-300
@@ -478,9 +482,9 @@ ${
                   setPageIndex(parseInt(index));
                   setCheckedBoxes(
                     questions[pageIndex + 1]?.choices?.map((e) => false) ??
-                      questions[pageIndex + 1].question.choices.map(
-                        (e) => false
-                      )
+                    questions[pageIndex + 1].question.choices.map(
+                      (e) => false
+                    )
                   );
                   setIsLoading(false);
                   setEvaluated(false);

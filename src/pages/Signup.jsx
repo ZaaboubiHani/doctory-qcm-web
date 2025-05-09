@@ -4,7 +4,7 @@ import TextField from "../components/TextField";
 import { MdOutlineEmail } from "react-icons/md";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { MdLockOutline } from "react-icons/md";
-
+import { IoSchoolSharp } from "react-icons/io5";
 import Button from "../components/Button";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlinePhone } from "react-icons/md";
@@ -24,6 +24,7 @@ const Signup = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
+  const [year, setYear] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   // Initialize the theme state based on localStorage or default to 'light'
@@ -60,7 +61,7 @@ const Signup = () => {
         src={ToolsImg}
         alt=""
       />
-      <div className="h-[400px] flex flex-col justify-evenly items-stretch md:ml-32">
+      <div className="h-[440px] flex flex-col justify-evenly items-stretch md:ml-32">
         {isLoading ? (
           <div className="flex flex-col justify-evenly items-center min-w-[300px]">
             <ClipLoader
@@ -72,7 +73,7 @@ const Signup = () => {
             />
           </div>
         ) : (
-          <div className="w-[350px] flex flex-col h-[550px] justify-evenly items-stretch ">
+          <div className="w-[350px] flex flex-col h-[600px] justify-evenly items-stretch ">
             <div className="w-full flex justify-center">
               <button
                 onClick={toggleTheme}
@@ -100,7 +101,7 @@ const Signup = () => {
             </div>
             <div className="relative w-full">
               <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500">
-                <MdOutlinePhone className="text-2xl" />
+                <MdOutlinePhone className="text-2xl text-gray-500" />
               </span>
               <input
                 type="phone"
@@ -146,6 +147,26 @@ const Signup = () => {
                 )}
               </button>
             </div>
+            <div className="relative w-full">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500">
+                <IoSchoolSharp className="text-2xl" />
+              </span>
+              <select
+                className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                defaultValue=""
+
+                onChange={(event) => {
+                  setYear(event.target.value)
+
+                }}
+              >
+                <option value="" disabled hidden>Année d’études</option>
+                <option value="Residency">Résidanat</option>
+                <option value="Fourth">4e année</option>
+                <option value="Fifth">5e année</option>
+                <option value="Sixth">6e année</option>
+              </select>
+            </div>
             <button
               className="px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition"
               onClick={async () => {
@@ -156,6 +177,7 @@ const Signup = () => {
                     password: password,
                     phoneNumber: phoneNumber,
                     name: name,
+                    year:year,
                   });
                   if (response.status === 200) {
                     showSnackbar(response.data.message, 3000);
@@ -194,7 +216,7 @@ const Signup = () => {
                 Retourner
               </button>
             </Link>
-            
+
           </div>
         )}
       </div>
