@@ -19,13 +19,12 @@ const ReportDialog = ({ onSubmit, isOpen, onClose }) => {
         }}
       ></div>
            <div className="max-w-[500px] w-full flex flex-col justify-center items-center h-[250px] absolute bg-white dark:bg-gray-800 rounded-xl shadow-2xl shadow-slate-950/5 border border-slate-200 dark:border-slate-500 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4">
-
-
         <div class="relative w-full min-w-[200px]">
           <textarea
             value={text}
             class="peer h-full min-h-[100px] w-full resize-none rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 
-            outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-teal-900 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
+            outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-teal-900
+             focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
             onChange={(event) => {
               setText(event.target.value);
             }}

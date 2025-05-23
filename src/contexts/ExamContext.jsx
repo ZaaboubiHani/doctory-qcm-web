@@ -50,7 +50,7 @@ const ExamProvider = ({ children }) => {
     const token = localStorage.getItem("token");
 
     const response = await apiInstance.getAxios().post(
-      `/simulations`,
+      `/simulations/v2`,
       {
         userId: userId,
       },
