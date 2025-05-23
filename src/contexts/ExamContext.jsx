@@ -37,7 +37,7 @@ const ExamProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance
       .getAxios()
-      .get(`/questions/randommodule?module=${module}`, {
+      .get(`/questions/v2/randommodule?module=${module}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
