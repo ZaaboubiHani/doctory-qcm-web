@@ -112,7 +112,8 @@ const ExamQuiz = () => {
   const initData = async () => {
     setIsLoading(true);
     const response = await getGeneratedModuleExam(id);
-    setExamQuestions(response.data);
+    
+    setExamQuestions(response.data.data.questions);
     setPageIndex(parseInt(0));
     setIsLoading(false);
   };
