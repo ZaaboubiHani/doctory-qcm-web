@@ -9,13 +9,11 @@ const ExamProvider = ({ children }) => {
 
   const getRisidantStats = async () => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance
-      .getAxios()
-      .get(`/simulations/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const response = await apiInstance.getAxios().get(`/simulations/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return response;
   };
@@ -38,6 +36,18 @@ const ExamProvider = ({ children }) => {
     const response = await apiInstance
       .getAxios()
       .get(`/questions/v2/randommodule?module=${module}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+    return response;
+  };
+  const getGeneratedCategoryExam = async (category) => {
+    const token = localStorage.getItem("token");
+    const response = await apiInstance
+      .getAxios()
+      .get(`/questions/randomCategory?category=${category}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -103,6 +113,7 @@ const ExamProvider = ({ children }) => {
         setSimulations,
         getRisidantStats,
         getSingleRisidantStats,
+        getGeneratedCategoryExam,
       }}
     >
       {children}

@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import BgImg from "../assets/bg-1.jpg";
-import CategoryImg1 from "../assets/category1.jpg";
-import CategoryImg2 from "../assets/category2.jpg";
-import CategoryImg3 from "../assets/category3.jpg";
+import CategoryImg1 from "../assets/category1.png";
+import CategoryImg2 from "../assets/category2.png";
+import CategoryImg3 from "../assets/category3.png";
 import { FavoritesContext } from "../contexts/FavoritesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";

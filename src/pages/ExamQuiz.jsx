@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import BgImg from "../assets/bg-1.jpg";
 import ClipLoader from "react-spinners/ClipLoader";
 import { BiSolidLeftArrow } from "react-icons/bi";
@@ -14,10 +14,18 @@ import WingsImg from "../assets/wings.png";
 const ExamQuiz = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+
+  const isCategory = searchParams.get("isCategory") === "true"; // null if not provided
+
   const { showSnackbar } = useContext(SnackbarContext);
 
-  const { examQuestions, setExamQuestions, getGeneratedModuleExam } =
-    useContext(ExamContext);
+  const {
+    examQuestions,
+    setExamQuestions,
+    getGeneratedModuleExam,
+    getGeneratedCategoryExam,
+  } = useContext(ExamContext);
 
   const [isLoading, setIsLoading] = useState(true);
   const [submitDialogIsOpen, setSubmitDialogIsOpen] = useState(false);
@@ -111,9 +119,16 @@ const ExamQuiz = () => {
 
   const initData = async () => {
     setIsLoading(true);
-    const response = await getGeneratedModuleExam(id);
-    
-    setExamQuestions(response.data.data.questions);
+    if (isCategory) {
+      const response = await getGeneratedCategoryExam(id);
+
+      setExamQuestions(response.data.data.questions);
+    } else {
+      const response = await getGeneratedModuleExam(id);
+
+      setExamQuestions(response.data.data.questions);
+    }
+
     setPageIndex(parseInt(0));
     setIsLoading(false);
   };
@@ -300,9 +315,8 @@ const ExamQuiz = () => {
                   dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
                   leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
                    hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
-                    data-toggle="modal"
-              data-target="#yesNoModal"
-                  
+                  data-toggle="modal"
+                  data-target="#yesNoModal"
                 >
                   Soumettre le résultat
                 </div>
