@@ -393,7 +393,7 @@ const ExamQuiz = () => {
           }}
         />
         <MessageBox
-          text={`Résultat note: ${result}/40 temps: ${formatTime(timeElapsed)}`}
+          text={`Résultat note: ${result}/${isCategory ? "50" : "40"} temps: ${formatTime(timeElapsed)}`}
           isOpen={resultDialogIsOpen}
           onOk={() => {
             navigate(-1);
