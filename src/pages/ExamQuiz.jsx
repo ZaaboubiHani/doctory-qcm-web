@@ -317,6 +317,7 @@ const ExamQuiz = () => {
                    hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                   data-toggle="modal"
                   data-target="#yesNoModal"
+                 
                 >
                   Soumettre le résultat
                 </div>
@@ -393,7 +394,9 @@ const ExamQuiz = () => {
           }}
         />
         <MessageBox
-          text={`Résultat note: ${result}/${isCategory ? "50" : "40"} temps: ${formatTime(timeElapsed)}`}
+          text={`Résultat note: ${result}/${
+            isCategory ? "50" : "40"
+          } temps: ${formatTime(timeElapsed)}`}
           isOpen={resultDialogIsOpen}
           onOk={() => {
             navigate(-1);

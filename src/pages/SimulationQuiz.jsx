@@ -69,8 +69,7 @@ const SimulationQuiz = () => {
                 pageIndex
               ].selectedChoices.filter(
                 (choice) =>
-                  choice !==
-                  examQuestions[pageIndex].choices[index].letter
+                  choice !== examQuestions[pageIndex].choices[index].letter
               );
             } else {
               // Add c.letter if it doesn't exist
@@ -116,12 +115,12 @@ const SimulationQuiz = () => {
       const userRes = await getMe(token);
       setCurrentUser(userRes.data);
       const response = await getGeneratedExam(userRes.data._id);
-      
+
       setExam(response.data.data);
       setExamQuestions(response.data.data.questions);
     } else {
       const response = await getGeneratedExam(currentUser._id);
-      
+
       setExam(response.data.data);
       setExamQuestions(response.data.data.questions);
     }
@@ -287,13 +286,12 @@ const SimulationQuiz = () => {
 
               {pageIndex === examQuestions.length - 1 ? (
                 <div
-                class={`inline-grid h-16 min-w-[36px] select-none place-items-center rounded-md border p-4 cursor-pointer
+                  class={`inline-grid h-16 min-w-[36px] select-none place-items-center rounded-md border p-4 cursor-pointer
                   dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
                   leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
                    hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
-                  onClick={async () => {
-                    setSubmitDialogIsOpen(true);
-                  }}
+                  data-toggle="modal"
+                  data-target="#yesNoModal"
                 >
                   Soumettre le résultat
                 </div>
@@ -305,6 +303,8 @@ const SimulationQuiz = () => {
                          dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
                          leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
                           hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
+                data-toggle="modal"
+                data-target="#yesNoModal"
                 onClick={() => {
                   setPageIndex(pageIndex + 1);
                 }}
