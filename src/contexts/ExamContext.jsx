@@ -78,7 +78,7 @@ const ExamProvider = ({ children }) => {
 
     var res = questions.map((q) => {
       return {
-        question: q.question._id,
+        question: q._id,
         answers: q.selectedChoices,
       };
     });

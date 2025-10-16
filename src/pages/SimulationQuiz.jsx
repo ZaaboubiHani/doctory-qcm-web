@@ -117,6 +117,7 @@ const SimulationQuiz = () => {
       const response = await getGeneratedExam(userRes.data._id);
 
       setExam(response.data.data);
+
       setExamQuestions(response.data.data.questions);
     } else {
       const response = await getGeneratedExam(currentUser._id);
@@ -178,6 +179,8 @@ const SimulationQuiz = () => {
                     >
                       <input
                         onChange={() => {
+                          console.log(examQuestions[pageIndex].correctAnswers);
+
                           if (!examQuestions[pageIndex].selectedChoices) {
                             examQuestions[pageIndex].selectedChoices = [];
                           }
@@ -303,8 +306,6 @@ const SimulationQuiz = () => {
                          dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
                          leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
                           hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
-                data-toggle="modal"
-                data-target="#yesNoModal"
                 onClick={() => {
                   setPageIndex(pageIndex + 1);
                 }}
@@ -347,7 +348,8 @@ const SimulationQuiz = () => {
 
             examQuestions.forEach((question) => {
               const selectedChoices = question.selectedChoices || [];
-              const correctChoices = question.question.correctAnswers || [];
+              const correctChoices = question.correctAnswers || [];
+              // console.log();
 
               // Check if arrays are equal
               const arraysEqual =
@@ -355,6 +357,7 @@ const SimulationQuiz = () => {
                 selectedChoices.every((value) =>
                   correctChoices.includes(value)
                 );
+              console.log(arraysEqual);
 
               if (arraysEqual) {
                 score += 1; // Increment the score if the arrays are equal
