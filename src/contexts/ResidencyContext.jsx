@@ -7,9 +7,9 @@ const ResidencyProvider = ({ children }) => {
   const [residencyQuestions, setResidencyQuestions] = useState([]);
   const [selectedResidency, setSelectedResidency] = useState();
 
-  const getResidencies = async () => {
+  const getResidencies = async (category) => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance.getAxios().get(`/residencies`, {
+    const response = await apiInstance.getAxios().get(`/residencies/v2${category ? `?category=${category}` : ""}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -87,7 +87,7 @@ function Sidebar() {
                 label: "Doctory qcm",
               },
               {
-                path: "/residency",
+                path: "/residency-menu",
                 icon: <MdQuiz className="text-3xl dark:text-gray-100" />,
                 label: "Sujet Résidanat",
               },
