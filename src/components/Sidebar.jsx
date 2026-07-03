@@ -102,13 +102,6 @@ function Sidebar() {
                   },
                 ]
                 : []),
-            
-             
-              {
-                path: "/simulation",
-                icon: <IoTimer className="text-3xl dark:text-gray-100" />,
-                label: "Simulation Résidanat",
-              },
               {
 
                 path: localStorage.getItem("year") === "Residency" ? "/favorites-categories" : "/favorites-modules",
