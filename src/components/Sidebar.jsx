@@ -87,7 +87,7 @@ function Sidebar() {
               ...(localStorage.getItem("year") === "Residency"
                 ? [
                   {
-                    path: "/residency",
+                    path: "/residency-menu",
                     icon: <MdQuiz className="text-3xl dark:text-gray-100" />,
                     label: "Sujet Résidanat",
                   },
@@ -103,12 +103,7 @@ function Sidebar() {
                 ]
                 : []),
             
-              {
-
-                path: "/residency-menu",
-                icon: <MdQuiz className="text-3xl dark:text-gray-100" />,
-                label: "Sujet Résidanat",
-              },
+             
               {
                 path: "/simulation",
                 icon: <IoTimer className="text-3xl dark:text-gray-100" />,
