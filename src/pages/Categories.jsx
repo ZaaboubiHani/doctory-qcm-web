@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import BgImg from "../assets/bg-1.jpg";
-import CategoryImg1 from "../assets/category1.jpg";
-import CategoryImg2 from "../assets/category2.jpg";
-import CategoryImg3 from "../assets/category3.jpg";
+import CategoryImg1 from "../assets/category1.png";
+import CategoryImg2 from "../assets/category2.png";
+import CategoryImg3 from "../assets/category3.png";
 import { CategoriesContext } from "../contexts/CategoriesContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
@@ -78,7 +78,7 @@ const Categories = () => {
          
           {categories.map((category, index) => (
             <div
-              className="w-full max-w-60  lg:max-w-xs  overflow-hidden rounded-lg border bg-white border-slate-200 dark:bg-gray-800
+              className="w-full max-w-60  lg:max-w-xs  overflow-hidden rounded-lg border bg-white border-slate-200 dark:bg-black
              dark:border-slate-500 shadow-lg m-4"
               key={category._id}
               onClick={() => {

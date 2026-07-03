@@ -15,7 +15,7 @@ const StatsProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance
       .getAxios()
-      .get(`/stats/answers-per-category`, {
+      .get(`/stats/v2/answers-per-category`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -25,9 +25,14 @@ const StatsProvider = ({ children }) => {
 
   const getModulesStatsOfCategory = async (categoryId) => {
     const token = localStorage.getItem("token");
+    const year = localStorage.getItem("year");
     const response = await apiInstance
       .getAxios()
-      .get(`/stats/answers-per-module?category=${categoryId}`, {
+      .get(`/stats/v2/answers-per-module`, {
+        params: {
+          category: categoryId,
+          year: year,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -37,9 +42,15 @@ const StatsProvider = ({ children }) => {
 
   const getCoursesStatsOfModule = async (moduleId) => {
     const token = localStorage.getItem("token");
+    const year = localStorage.getItem("year");
+
     const response = await apiInstance
       .getAxios()
-      .get(`/stats/answers-per-course?module=${moduleId}`, {
+      .get(`/stats/v2/answers-per-course`, {
+        params: {
+          module: moduleId,
+          year: year,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },

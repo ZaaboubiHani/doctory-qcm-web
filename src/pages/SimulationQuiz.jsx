@@ -61,7 +61,7 @@ const SimulationQuiz = () => {
 
             if (
               examQuestions[pageIndex].selectedChoices.includes(
-                examQuestions[pageIndex].question.choices[index].letter
+                examQuestions[pageIndex].choices[index].letter
               )
             ) {
               // Remove c.letter if it exists
@@ -69,14 +69,13 @@ const SimulationQuiz = () => {
                 pageIndex
               ].selectedChoices.filter(
                 (choice) =>
-                  choice !==
-                  examQuestions[pageIndex].question.choices[index].letter
+                  choice !== examQuestions[pageIndex].choices[index].letter
               );
             } else {
               // Add c.letter if it doesn't exist
               examQuestions[pageIndex].selectedChoices = [
                 ...examQuestions[pageIndex].selectedChoices,
-                examQuestions[pageIndex].question.choices[index].letter,
+                examQuestions[pageIndex].choices[index].letter,
               ];
             }
 
@@ -94,7 +93,7 @@ const SimulationQuiz = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [pageIndex, examQuestions.length, examQuestions]);
+  }, [pageIndex, examQuestions?.length, examQuestions]);
 
   useEffect(() => {
     timerInterval.current = setInterval(() => {
@@ -116,12 +115,15 @@ const SimulationQuiz = () => {
       const userRes = await getMe(token);
       setCurrentUser(userRes.data);
       const response = await getGeneratedExam(userRes.data._id);
-      setExam(response.data);
-      setExamQuestions(response.data.questions);
+
+      setExam(response.data.data);
+
+      setExamQuestions(response.data.data.questions);
     } else {
       const response = await getGeneratedExam(currentUser._id);
-      setExam(response.data);
-      setExamQuestions(response.data.questions);
+
+      setExam(response.data.data);
+      setExamQuestions(response.data.data.questions);
     }
     setPageIndex(parseInt(0));
     setIsLoading(false);
@@ -135,11 +137,11 @@ const SimulationQuiz = () => {
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
-      <img
+      {/* <img
         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
         src={WingsImg}
         alt=""
-      />
+      /> */}
       <div className="w-full flex ">
         {isLoading ? (
           <div className="flex flex-col justify-evenly items-center w-full h-full">
@@ -165,11 +167,11 @@ const SimulationQuiz = () => {
                       shadow-lg p-4 flex justify-start items-start m-4 text-lg font-black transition-all duration-300 text-left"
               >
                 {pageIndex + 1}
-                {") " + examQuestions[pageIndex].question.text}
+                {") " + examQuestions[pageIndex].text}
               </div>
 
               <div>
-                {examQuestions[pageIndex].question.choices.map((c, i) => (
+                {examQuestions[pageIndex].choices.map((c, i) => (
                   <div className="flex items-center justify-start" key={i}>
                     <label
                       class="flex items-center cursor-pointer relative shadow-lg"
@@ -177,6 +179,8 @@ const SimulationQuiz = () => {
                     >
                       <input
                         onChange={() => {
+                          console.log(examQuestions[pageIndex].correctAnswers);
+
                           if (!examQuestions[pageIndex].selectedChoices) {
                             examQuestions[pageIndex].selectedChoices = [];
                           }
@@ -285,13 +289,12 @@ const SimulationQuiz = () => {
 
               {pageIndex === examQuestions.length - 1 ? (
                 <div
-                class={`inline-grid h-16 min-w-[36px] select-none place-items-center rounded-md border p-4 cursor-pointer
+                  class={`inline-grid h-16 min-w-[36px] select-none place-items-center rounded-md border p-4 cursor-pointer
                   dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
                   leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
                    hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
-                  onClick={async () => {
-                    setSubmitDialogIsOpen(true);
-                  }}
+                  data-toggle="modal"
+                  data-target="#yesNoModal"
                 >
                   Soumettre le résultat
                 </div>
@@ -315,7 +318,7 @@ const SimulationQuiz = () => {
         <div className="border-l hidden md:block" />
         <div className="md:w-1/2 lg:w-1/2 hidden md:flex h-full flex-col">
           <div className="flex-grow-1 overflow-y-auto flex flex-wrap justify-start items-start">
-            {examQuestions.map((e, index) => (
+            {examQuestions?.map((e, index) => (
               <div
                 key={e._id}
                 className={`w-12 h-12 md:h-16 md:w-16 ${
@@ -345,7 +348,8 @@ const SimulationQuiz = () => {
 
             examQuestions.forEach((question) => {
               const selectedChoices = question.selectedChoices || [];
-              const correctChoices = question.question.correctAnswers || [];
+              const correctChoices = question.correctAnswers || [];
+              // console.log();
 
               // Check if arrays are equal
               const arraysEqual =
@@ -353,6 +357,7 @@ const SimulationQuiz = () => {
                 selectedChoices.every((value) =>
                   correctChoices.includes(value)
                 );
+              console.log(arraysEqual);
 
               if (arraysEqual) {
                 score += 1; // Increment the score if the arrays are equal

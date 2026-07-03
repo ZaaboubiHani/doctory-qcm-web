@@ -37,9 +37,11 @@ const Questions = () => {
 
   useEffect(() => {
     initData();
-  }, []);
+  }, [id]);
 
   const initData = async () => {
+    console.log(id);
+    
     await fetchQA(id);
     setIsLoading(false);
   };
@@ -66,11 +68,11 @@ const Questions = () => {
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
-      <img
+      {/* <img
         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
         src={WingsImg}
         alt=""
-      />
+      /> */}
 
       <div className="w-full h-full flex">
         {/* Modules */}
@@ -79,7 +81,9 @@ const Questions = () => {
             role="alert"
             className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            <div className="font-sans text-base font-bold">Modules</div>
+            <div className="font-sans text-base font-bold text-center w-full">
+              Modules
+            </div>
           </div>
           <div className="flex-grow-1 overflow-y-auto">
             {modules.map((e) => (
@@ -112,7 +116,9 @@ const Questions = () => {
             role="alert"
             className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            <div className="font-sans text-base font-bold">Cours</div>
+            <div className="font-sans text-base font-bold text-center w-full">
+              Cours
+            </div>
           </div>
           <div className="flex-grow-1 overflow-y-auto">
             {courses.map((e) => (
@@ -132,7 +138,7 @@ const Questions = () => {
                   }}
                 />
                 <div
-                   className="flex-1 text-lg font-medium"
+                  className="flex-1 text-lg font-medium"
                   onClick={() => {
                     setIsLoading(true);
                     navigate(`/questions/${e._id}`);
@@ -171,7 +177,9 @@ const Questions = () => {
               className="text-3xl min-h-8 mr-2 flex lg:hidden"
               onClick={() => navigate(-1)}
             />
-            Questions
+            <div className="font-sans text-base font-bold text-center w-full">
+              Questions
+            </div>
           </div>
           <div className="flex-grow-1 overflow-y-auto flex flex-wrap justify-start items-start">
             {isLoading ? (

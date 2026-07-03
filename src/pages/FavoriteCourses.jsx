@@ -53,18 +53,20 @@ const FavoriteCourses = () => {
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
-      <img
+      {/* <img
         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
         src={WingsImg}
         alt=""
-      />
+      /> */}
       <div className="w-full h-full flex">
         <div className="w-1/3 md:w-1/2 lg:w-1/3 h-full flex-col hidden md:flex">
           <div
             role="alert"
             className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            Modules
+            <div className="font-sans text-base font-bold text-center w-full">Modules</div>
+
+            
           </div>
           <div className="flex-grow-1 overflow-y-auto ">
             {modules.map((e, index) => (
@@ -101,7 +103,9 @@ const FavoriteCourses = () => {
               className="text-2xl mr-2 cursor-pointer lg:hidden"
               onClick={() => navigate(-1)}
             />
-            <div className="font-sans text-base font-bold">Cours</div>
+            <div className="font-sans text-base font-bold text-center w-full">Cours</div>
+
+            
           </div>
           <div className="flex-grow-1 overflow-y-auto flex-1">
             {isLoading ? (
@@ -162,7 +166,8 @@ const FavoriteCourses = () => {
             role="alert"
             className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            Questions
+            <div className="font-sans text-base font-bold text-center w-full">Questions</div>
+            
           </div>
           <div className="flex-grow-1 overflow-y-auto flex-1">
             <div className="h-full flex justify-center items-center">

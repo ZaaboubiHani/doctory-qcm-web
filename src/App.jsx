@@ -5,7 +5,7 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import "./App.css";
 import React from "react";
 import Login from "./pages/Login";
@@ -30,6 +30,10 @@ import SimulationQuiz from "./pages/SimulationQuiz";
 import SimulationDetails from "./pages/SimulationDetails";
 import Stats from "./pages/Stats";
 import Residency from "./pages/Residency";
+import { SnackbarContext, SnackbarType } from "./contexts/SnackbarContext";
+
+import { AuthContext } from "./contexts/AuthContext";
+import { VersionContext } from "./contexts/VersionContext";
 import ResidencyStats from "./pages/ResidencyStats";
 import ResidencyMenu from "./pages/ResidencyMenu";
 import ResidencyCategories from "./pages/ResidencyCategories";
@@ -37,6 +41,11 @@ import ResidencyCategories from "./pages/ResidencyCategories";
 function AppContent({ setToken }) {
   const navigate = useNavigate();
   const location = useLocation();
+
+   const { login, setCurrentUser, getMe, updateUserInfo, getDeviceId } =
+      useContext(AuthContext);
+    const { showSnackbar } = useContext(SnackbarContext);
+    const { version, setVersion, getLatestVersion } = useContext(VersionContext);
 
   useEffect(() => {
     const checkToken = () => {
@@ -71,9 +80,56 @@ function AppContent({ setToken }) {
     };
   }, [location, navigate]);
 
+   useEffect(() => {
+      handleAutoLogin();
+    }, []);
+  
+    const handleAutoLogin = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        var verRes = await getLatestVersion();
+  
+        setVersion(verRes.data.data);
+        if (token) {
+          const userRes = await getMe(token);
+  
+          if (
+            userRes.data.data.deviceToken === null ||
+            userRes.data.data.deviceToken === undefined ||
+            userRes.data.data.deviceToken === ""
+          ) {
+            localStorage.clear();
+            setToken(null);
+          } else {
+            const deviceId = localStorage.getItem("deviceId");
+            if (userRes.data.data.deviceToken === deviceId) {
+              localStorage.setItem("year", userRes.data.data.year);
+              
+              userRes.data.data.token = token;
+              setCurrentUser(userRes.data.data);
+              if(userRes.data.data.year === "Residency"){
+  
+                navigate("/categories");
+              }
+              else{
+                navigate("/modules");
+  
+              }
+            } else {
+              setToken(null);
+              localStorage.clear();
+            }
+          }
+        }
+      } catch (error) {
+        localStorage.clear();
+        setToken(null);
+      } finally {
+      }
+    };
+
   return (
-    
-        <div className="flex-grow-1 w-full h-full overflow-auto mt-16 lg:mt-0">
+        <div className={`flex-grow-1 w-full h-full overflow-auto ${localStorage.getItem("token") ? "mt-16" : ""} lg:mt-0 dark:bg-black`}>
           <Routes>
             <Route path="/" element={<Login setToken={setToken} />} />
             <Route path="/signup" element={<Signup />} />
@@ -82,6 +138,10 @@ function AppContent({ setToken }) {
             <Route
               path="/favorites-categories"
               element={<FavoriteCategories />}
+            />
+            <Route
+              path="/favorites-modules"
+              element={<FavoriteModules />}
             />
             <Route
               path="/favorites-modules/:id"
@@ -96,6 +156,7 @@ function AppContent({ setToken }) {
               element={<FavoriteQuestions />}
             />
             <Route path="/favorites-quiz/:index" element={<FavoriteQuiz />} />
+            <Route path="/modules" element={<Modules />} />
             <Route path="/modules/:id" element={<Modules />} />
             <Route path="/courses/:id" element={<Courses />} />
             <Route path="/questions/:id" element={<Questions />} />

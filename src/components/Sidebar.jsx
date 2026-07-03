@@ -48,11 +48,10 @@ function Sidebar() {
      dark:border-slate-500 shadow-slate-950/5 absolute lg:static z-50 transition-all h-[70px] lg:h-0 duration-300 flex`}
       >
         <div
-          className={`w-20 flex flex-col lg:hidden items-center py-2 px-5 transition-all duration-300 cursor-pointer text-center text-sm ${
-            theme === "dark"
-              ? "text-gray-300 hover:text-white bg-gray-800 hover:bg-teal-700"
-              : "text-gray-500 hover:text-black bg-white hover:bg-teal-100"
-          }  `}
+          className={`w-20 flex flex-col lg:hidden items-center py-2 px-5 transition-all duration-300 cursor-pointer text-center text-sm ${theme === "dark"
+            ? "text-gray-300 hover:text-white bg-gray-800 hover:bg-teal-700"
+            : "text-gray-500 hover:text-black bg-white hover:bg-teal-100"
+            }  `}
           onClick={() => setIsOpen(!isOpen)}
         >
           <IoMenu className="text-3xl" />
@@ -67,9 +66,8 @@ function Sidebar() {
 
       <div
         class={`w-full rounded-lg border shadow-sm overflow-hidden  bg-white border-slate-200 dark:bg-gray-800
-     dark:border-slate-500 shadow-slate-950/5 absolute lg:static h-full z-50 ${
-       isOpen ? "max-w-[280px]" : "max-w-[0px] lg:max-w-[90px]"
-     } transition-all duration-300`}
+     dark:border-slate-500 shadow-slate-950/5 absolute lg:static h-full z-50 ${isOpen ? "max-w-[280px]" : "max-w-[0px] lg:max-w-[90px]"
+          } transition-all duration-300`}
       >
         <div className="w-full flex justify-center">
           <img
@@ -82,11 +80,31 @@ function Sidebar() {
           <ul class="flex flex-col gap-0.5 ">
             {[
               {
-                path: "/categories",
+                path: localStorage.getItem("year") === "Residency" ? "/categories" : "/modules",
                 icon: <MdCategory className="text-3xl dark:text-gray-100" />,
                 label: "Doctory qcm",
               },
+              ...(localStorage.getItem("year") === "Residency"
+                ? [
+                  {
+                    path: "/residency",
+                    icon: <MdQuiz className="text-3xl dark:text-gray-100" />,
+                    label: "Sujet Résidanat",
+                  },
+                ]
+                : []),
+                ...(localStorage.getItem("year") === "Residency"
+                ? [
+                  {
+                    path: "/simulation",
+                    icon: <IoTimer className="text-3xl dark:text-gray-100" />,
+                    label: "Simulation Résidanat",
+                  },
+                ]
+                : []),
+            
               {
+
                 path: "/residency-menu",
                 icon: <MdQuiz className="text-3xl dark:text-gray-100" />,
                 label: "Sujet Résidanat",
@@ -97,7 +115,9 @@ function Sidebar() {
                 label: "Simulation Résidanat",
               },
               {
-                path: "/favorites-categories",
+
+                path: localStorage.getItem("year") === "Residency" ? "/favorites-categories" : "/favorites-modules",
+
                 icon: <RiHeartsFill className="text-3xl dark:text-gray-100" />,
                 label: "Favoris",
               },
@@ -106,13 +126,18 @@ function Sidebar() {
                 icon: <FaChartArea className="text-3xl dark:text-gray-100" />,
                 label: "Statistiques Qcm",
               },
-              {
-                path: "/residency-stats",
-                icon: (
-                  <IoStatsChartSharp className="text-3xl dark:text-gray-100" />
-                ),
-                label: "Statistiques Résidanat",
-              },
+              ...(localStorage.getItem("year") === "Residency"
+                ? [
+                  {
+                    path: "/residency-stats",
+                    icon: (
+                      <IoStatsChartSharp className="text-3xl dark:text-gray-100" />
+                    ),
+                    label: "Statistiques Résidanat",
+                  },
+                ]
+                : []),
+
               {
                 path: "/profile",
                 icon: <FaUserCircle className="text-3xl dark:text-gray-100" />,
@@ -139,9 +164,8 @@ function Sidebar() {
                   <div className="px-2">{item.icon}</div>
                 </span>
                 <div
-                  className={`${
-                    isOpen ? "opacity-100" : "opacity-0"
-                  } transition-all duration-300 ease-in `}
+                  className={`${isOpen ? "opacity-100" : "opacity-0"
+                    } transition-all duration-300 ease-in `}
                 >
                   {item.label}
                 </div>
@@ -169,9 +193,8 @@ function Sidebar() {
               class="flex items-center justify-center cursor-pointer py-1.5 px-2.5 rounded-md align-middle select-none font-sans transition-all duration-300 ease-in aria-disabled:opacity-50 aria-disabled:pointer-events-none bg-transparent text-slate-600 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 focus:bg-slate-200 focus:text-slate-800 dark:focus:text-white dark:data-[selected=true]:text-white dark:bg-opacity-70"
             >
               <FaArrowLeft
-                className={`text-3xl ${
-                  isOpen ? "" : "rotate-180"
-                } transition-all duration-300`}
+                className={`text-3xl ${isOpen ? "" : "rotate-180"
+                  } transition-all duration-300`}
               />
             </li>
           </ul>

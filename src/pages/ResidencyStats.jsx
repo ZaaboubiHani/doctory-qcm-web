@@ -105,7 +105,8 @@ const ResidencyStats = () => {
                     >
                       <div>{index + 1}</div>
                       <div>
-                        {new Date(sim.updatedAt).getDay() + 1}-
+                        
+                        {new Date(sim.updatedAt).getDate()}-
                         {new Date(sim.updatedAt).getMonth() + 1}-
                         {new Date(sim.updatedAt).getFullYear()}
                       </div>

@@ -36,11 +36,11 @@ const FavoriteModules = () => {
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
-      <img
+      {/* <img
         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10 dark:opacity-15"
         src={WingsImg}
         alt=""
-      />
+      /> */}
       {isLoading ? (
         <div className="flex flex-col justify-evenly items-center w-full h-full">
           <ClipLoader
@@ -64,7 +64,9 @@ const FavoriteModules = () => {
                   navigate(-1);
                 }}
               ></FaArrowAltCircleLeft>
-              <div className="font-sans text-base font-bold">Modules</div>
+            <div className="font-sans text-base font-bold text-center w-full">Modules</div>
+
+          
             </div>
             <div className="flex-grow overflow-y-auto">
               {modules.map((e, index) => (
@@ -88,7 +90,7 @@ const FavoriteModules = () => {
               role="alert"
               className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
-              <div className="font-sans text-base font-bold">Cours</div>
+            <div className="font-sans text-base font-bold text-center w-full">Cours</div>
             </div>
             <div className="flex-grow overflow-y-auto flex justify-center items-center">
               aucun cours disponible
@@ -100,7 +102,7 @@ const FavoriteModules = () => {
               role="alert"
               className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
             >
-              <div className="font-sans text-base font-bold">Questions</div>
+            <div className="font-sans text-base font-bold text-center w-full">Questions</div>
             </div>
             <div className="flex-grow overflow-y-auto flex justify-center items-center">
               aucune question disponible

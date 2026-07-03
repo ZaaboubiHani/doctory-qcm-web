@@ -41,11 +41,11 @@ const SimulationDetails = () => {
 
   return (
     <div className="flex-grow-1 flex flex-row flex-wrap w-full h-full justify-evenly items-center relative overflow-hidden ">
-     <img
+     {/* <img
                className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
                src={WingsImg}
                alt=""
-             />
+             /> */}
       {isLoading ? (
         <div className="flex flex-col justify-center items-center">
           <ClipLoader

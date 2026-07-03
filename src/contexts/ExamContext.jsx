@@ -9,13 +9,11 @@ const ExamProvider = ({ children }) => {
 
   const getRisidantStats = async () => {
     const token = localStorage.getItem("token");
-    const response = await apiInstance
-      .getAxios()
-      .get(`/simulations/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const response = await apiInstance.getAxios().get(`/simulations/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return response;
   };
@@ -37,7 +35,19 @@ const ExamProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     const response = await apiInstance
       .getAxios()
-      .get(`/questions/randommodule?module=${module}`, {
+      .get(`/questions/v2/randommodule?module=${module}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+    return response;
+  };
+  const getGeneratedCategoryExam = async (category) => {
+    const token = localStorage.getItem("token");
+    const response = await apiInstance
+      .getAxios()
+      .get(`/questions/randomCategory?category=${category}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -50,7 +60,7 @@ const ExamProvider = ({ children }) => {
     const token = localStorage.getItem("token");
 
     const response = await apiInstance.getAxios().post(
-      `/simulations`,
+      `/simulations/v2`,
       {
         userId: userId,
       },
@@ -68,7 +78,7 @@ const ExamProvider = ({ children }) => {
 
     var res = questions.map((q) => {
       return {
-        question: q.question._id,
+        question: q._id,
         answers: q.selectedChoices,
       };
     });
@@ -103,6 +113,7 @@ const ExamProvider = ({ children }) => {
         setSimulations,
         getRisidantStats,
         getSingleRisidantStats,
+        getGeneratedCategoryExam,
       }}
     >
       {children}

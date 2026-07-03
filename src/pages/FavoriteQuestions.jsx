@@ -84,18 +84,18 @@ const FavoriteQuestions = () => {
 
   return (
     <div className="flex flex-row h-full overflow-hidden relative">
-      <img
+      {/* <img
         className="absolute top-0 left-0 w-full h-full object-cover object-top blur-sm opacity-50 -z-10"
         src={WingsImg}
         alt=""
-      />
+      /> */}
       <div className="w-full h-full flex">
         <div className="w-1/3 h-full hidden lg:flex flex-col justify-start">
           <div
             role="alert"
             className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            <div className="font-sans text-base font-bold">Modules</div>
+            <div className="font-sans text-base font-bold text-center w-full">Modules</div>
           </div>
           <div className="flex-grow-1 overflow-y-auto">
             {modules.map((e, index) => (
@@ -126,7 +126,7 @@ const FavoriteQuestions = () => {
             role="alert"
             className="relative flex w-full items-center rounded-b-md border bg-primary-light border-slate-200 dark:bg-primary-dark dark:border-slate-500 p-3 dark:text-slate-50 shadow-lg"
           >
-            <div className="font-sans text-base font-bold">Cours</div>
+            <div className="font-sans text-base font-bold text-center w-full">Cours</div>
           </div>
           <div className="flex-grow-1 overflow-y-auto">
             {courses.map((e, index) => (
@@ -183,7 +183,9 @@ const FavoriteQuestions = () => {
                         className="text-3xl min-h-8 mr-2 flex lg:hidden"
                         onClick={() => navigate(-1)}
                       />
-                      Questions
+            <div className="font-sans text-base font-bold text-center w-full">Questions</div>
+
+                      
                     </div>
           <div className="flex-grow-1 overflow-y-auto flex flex-wrap justify-start items-start">
             {isLoading ? (
