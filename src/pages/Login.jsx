@@ -103,6 +103,7 @@ const Login = ({ setToken }) => {
         response.data.data.token = response.data.token;
         updateUserInfo(response.data.data);
         setCurrentUser(response.data.data);
+
         if(response.data.data.year === "Residency"){
 
           navigate("/categories");
@@ -111,36 +112,7 @@ const Login = ({ setToken }) => {
           navigate("/modules");
 
         }
-        // if (
-        //   response.data.data.deviceToken === null ||
-        //   response.data.data.deviceToken === undefined ||
-        //   response.data.data.deviceToken === ""
-        // ) {
-        //   showSnackbar(response.data.message, 3000);
-        //   localStorage.setItem("token", response.data.token);
-        //   setToken(response.data.token);
-        //   response.data.data.deviceToken = getDeviceId();
-        //   response.data.data.token = response.data.token;
-        //   updateUserInfo(response.data.data);
-        //   setCurrentUser(response.data.data);
-        //   navigate("/categories");
-        // } else {
-        // const deviceId = localStorage.getItem("deviceId");
-
-        // if (response.data.data.deviceToken === deviceId) {
-        // showSnackbar(response.data.message, 3000);
-        // response.data.data.token = response.data.token;
-        // setCurrentUser(response.data.data);
-        // navigate("/categories");
-        // } else {
-        //   localStorage.clear();
-        //   showSnackbar(
-        //     "Connexion impossible : Ce compte est déjà utilisé sur un autre appareil. \nVeuillez contacter ce numéro : 06 71 84 68 73",
-        //     10000,
-        //     SnackbarType.ERROR
-        //   );
-        // }
-        // }
+       
       } else {
         localStorage.clear();
         showSnackbar("échec de l'inscription", 5000, SnackbarType.ERROR);

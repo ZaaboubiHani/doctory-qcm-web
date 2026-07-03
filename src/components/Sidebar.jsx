@@ -104,7 +104,20 @@ function Sidebar() {
                 : []),
             
               {
+
+                path: "/residency-menu",
+                icon: <MdQuiz className="text-3xl dark:text-gray-100" />,
+                label: "Sujet Résidanat",
+              },
+              {
+                path: "/simulation",
+                icon: <IoTimer className="text-3xl dark:text-gray-100" />,
+                label: "Simulation Résidanat",
+              },
+              {
+
                 path: localStorage.getItem("year") === "Residency" ? "/favorites-categories" : "/favorites-modules",
+
                 icon: <RiHeartsFill className="text-3xl dark:text-gray-100" />,
                 label: "Favoris",
               },

@@ -35,6 +35,8 @@ import { SnackbarContext, SnackbarType } from "./contexts/SnackbarContext";
 import { AuthContext } from "./contexts/AuthContext";
 import { VersionContext } from "./contexts/VersionContext";
 import ResidencyStats from "./pages/ResidencyStats";
+import ResidencyMenu from "./pages/ResidencyMenu";
+import ResidencyCategories from "./pages/ResidencyCategories";
 
 function AppContent({ setToken }) {
   const navigate = useNavigate();
@@ -132,6 +134,7 @@ function AppContent({ setToken }) {
             <Route path="/" element={<Login setToken={setToken} />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/categories" element={<Categories />} />
+            <Route path="/residency-categories" element={<ResidencyCategories />} />
             <Route
               path="/favorites-categories"
               element={<FavoriteCategories />}
@@ -167,6 +170,8 @@ function AppContent({ setToken }) {
             />
             <Route path="/simulation-quiz" element={<SimulationQuiz />} />
             <Route path="/residency" element={<Residency />} />
+            <Route path="/residency/:id" element={<Residency />} />
+            <Route path="/residency-menu" element={<ResidencyMenu />} />
             <Route path="/residency-stats" element={<ResidencyStats />} />
             <Route path="/profile" element={<Profile setToken={setToken} />} />
             <Route path="*" element={<ErrorPage />} />
