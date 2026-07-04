@@ -9,11 +9,15 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { FaArrowLeft, FaLightbulb, FaRegLightbulb } from "react-icons/fa";
 import { BiSolidLeftArrow, BiSolidRightArrow } from "react-icons/bi";
 import { useNavigate, useParams } from "react-router-dom";
+import { TfiReload } from "react-icons/tfi";
+import { MdReportProblem } from "react-icons/md";
 
 import { SnackbarContext, SnackbarType } from "../contexts/SnackbarContext";
 import { ResidencyContext } from "../contexts/ResidencyContext";
 import { NotesContext } from "../contexts/NotesContext";
 import NoteDialog from "../components/Note-Dialog";
+import ReportDialog from "../components/Report-Dialog";
+import { ReportsContext } from "../contexts/ReportsContext";
 
 // Components
 const LoadingSpinner = () => (
@@ -76,30 +80,76 @@ const QuestionCard = ({ question, index, isSelected, hasNote, onClick }) => (
     aria-label={`Question ${index + 1}${hasNote ? " (has note)" : ""}`}
   >
     {hasNote && (
-      <FaLightbulb className="absolute top-[2px] right-[2px] md:top-1 md:right-1 text-yellow-500 mb-1 text-xs md:text-sm" />
+      <FaLightbulb className="absolute top-1 right-1 text-yellow-500 mb-1 text-sm" />
     )}
     {index + 1}
   </div>
 );
 
-const ChoiceCard = ({ choice, index }) => (
-  <div className="flex items-center justify-center" key={index}>
-    <div
-      className="max-w-96 w-full border dark:border-slate-500 dark:bg-slate-800 
-                 text-black bg-slate-50 dark:text-slate-50 rounded-md shadow-lg p-4 m-2 
-                 text-md transition-all duration-300 text-left"
-    >
-      {choice.text}
+const ChoiceCard = ({ choice, index, isSelected, isEvaluated, isCorrect, onClick }) => {
+  const getBorderColor = () => {
+    if (!isEvaluated) return "dark:border-slate-500";
+    if (isCorrect) return "border-green-500";
+    if (isSelected && !isCorrect) return "border-red-500";
+    return "dark:border-slate-500";
+  };
+
+  const getBackgroundColor = () => {
+    if (!isEvaluated) return "dark:bg-slate-800 bg-slate-50";
+    if (isCorrect) return "bg-green-300 dark:bg-green-800";
+    if (isSelected && !isCorrect) return "bg-red-300 dark:bg-red-800";
+    return "dark:bg-slate-800 bg-slate-50";
+  };
+
+  return (
+    <div className="flex items-center justify-start" key={index}>
+      <label className="flex items-center cursor-pointer relative shadow-lg" htmlFor={`choice-${index}`}>
+        <input
+          onChange={() => !isEvaluated && onClick(index)}
+          type="checkbox"
+          checked={isSelected}
+          className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow-sm border border-slate-800 checked:bg-slate-200 checked:border-slate-800 dark:border-slate-200 dark:checked:bg-slate-800 dark:checked:border-slate-800"
+          id={`choice-${index}`}
+          disabled={isEvaluated}
+        />
+        <span className="absolute text-black dark:text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <svg
+            fill="none"
+            width="18px"
+            height="18px"
+            strokeWidth="2"
+            color="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 13L9 17L19 7"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></path>
+          </svg>
+        </span>
+      </label>
+
+      <div
+        className={`max-w-96 w-full border select-none cursor-pointer
+          ${getBorderColor()} ${getBackgroundColor()}
+          text-black dark:text-slate-50 rounded-md shadow-lg p-4 m-2 text-md transition-all duration-300 text-left`}
+        onClick={() => !isEvaluated && onClick(index)}
+      >
+        {choice.text}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Residency = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  // id will be category._id
-  console.log(id);
   const { showSnackbar } = useContext(SnackbarContext);
+  const { onCreateReport } = useContext(ReportsContext);
   const {
     residencies,
     setResidencies,
@@ -122,11 +172,49 @@ const Residency = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [selectedNote, setSelectedNote] = useState(null);
   const [openNoteDialog, setOpenNoteDialog] = useState(false);
+  const [openReportDialog, setOpenReportDialog] = useState(false);
+  
+  // Test mode state
+  const [checkedBoxes, setCheckedBoxes] = useState([]);
+  const [evaluated, setEvaluated] = useState(false);
+
+  // Check if current question has correct answers
+  const hasCorrectAnswers = residencyQuestions[pageIndex]?.question?.correctAnswers && 
+                           residencyQuestions[pageIndex]?.question?.correctAnswers.length > 0;
+
+  // Reset test state when question changes
+  useEffect(() => {
+    if (residencyQuestions[pageIndex]) {
+      const choices = residencyQuestions[pageIndex].question.choices;
+      setCheckedBoxes(choices.map(() => false));
+      setEvaluated(false);
+    }
+  }, [pageIndex, selectedQuestion, residencyQuestions]);
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "ArrowLeft" && pageIndex > 0) {
+      const keyMap = {
+        0: ["a", "A", "1"],
+        1: ["b", "B", "2"],
+        2: ["c", "C", "3"],
+        3: ["d", "D", "4"],
+        4: ["e", "E", "5"],
+        5: ["f", "F", "6"],
+      };
+
+      if (event.key === "Enter") {
+        if (hasCorrectAnswers) {
+          if (evaluated) {
+            setEvaluated(false);
+            setCheckedBoxes(
+              residencyQuestions[pageIndex].question.choices.map(() => false)
+            );
+          } else {
+            handleEvaluation();
+          }
+        }
+      } else if (event.key === "ArrowLeft" && pageIndex > 0) {
         handleQuestionSelect(
           residencyQuestions[pageIndex - 1].question._id,
           pageIndex - 1,
@@ -139,12 +227,23 @@ const Residency = () => {
           residencyQuestions[pageIndex + 1].question._id,
           pageIndex + 1,
         );
+      } else if (hasCorrectAnswers) {
+        // Handle checkbox toggling with keyboard
+        Object.entries(keyMap).forEach(([choiceIndex, keys]) => {
+          if (keys.includes(event.key) && choiceIndex < checkedBoxes.length && !evaluated) {
+            const checks = [...checkedBoxes];
+            checks[choiceIndex] = !checks[choiceIndex];
+            setCheckedBoxes(checks);
+          }
+        });
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [pageIndex, residencyQuestions]);
+  }, [pageIndex, residencyQuestions, evaluated, checkedBoxes, hasCorrectAnswers]);
+
+ 
 
   // Initialize data
   useEffect(() => {
@@ -156,6 +255,7 @@ const Residency = () => {
     try {
       const response = await getResidencies(id);
       setResidencyQuestions([]);
+      setSelectedResidency(null);
       if (response.status === 200) {
         setResidencies(response.data.data);
       } else {
@@ -255,11 +355,40 @@ const Residency = () => {
     }
   };
 
+  // Handle choice selection
+  const handleChoiceSelect = (choiceIndex) => {
+    if (evaluated) return;
+    const checks = [...checkedBoxes];
+    checks[choiceIndex] = !checks[choiceIndex];
+    setCheckedBoxes(checks);
+  };
+
+  // Handle evaluation
+  const handleEvaluation = () => {
+    if (!hasCorrectAnswers) return;
+    
+    setEvaluated(true);
+    
+    const correctAnswers = residencyQuestions[pageIndex].question.correctAnswers;
+    const selectedAnswers = checkedBoxes
+      .map((checked, index) => checked ? residencyQuestions[pageIndex].question.choices[index].letter : null)
+      .filter(Boolean);
+    
+    const arraysEqual = 
+      selectedAnswers.length === correctAnswers.length &&
+      selectedAnswers.every((value, index) => value === correctAnswers[index]);
+    
+    if (arraysEqual) {
+      showSnackbar("Correct !", 3000, SnackbarType.SUCCESS);
+    } else {
+      showSnackbar("Incorrect. Essayez encore !", 3000, SnackbarType.ERROR);
+    }
+  };
+
   // Determine panel visibility
   const showResidencyPanel =
     !selectedResidency || (selectedResidency && !selectedQuestion);
   const showQuestionsPanel = selectedResidency;
-  const showDetailsPanel = true; // Always shown on lg screens, conditionally on mobile
 
   // Main render
   if (isLoading) {
@@ -271,8 +400,8 @@ const Residency = () => {
   }
 
   return (
-    <div className="flex-grow-1 flex flex-row flex-wrap h-full justify-evenly items-center overflow-hidden relative">
-      <div className="w-full h-full flex">
+    <div className="flex flex-row h-full overflow-hidden relative">
+      <div className="w-full flex">
         {/* Residency List Panel */}
         <div
           className={`w-full md:w-1/2 lg:w-1/4 h-full flex-col ${
@@ -344,87 +473,142 @@ const Residency = () => {
         <div className="border-l hidden lg:block" />
 
         {/* Question Details Panel */}
-        <div
-          className={`w-full lg:w-[44%] h-full flex flex-col ${
-            selectedQuestion ? "flex md:w-1/2" : "hidden lg:flex"
-          }`}
-        >
-          <SectionHeader
-            title="Détails"
-            onBack={() => setSelectedQuestion(null)}
-            showBackButton={true}
-          />
-          <div className="flex-grow h-full flex flex-col overflow-y-auto">
-            {selectedQuestion && residencyQuestions[pageIndex] ? (
-              <div className="w-full flex flex-col h-full">
-                <div className="w-full h-full flex flex-col items-center overflow-y-auto">
-                  {/* Question Text and Note Toggle */}
-                  <div className="flex items-center">
-                    <div
-                      className="h-fit max-w-[600px] border dark:border-slate-500 dark:bg-slate-800 
-                                 text-black bg-slate-50 dark:text-slate-50 rounded-md shadow-lg p-4 flex 
-                                 justify-start items-start m-4 text-lg font-black transition-all duration-300 text-left"
-                    >
-                      {pageIndex + 1}
-                      {") "}
-                      {residencyQuestions[pageIndex].question.text}
-                    </div>
-                    <button
-                      onClick={() =>
-                        handleNoteToggle(residencyQuestions[pageIndex].note)
-                      }
-                      className="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center 
-                                 rounded-md border border-slate-800 dark:bg-slate-800 text-center 
-                                 align-middle font-sans text-sm font-bold leading-none text-black 
-                                 bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in 
-                                 hover:border-slate-700 hover:dark:bg-slate-700 hover:bg-slate-300 
-                                 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                      aria-label={
-                        residencyQuestions[pageIndex].note
-                          ? "View note"
-                          : "Add note"
-                      }
-                    >
-                      {residencyQuestions[pageIndex].note ? (
-                        <FaLightbulb className="text-yellow-500 text-xl" />
-                      ) : (
-                        <FaRegLightbulb className="text-yellow-500 text-xl" />
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Choices */}
-                  <div className="w-full">
-                    {residencyQuestions[pageIndex].question.choices.map(
-                      (choice, index) => (
-                        <ChoiceCard key={index} choice={choice} index={index} />
-                      ),
-                    )}
-                  </div>
-                </div>
-
-                {/* Navigation Arrows */}
-                <div
-                  role="alert"
-                  className="flex bottom-1 w-full justify-evenly mb-4"
+        {selectedQuestion && residencyQuestions[pageIndex] ? (
+          <div 
+            className="w-full md:w-1/2 lg:w-[44%] flex justify-center flex-col"
+           
+          >
+            <div className="w-full h-full flex flex-col items-center overflow-auto">
+              {/* Action Buttons */}
+              <div className="flex w-[300px] h-16 mt-4 justify-evenly items-center">
+                <button
+                  className="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                           border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                           leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
+                           hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  onClick={() => {
+                    if (residencyQuestions[pageIndex].note) {
+                      setSelectedNote(residencyQuestions[pageIndex].note);
+                      setOpenNoteDialog(true);
+                    } else {
+                      setSelectedNote(residencyQuestions[pageIndex].note);
+                      setOpenNoteDialog(true);
+                    }
+                  }}
                 >
-                  <NavigationButton
-                    direction="left"
-                    onClick={() => navigateToQuestion(-1)}
-                    disabled={pageIndex === 0}
-                  />
-                  <NavigationButton
-                    direction="right"
-                    onClick={() => navigateToQuestion(1)}
-                    disabled={pageIndex === residencyQuestions.length - 1}
-                  />
-                </div>
+                  {residencyQuestions[pageIndex].note ? (
+                    <FaLightbulb className="text-yellow-500 text-xl" />
+                  ) : (
+                    <FaRegLightbulb className="text-yellow-500 text-xl" />
+                  )}
+                </button>
+                
+                <div></div>
+                
+                <button
+                  className="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                           border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                           leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
+                           hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  onClick={() => {
+                    setOpenReportDialog(true);
+                  }}
+                >
+                  <MdReportProblem className="text-orange-500 text-xl" />
+                </button>
+                
+                {hasCorrectAnswers && (
+                  <button
+                    className="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
+                             border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
+                             leading-none text-black bg-slate-50 dark:text-slate-50 transition-all duration-300 ease-in hover:border-slate-700 
+                             hover:dark:bg-slate-700 hover:bg-slate-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    onClick={() => {
+                      setEvaluated(false);
+                      setCheckedBoxes(
+                        residencyQuestions[pageIndex].question.choices.map(() => false)
+                      );
+                      showSnackbar("Actualiser", 1000, SnackbarType.SUCCESS);
+                    }}
+                  >
+                    <TfiReload className="text-teal-500 text-xl" />
+                  </button>
+                )}
               </div>
-            ) : (
-              <EmptyState message="Aucune question sélectionnée" />
-            )}
+
+              {/* Question Text */}
+              <div
+                className="h-fit max-w-[600px] border dark:border-slate-500 dark:bg-slate-800 
+                         text-black bg-slate-50 dark:text-slate-50 rounded-md shadow-lg p-4 flex 
+                         justify-start items-start m-4 text-lg font-black transition-all duration-300 text-left"
+              >
+                {pageIndex + 1}
+                {") "}
+                {residencyQuestions[pageIndex].question.text}
+              </div>
+
+              {/* Choices */}
+              <div>
+                {residencyQuestions[pageIndex].question.choices.map((choice, index) => (
+                  <ChoiceCard
+                    key={index}
+                    choice={choice}
+                    index={index}
+                    isSelected={checkedBoxes[index]}
+                    isEvaluated={evaluated}
+                    isCorrect={evaluated && residencyQuestions[pageIndex]?.question?.correctAnswers?.includes(choice.letter)}
+                    onClick={handleChoiceSelect}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Navigation and Evaluation */}
+            <div className="flex mb-4 w-full justify-evenly">
+              <button
+                className={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
+                  pageIndex > 0 ? "flex" : "hidden"
+                }
+                dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+                hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
+                onClick={() => navigateToQuestion(-1)}
+              >
+                <BiSolidLeftArrow />
+              </button>
+              
+              {hasCorrectAnswers && (
+                <button
+                  className="inline-grid h-16 min-w-[36px] select-none place-items-center rounded-md border p-4 cursor-pointer
+                           dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                           leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+                           hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  onClick={handleEvaluation}
+                  disabled={evaluated || checkedBoxes.every(box => !box)}
+                >
+                  Évaluer
+                </button>
+              )}
+              
+              <button
+                className={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
+                  pageIndex < residencyQuestions.length - 1 ? "flex" : "hidden"
+                }
+                dark:border-slate-800 dark:bg-teal-800 text-center align-middle font-sans text-sm font-bold 
+                leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
+                hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
+                onClick={() => navigateToQuestion(1)}
+              >
+                <BiSolidRightArrow />
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="w-full lg:w-[44%] h-full flex flex-col">
+            <SectionHeader title="Détails" showBackButton={false} />
+            <EmptyState message="Aucune question sélectionnée" />
+          </div>
+        )}
       </div>
 
       <NoteDialog
@@ -433,28 +617,16 @@ const Residency = () => {
         onClose={() => setOpenNoteDialog(false)}
         onSubmit={handleNoteAction}
       />
+      
+      <ReportDialog
+        isOpen={openReportDialog}
+        onClose={() => setOpenReportDialog(false)}
+        onSubmit={(text) => {
+          onCreateReport(residencyQuestions[pageIndex].question._id, text);
+          showSnackbar("Signal envoyé", 3000, SnackbarType.SUCCESS);
+        }}
+      />
     </div>
-  );
-};
-
-const NavigationButton = ({ direction, onClick, disabled }) => {
-  const Icon = direction === "left" ? BiSolidLeftArrow : BiSolidRightArrow;
-
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md 
-                  border dark:border-slate-800 dark:bg-teal-800 text-center align-middle 
-                  font-sans text-sm font-bold leading-none text-black bg-teal-500 
-                  dark:text-slate-50 transition-all duration-300 ease-in 
-                  hover:dark:bg-slate-700 hover:bg-teal-300 
-                  disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none
-                  ${disabled ? "hidden" : "flex"}`}
-      aria-label={`Go to ${direction === "left" ? "previous" : "next"} question`}
-    >
-      <Icon />
-    </button>
   );
 };
 
