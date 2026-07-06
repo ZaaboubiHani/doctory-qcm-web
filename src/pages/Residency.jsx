@@ -86,7 +86,15 @@ const QuestionCard = ({ question, index, isSelected, hasNote, onClick }) => (
   </div>
 );
 
-const ChoiceCard = ({ choice, index, isSelected, isEvaluated, isCorrect, onClick }) => {
+const ChoiceCard = ({
+  choice,
+  index,
+  isSelected,
+  isEvaluated,
+  isCorrect,
+  onClick,
+  hasCorrectAnswers,
+}) => {
   const getBorderColor = () => {
     if (!isEvaluated) return "dark:border-slate-500";
     if (isCorrect) return "border-green-500";
@@ -103,15 +111,20 @@ const ChoiceCard = ({ choice, index, isSelected, isEvaluated, isCorrect, onClick
 
   return (
     <div className="flex items-center justify-start" key={index}>
-      <label className="flex items-center cursor-pointer relative shadow-lg" htmlFor={`choice-${index}`}>
-        <input
-          onChange={() => !isEvaluated && onClick(index)}
-          type="checkbox"
-          checked={isSelected}
-          className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow-sm border border-slate-800 checked:bg-slate-200 checked:border-slate-800 dark:border-slate-200 dark:checked:bg-slate-800 dark:checked:border-slate-800"
-          id={`choice-${index}`}
-          disabled={isEvaluated}
-        />
+      <label
+        className="flex items-center cursor-pointer relative shadow-lg"
+        htmlFor={`choice-${index}`}
+      >
+        {hasCorrectAnswers && (
+          <input
+            onChange={() => !isEvaluated && onClick(index)}
+            type="checkbox"
+            checked={isSelected}
+            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow-sm border border-slate-800 checked:bg-slate-200 checked:border-slate-800 dark:border-slate-200 dark:checked:bg-slate-800 dark:checked:border-slate-800"
+            id={`choice-${index}`}
+            disabled={isEvaluated}
+          />
+        )}
         <span className="absolute text-black dark:text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <svg
             fill="none"
@@ -173,14 +186,15 @@ const Residency = () => {
   const [selectedNote, setSelectedNote] = useState(null);
   const [openNoteDialog, setOpenNoteDialog] = useState(false);
   const [openReportDialog, setOpenReportDialog] = useState(false);
-  
+
   // Test mode state
   const [checkedBoxes, setCheckedBoxes] = useState([]);
   const [evaluated, setEvaluated] = useState(false);
 
   // Check if current question has correct answers
-  const hasCorrectAnswers = residencyQuestions[pageIndex]?.question?.correctAnswers && 
-                           residencyQuestions[pageIndex]?.question?.correctAnswers.length > 0;
+  const hasCorrectAnswers =
+    residencyQuestions[pageIndex]?.question?.correctAnswers &&
+    residencyQuestions[pageIndex]?.question?.correctAnswers.length > 0;
 
   // Reset test state when question changes
   useEffect(() => {
@@ -208,7 +222,7 @@ const Residency = () => {
           if (evaluated) {
             setEvaluated(false);
             setCheckedBoxes(
-              residencyQuestions[pageIndex].question.choices.map(() => false)
+              residencyQuestions[pageIndex].question.choices.map(() => false),
             );
           } else {
             handleEvaluation();
@@ -230,7 +244,11 @@ const Residency = () => {
       } else if (hasCorrectAnswers) {
         // Handle checkbox toggling with keyboard
         Object.entries(keyMap).forEach(([choiceIndex, keys]) => {
-          if (keys.includes(event.key) && choiceIndex < checkedBoxes.length && !evaluated) {
+          if (
+            keys.includes(event.key) &&
+            choiceIndex < checkedBoxes.length &&
+            !evaluated
+          ) {
             const checks = [...checkedBoxes];
             checks[choiceIndex] = !checks[choiceIndex];
             setCheckedBoxes(checks);
@@ -241,9 +259,13 @@ const Residency = () => {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [pageIndex, residencyQuestions, evaluated, checkedBoxes, hasCorrectAnswers]);
-
- 
+  }, [
+    pageIndex,
+    residencyQuestions,
+    evaluated,
+    checkedBoxes,
+    hasCorrectAnswers,
+  ]);
 
   // Initialize data
   useEffect(() => {
@@ -366,18 +388,23 @@ const Residency = () => {
   // Handle evaluation
   const handleEvaluation = () => {
     if (!hasCorrectAnswers) return;
-    
+
     setEvaluated(true);
-    
-    const correctAnswers = residencyQuestions[pageIndex].question.correctAnswers;
+
+    const correctAnswers =
+      residencyQuestions[pageIndex].question.correctAnswers;
     const selectedAnswers = checkedBoxes
-      .map((checked, index) => checked ? residencyQuestions[pageIndex].question.choices[index].letter : null)
+      .map((checked, index) =>
+        checked
+          ? residencyQuestions[pageIndex].question.choices[index].letter
+          : null,
+      )
       .filter(Boolean);
-    
-    const arraysEqual = 
+
+    const arraysEqual =
       selectedAnswers.length === correctAnswers.length &&
       selectedAnswers.every((value, index) => value === correctAnswers[index]);
-    
+
     if (arraysEqual) {
       showSnackbar("Correct !", 3000, SnackbarType.SUCCESS);
     } else {
@@ -474,10 +501,7 @@ const Residency = () => {
 
         {/* Question Details Panel */}
         {selectedQuestion && residencyQuestions[pageIndex] ? (
-          <div 
-            className="w-full md:w-1/2 lg:w-[44%] flex justify-center flex-col"
-           
-          >
+          <div className="w-full md:w-1/2 lg:w-[44%] flex justify-center flex-col">
             <div className="w-full h-full flex flex-col items-center overflow-auto">
               {/* Action Buttons */}
               <div className="flex w-[300px] h-16 mt-4 justify-evenly items-center">
@@ -502,9 +526,9 @@ const Residency = () => {
                     <FaRegLightbulb className="text-yellow-500 text-xl" />
                   )}
                 </button>
-                
+
                 <div></div>
-                
+
                 <button
                   className="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
                            border-slate-800 dark:bg-slate-800 text-center align-middle font-sans text-sm font-bold 
@@ -516,7 +540,7 @@ const Residency = () => {
                 >
                   <MdReportProblem className="text-orange-500 text-xl" />
                 </button>
-                
+
                 {hasCorrectAnswers && (
                   <button
                     className="inline-grid min-h-[36px] min-w-[36px] select-none place-items-center rounded-md border
@@ -526,7 +550,9 @@ const Residency = () => {
                     onClick={() => {
                       setEvaluated(false);
                       setCheckedBoxes(
-                        residencyQuestions[pageIndex].question.choices.map(() => false)
+                        residencyQuestions[pageIndex].question.choices.map(
+                          () => false,
+                        ),
                       );
                       showSnackbar("Actualiser", 1000, SnackbarType.SUCCESS);
                     }}
@@ -549,17 +575,25 @@ const Residency = () => {
 
               {/* Choices */}
               <div>
-                {residencyQuestions[pageIndex].question.choices.map((choice, index) => (
-                  <ChoiceCard
-                    key={index}
-                    choice={choice}
-                    index={index}
-                    isSelected={checkedBoxes[index]}
-                    isEvaluated={evaluated}
-                    isCorrect={evaluated && residencyQuestions[pageIndex]?.question?.correctAnswers?.includes(choice.letter)}
-                    onClick={handleChoiceSelect}
-                  />
-                ))}
+                {residencyQuestions[pageIndex].question.choices.map(
+                  (choice, index) => (
+                    <ChoiceCard
+                      key={index}
+                      choice={choice}
+                      index={index}
+                      hasCorrectAnswers={hasCorrectAnswers}
+                      isSelected={checkedBoxes[index]}
+                      isEvaluated={evaluated}
+                      isCorrect={
+                        evaluated &&
+                        residencyQuestions[
+                          pageIndex
+                        ]?.question?.correctAnswers?.includes(choice.letter)
+                      }
+                      onClick={handleChoiceSelect}
+                    />
+                  ),
+                )}
               </div>
             </div>
 
@@ -576,7 +610,7 @@ const Residency = () => {
               >
                 <BiSolidLeftArrow />
               </button>
-              
+
               {hasCorrectAnswers && (
                 <button
                   className="inline-grid h-16 min-w-[36px] select-none place-items-center rounded-md border p-4 cursor-pointer
@@ -584,12 +618,12 @@ const Residency = () => {
                            leading-none text-black bg-teal-500 dark:text-slate-50 transition-all duration-300 ease-in hover:dark:border-slate-700 
                            hover:dark:bg-slate-700 hover:bg-teal-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   onClick={handleEvaluation}
-                  disabled={evaluated || checkedBoxes.every(box => !box)}
+                  disabled={evaluated || checkedBoxes.every((box) => !box)}
                 >
                   Évaluer
                 </button>
               )}
-              
+
               <button
                 className={`inline-grid h-20 min-w-[36px] select-none place-items-center rounded-md border ${
                   pageIndex < residencyQuestions.length - 1 ? "flex" : "hidden"
@@ -617,7 +651,7 @@ const Residency = () => {
         onClose={() => setOpenNoteDialog(false)}
         onSubmit={handleNoteAction}
       />
-      
+
       <ReportDialog
         isOpen={openReportDialog}
         onClose={() => setOpenReportDialog(false)}
